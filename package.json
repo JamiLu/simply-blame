@@ -1,0 +1,84 @@
+{
+  "name": "simply-blame",
+  "displayName": "Simply Blame",
+  "description": "Idea like git blame annotations",
+  "publisher": "jami-lu",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "SimplyBlame",
+      "properties": {
+        "simplyblame.enableOpenBlameEditor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show a command to open raw blame file on the editor."
+        }
+      }
+    },
+    "activationEvents": [
+      "*"
+    ],
+    "commands": [
+      {
+        "command": "simply-blame.openBlameInEditorDebugCommand",
+        "title": "Open raw blame file",
+        "enablement": "config.simplyblame.enableOpenBlameEditor"
+      },
+      {
+        "command": "simply-blame.simplyBlame",
+        "title": "Simply Blame"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "simply-blame.simplyBlame",
+        "key": "alt+b"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "simply-blame.openBlameInEditorDebugCommand",
+          "group": "Other",
+          "when": "config.simplyblame.enableOpenBlameEditor"
+        },
+        {
+          "command": "simply-blame.simplyBlame",
+          "group": "Other"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "copy-fixtures": "cp -r ./src/test/fixtures ./out/test/",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "pretest-copy-fixtures": "npm run pretest && npm run copy-fixtures",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-cli": "^0.0.8",
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "ts-sinon": "^2.0.2",
+    "typescript": "^4.9.3"
+  }
+}
