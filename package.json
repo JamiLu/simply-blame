@@ -11,6 +11,7 @@
     "Other"
   ],
   "main": "./out/extension.js",
+  "icon": "src/icon.png",
   "contributes": {
     "configuration": {
       "title": "SimplyBlame",
