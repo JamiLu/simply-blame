@@ -29,7 +29,7 @@ suite('Test HeatMap', () => {
     test('test heatmap generation with faulty blame', async () => {
         const blameFileStub = sinon.stub(blameMock, 'blameFile').returns(Promise.resolve(getErrornousBlame()));
         
-        const blamed = await blameMock.blame(document);
+        const blamed = (await blameMock.blame(document)).filter(Boolean);
 
         const heatMap = heatMapMock.indexHeatColors(blamed);
 

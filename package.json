@@ -2,7 +2,7 @@
   "name": "simply-blame",
   "displayName": "Simply Blame",
   "description": "Idea like git blame annotations",
-  "publisher": "jami-lu",
+  "publisher": "JamiTech",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.74.0"
@@ -20,6 +20,31 @@
           "type": "boolean",
           "default": false,
           "description": "Show a command to open raw blame file on the editor."
+        },
+        "simplyblame.heatMapColors": {
+          "type": "array",
+          "maxItems": 11,
+          "pattern": "^#[a-fA-F0-9]{6}",
+          "default": [
+            "#ff0000",
+	          "#e60000",
+	          "#cc0000",
+	          "#b30000",
+	          "#990000",
+	          "#800000",
+	          "#660000",
+	          "#4d0000",
+	          "#330000",
+	          "#1a0000",
+	          "#000000"
+          ],
+          "description": "Chage default colors of the heat map."
+        },
+        "simplyblame.dateLocale": {
+          "type": "string",
+          "enum": ["English", "Finnish"],
+          "default": "English",
+          "description": "Date locale for git blame."
         }
       }
     },

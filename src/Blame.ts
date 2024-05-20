@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
 import Notifications from "./Notifications";
+import Settings from "./Settings";
 
 export interface BlamedDate {
 	dateString: string;
@@ -21,7 +22,9 @@ export interface BlamedDocument {
 }
 
 const BLAME_PATTERN =
-  /(^\w{0,}).*\(([a-zA-ZåäöÅÄÖ0-9-\. ]+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/; // author ([a-zA-ZåäöÅÄÖ0-9]{0,}\s?[a-zA-ZåäöÅÄÖ0-9]{0,}
+  /(^\w{0,}).*\(([a-zA-ZåäöÅÄÖ0-9-\. ]+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/;
+
+const locale = Settings.getDateLocale();
 
 export const promiseExec = promisify(exec);
 
@@ -33,7 +36,7 @@ const createDate = (str: string): BlamedDate => {
 		str.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)?.join() || "",
 		dateTimeZoneString: str,
 		date: d,
-		localDate: d.toLocaleDateString('fi-FI'),
+		localDate: d.toLocaleDateString(locale),
 		dateMillis: Date.parse(str)
 	};
 };
@@ -60,7 +63,7 @@ export const blameFile = async (file: String) => {
 export const blame = async (document: vscode.TextDocument): Promise<BlamedDocument[]> => {
   	const blamed = (await blameFile(document.fileName)).split("\n");
 
-	let hasFailedParsingBlames = false;
+	const failedToParse: string[] = [];
 
 	const parsed = blamed.map((line) => {
 		const match = line.match(BLAME_PATTERN);
@@ -74,13 +77,13 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
 				codeline: match[5],
 			} as BlamedDocument);
 		} else if (line.length > 0) {
-			hasFailedParsingBlames = true;
+			failedToParse.push(line);
 			return undefined;
 		}
 	  	
     }) as BlamedDocument[];
 
-	if (hasFailedParsingBlames) {
+	if (failedToParse.length > 0) {
 		Notifications.parsingBlameFailed();
 	}
 

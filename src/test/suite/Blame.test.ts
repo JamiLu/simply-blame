@@ -44,7 +44,7 @@ suite('Test Blame', () => {
         mock.restore();
     });
 
-    test('test blameFile throws git not found git not found notification showns', async () => {
+    test('test blameFile throws git not found git not found notification shown', async () => {
         const gitNotFoundNotificationSpy = sinon.spy(Notifications, 'gitNotFoundNotification');
         const stub = sinon.stub(blameMock, 'promiseExec').throwsException(new Error('git: not found'));
 
@@ -92,7 +92,7 @@ suite('Test Blame', () => {
         const notificationSpy = sinon.spy(Notifications, 'parsingBlameFailed');
         mock.expects('blameFile').returns(getErrornousBlame());
 
-        const blamed = await blameMock.blame(document);
+        const blamed = (await blameMock.blame(document)).filter(Boolean);
 
         assert.ok(notificationSpy.calledOnce);
         assert.strictEqual(2, blamed.length);

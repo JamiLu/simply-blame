@@ -1,25 +1,12 @@
 import * as vscode from "vscode";
 import { BlamedDocument, BlamedDate } from "./Blame";
+import Settings from "./Settings";
 
 export interface IndexedHeatMap {
   	[key: string]: string | vscode.ThemeColor;
 }
 
-export const HEAT_MAP_COLORS = [
-	// '#ff3333', // 2 up 60%
-	// '#ff1a1a', // 1 up 55%
-	"#ff0000", // defualt 50%
-	"#e60000",
-	"#cc0000",
-	"#b30000",
-	"#990000",
-	"#800000",
-	"#660000",
-	"#4d0000",
-	"#330000",
-	"#1a0000",
-	"#000000", // new vscode.ThemeColor('editor.background') //'#000000'
-];
+export const HEAT_MAP_COLORS = Settings.getHeatMapColors();
 
 const toDistinctDates = (prev: BlamedDate[], curr: BlamedDate) => {
 	if (!prev.find((date) => date.dateString === curr.dateString)) {
