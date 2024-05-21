@@ -7,7 +7,7 @@ Idea like git blame annotations for VS Code!
 2. Press **Alt + B** on the text editor
 3. You will see who to blame
 
-![Blame screeshot](blame-screenshot-1.png)
+![Blame screeshot](https://github.com/JamiLu/simply-blame/blob/master/blame-screenshot-1.png)
 
 ## Settings
  * Enable/disable a command to open a blame file in a new text editor tab, disabled by default.
