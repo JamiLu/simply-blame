@@ -22,7 +22,7 @@ export interface BlamedDocument {
 }
 
 const BLAME_PATTERN =
-  /(^\w{0,}).*\(([a-zA-ZåäöÅÄÖ0-9-\. ]+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/;
+  /(^\^?\w{0,}).*\((.+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/;
 
 const locale = Settings.getDateLocale();
 
