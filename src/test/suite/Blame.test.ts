@@ -15,8 +15,8 @@ export const getBlame = () => `2efb8e96 (Jami Lu 2019-02-19 14:07:41 +0200   1) 
 1e835440 (Jami Lu 2022-04-13 02:00:33 +0300   8) import Helper from '../template/fragment';
 946b3e4c (Maija Mäkelä 2023-05-18 21:36:21 +0300   9) import { ready } from '../ready';
 2efb8e96 (Yrjö Ylpå 2019-02-19 14:07:41 +0200  10) 
-1acec2d483a (makea        2023-06-08 13:56:11 +0300  85)   };
-0d845391928 src/components/testi.tsx                    (foobar1      2023-03-24 13:02:47 +0200  847)           }}
+1acec2d483a (makeaü        2023-06-08 13:56:11 +0300  85)   };
+0d845391928 src/components/testi.tsx                    (foobar1^      2023-03-24 13:02:47 +0200  847)           }}
 4f559dbb425 src/components/testi.tsx (testitestaaja         2020-08-28 16:36:10 +0300  787)   );
 808d23637d7 src/components/testi.tsx (sheikki1        2021-09-08 17:16:51 +0530  789)   React.useEffect(() => {
 34e8cfc5ba9 src/components/testi.tsx (mantelikakku      2021-08-02 15:12:15 +0530  785)       )}
@@ -82,8 +82,8 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[6].author, 'AatuAA');
         assert.strictEqual(blamed[8].author, 'Maija Mäkelä');
         assert.strictEqual(blamed[9].author, 'Yrjö Ylpå');
-        assert.strictEqual(blamed[10].author, 'makea');
-        assert.strictEqual(blamed[11].author, 'foobar1');
+        assert.strictEqual(blamed[10].author, 'makeaü');
+        assert.strictEqual(blamed[11].author, 'foobar1^');
         assert.strictEqual(blamed[12].author, 'testitestaaja');
         assert.strictEqual(blamed[13].author, 'sheikki1');
         assert.strictEqual(blamed[14].author, 'mantelikakku');
