@@ -40,11 +40,12 @@ const createDate = (str: string): BlamedDate => {
 	};
 };
 
-export const blameFile = async (file: String) => {
-  const loc = (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders[0].uri.path) || "/";
+export const blameFile = async (file: string) => {
+	const name = file.match(/\w+.\w+$/)?.[0];
+	const location = file.replace(name || '', '');
 
 	try {
-		const { stdout, stderr } = await promiseExec(`cd ${loc} && git blame ${file}`);
+		const { stdout, stderr } = await promiseExec(`cd ${location} && git blame ${name}`);
 
 		return stdout;
 	} catch (e) {
