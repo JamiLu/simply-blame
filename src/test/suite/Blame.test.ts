@@ -22,7 +22,12 @@ export const getBlame = () => `2efb8e96 (Jami Lu 2019-02-19 14:07:41 +0200   1) 
 34e8cfc5ba9 src/components/testi.tsx (mantelikakku      2021-08-02 15:12:15 +0530  785)       )}
 34e8cfc5ba9 src/components/testi.tsx (pa a lasse      2021-08-02 15:12:15 +0530  785)       )}
 343abc32 src/components/testi.tsx (Pa. Lasse Yli-vainio      2021-08-02 15:12:15 +0530  785)       )}
-34e8cfc5ba9 src/components/testi.tsx (make  8.    2021-08-02 15:12:15 +0530  785)       )}`;
+34e8cfc5ba9 src/components/testi.tsx (make  8.    2021-08-02 15:12:15 +0530  785)       )}
+1e835440 (李 连杰 2022-04-13 02:00:33 +0300   8) import Helper from '../template/fragment';
+1e835440 (你好 2022-04-13 02:00:33 +0300   8) import Helper from '../template/fragment';
+3e195561 (שלוםV   2023-05-24 22:48:51 +0300   4) import Resolver from '../template';
+3e195561 (שלום   2023-05-24 22:48:51 +0300   4) import Resolver from '../template';
+3e195561 (שלום שלום   2023-05-24 22:48:51 +0300   4) import Resolver from '../template';`;
 
 export const getErrornousBlame = () => `34e8cfc5ba9 src/components/testi.tsx (pa a lasse      2021-08-02 15:12:15 +0530  785)       )}
 343abc32 src/components/testi.tsx (aa ()/f      2021-08-02 15:12:15 +0530  785)       )}
@@ -85,7 +90,12 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[15].author, 'pa a lasse');
         assert.strictEqual(blamed[16].author, 'Pa. Lasse Yli-vainio');
         assert.strictEqual(blamed[17].author, 'make  8.');
-        assert.strictEqual(18, blamed.length);
+        assert.strictEqual(blamed[18].author, '李 连杰');
+        assert.strictEqual(blamed[19].author, '你好');
+        assert.strictEqual(blamed[20].author, 'שלוםV');
+        assert.strictEqual(blamed[21].author, 'שלום');
+        assert.strictEqual(blamed[22].author, 'שלום שלום');
+        assert.strictEqual(23, blamed.length);
     });
 
     test('test blame function fails notification is shown', async () => {
