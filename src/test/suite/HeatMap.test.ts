@@ -20,7 +20,7 @@ suite('Test HeatMap', () => {
         const heatMap = heatMapMock.indexHeatColors(blamed);
 
         assert.ok(blameFileStub.calledOnce);
-        assert.strictEqual(23, blamed.length);
+        assert.strictEqual(24, blamed.length);
         assert.strictEqual(11, Object.keys(heatMap).length);
 
         blameFileStub.restore();

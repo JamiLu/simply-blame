@@ -21,7 +21,7 @@ export interface BlamedDocument {
 	linenumber: string;
 }
 
-const BLAME_PATTERN = /(^[0-9a-f]+).*\(([^/&%¤#"!?=(){}\\\[\]]+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/;
+const BLAME_PATTERN = /(^\^?[0-9a-f]+).*\(([^/&%¤#"!?=(){}\\\[\]]+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/;
 
 const locale = Settings.getDateLocale();
 
