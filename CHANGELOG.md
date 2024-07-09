@@ -2,6 +2,11 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.4]
+
+### Fixed
+ - Initial commit hash parsing
+
 ## [0.0.3]
 
 ### Fixed
