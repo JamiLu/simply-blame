@@ -2,6 +2,15 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.5]
+
+### Updates
+ - Max buffer size increased
+ - File name resolution improved
+ - Improved date format parsing
+ - Dark theme heat map colors revised
+ - Add support for light theme colors
+
 ## [0.0.4]
 
 ### Fixed

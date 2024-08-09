@@ -8,6 +8,12 @@ class BlameManager {
     private blamedDocument: BlamedDocument[] = [];
     private heatMap: IndexedHeatMap = {};
     private decorationRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
+		dark: {
+			color: new vscode.ThemeColor('editor.foreground')
+		},
+		light: {
+			color: '#000000'
+		},
 		before: {
 			color: new vscode.ThemeColor('editor.foreground'),
 			height: 'editor.lineHeight',

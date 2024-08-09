@@ -28,33 +28,57 @@
           "default": false,
           "description": "Show a command to open raw blame file on the editor."
         },
-        "simplyblame.heatMapColors": {
+        "simplyblame.heatMapColorsDark": {
           "type": "array",
           "maxItems": 11,
           "pattern": "^#[a-fA-F0-9]{6}",
           "default": [
-            "#ff0000",
-            "#e60000",
-            "#cc0000",
-            "#b30000",
             "#990000",
-            "#800000",
-            "#660000",
-            "#4d0000",
-            "#330000",
-            "#1a0000",
-            "#000000"
+            "#910808",
+            "#8a0f0f",
+            "#821717",
+            "#7a1f1f",
+            "#732626",
+            "#6b2e2e",
+            "#633636",
+            "#5c3d3d",
+            "#544545",
+            "#4d4d4d"
           ],
-          "description": "Chage default colors of the heat map."
+          "description": "Default dard colors of the heat map."
         },
-        "simplyblame.dateLocale": {
+        "simplyblame.heatMapColorsLight": {
+          "type": "array",
+          "maxItems": 11,
+          "pattern": "^#[a-fA-F0-9]{6}",
+          "default": [
+            "#ffcccc",
+            "#fccfcf",
+            "#fad1d1",
+            "#f7d4d4",
+            "#f5d6d6",
+            "#f2d9d9",
+            "#f0dbdb",
+            "#eddede",
+            "#ebe0e0",
+            "#e8e3e3",
+            "#e6e6e6"
+          ],
+          "description": "Default dard colors of the heat map."
+        },
+        "simplyblame.dateFormat": {
           "type": "string",
           "enum": [
-            "English",
-            "Finnish"
+            "system",
+            "DD/MM/YYYY",
+            "MM/DD/YYYY",
+            "DD.MM.YYYY",
+            "MM.DD.YYYY",
+            "DD-MM-YYYY",
+            "MM-DD-YYYY"
           ],
-          "default": "English",
-          "description": "Date locale for git blame."
+          "default": "system",
+          "description": "Date format for git blame."
         }
       }
     },

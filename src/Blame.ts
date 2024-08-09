@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
+import { parseDate } from "./Date";
 import Notifications from "./Notifications";
-import Settings from "./Settings";
 
 export interface BlamedDate {
 	dateString: string;
@@ -23,8 +23,6 @@ export interface BlamedDocument {
 
 const BLAME_PATTERN = /(^\^?[0-9a-f]+).*\(([^/&%¤#"!?=(){}\\\[\]]+)\s+(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \+\d{4}).* (\d+)\) (.*$)/;
 
-const locale = Settings.getDateLocale();
-
 export const promiseExec = promisify(exec);
 
 const createDate = (str: string): BlamedDate => {
@@ -35,17 +33,17 @@ const createDate = (str: string): BlamedDate => {
 		str.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)?.join() || "",
 		dateTimeZoneString: str,
 		date: d,
-		localDate: d.toLocaleDateString(locale),
+		localDate: parseDate(d),
 		dateMillis: Date.parse(str)
 	};
 };
 
 export const blameFile = async (file: string) => {
-	const name = file.match(/\w+.\w+$/)?.[0];
+	const name =  file.substring(file.lastIndexOf('/') + 1);
 	const location = file.replace(name || '', '');
 
 	try {
-		const { stdout, stderr } = await promiseExec(`cd ${location} && git blame ${name}`);
+		const { stdout, stderr } = await promiseExec(`cd ${location} && git blame ${name}`, { maxBuffer: 2056 * 2056 });
 
 		return stdout;
 	} catch (e) {
@@ -58,6 +56,10 @@ export const blameFile = async (file: string) => {
   }
 
   return '';
+};
+
+const cleanFailedToParse = (line: string) => {
+	return line.substring(0, line.indexOf(')') + 1);
 };
 
 export const blame = async (document: vscode.TextDocument): Promise<BlamedDocument[]> => {
@@ -84,7 +86,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
     }) as BlamedDocument[];
 
 	if (failedToParse.length > 0) {
-		Notifications.parsingBlameFailed();
+		Notifications.parsingBlameFailed(failedToParse.map(cleanFailedToParse));
 	}
 
 	return parsed;
