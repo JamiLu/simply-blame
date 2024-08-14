@@ -90,19 +90,25 @@ ${content}
 	private createDecorations(lineIdx: number, contentLineDefaultLength: number) {
 		const blamedDocument = this.blamedDocument[lineIdx];
 
-		return blamedDocument ? [
-			{
-				contentText: this.createContentLine(blamedDocument.author, blamedDocument.date.localDate, contentLineDefaultLength),
-				backgroundColor: getHeatColor(blamedDocument.date, this.heatMap)
-			},
-			new vscode.MarkdownString(`### ${blamedDocument.hash}`)
-		] : [
-			{
-				contentText: this.createContentLine('parsing failed', '', contentLineDefaultLength),
-				backgroundColor: new vscode.ThemeColor('editor.background')
-			},
-			undefined
-		];
+		if (blamedDocument) {
+			return [
+				{
+					contentText: this.createContentLine(blamedDocument.author, blamedDocument.date.localDate, contentLineDefaultLength),
+					backgroundColor: getHeatColor(blamedDocument.date, this.heatMap)
+				},
+				new vscode.MarkdownString(`### ${blamedDocument.hash}`)	
+			];
+		} else if (this.blamedDocument.length - 1 === lineIdx) {
+			return [];
+		} else {
+			return [
+				{
+					contentText: this.createContentLine('parsing failed', '', contentLineDefaultLength),
+					backgroundColor: new vscode.ThemeColor('editor.background')
+				},
+				undefined
+			];
+		}
 	}
 
 	private async getBlamedDecorations(document: vscode.TextDocument) {
@@ -114,7 +120,7 @@ ${content}
 			const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 0);
 
 			if (this.blamedDocument.length > 0) {
-				for (let i = 0; i < linecount - 1; i++) {
+				for (let i = 0; i < linecount; i++) {
 					const startPos = new vscode.Position(i, 0);
 					const endPos = new vscode.Position(i, 0);
 					let range = new vscode.Range(startPos, endPos);
