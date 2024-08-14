@@ -2,6 +2,11 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.6]
+
+### Fixed
+ - Last line not annotated in case of the last line not being empty
+
 ## [0.0.5]
 
 ### Updates
