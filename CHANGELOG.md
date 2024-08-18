@@ -2,6 +2,12 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.7]
+
+### Updates
+ - Icon is changed
+ - Dark theme heat map color revised a bit
+
 ## [0.0.6]
 
 ### Fixed
