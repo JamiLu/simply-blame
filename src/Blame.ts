@@ -39,7 +39,8 @@ const createDate = (str: string): BlamedDate => {
 };
 
 export const blameFile = async (file: string) => {
-	const name =  file.substring(file.lastIndexOf('/') + 1);
+	const sepIndex = file.lastIndexOf('/');
+	const name =  file.substring(sepIndex > -1 ? sepIndex + 1 : file.lastIndexOf('\\') + 1);
 	const location = file.replace(name || '', '');
 
 	try {

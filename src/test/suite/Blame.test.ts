@@ -58,6 +58,7 @@ suite('Test Blame', () => {
         
         assert.ok(gitNotFoundNotificationSpy.calledOnce);
         stub.restore();
+        gitNotFoundNotificationSpy.restore();
     });
 
     test('test blameFile throws error common notification is shown', async () => {
@@ -68,6 +69,34 @@ suite('Test Blame', () => {
 
         assert.ok(commonNotificationSpy.calledOnce);
         stub.restore();
+        commonNotificationSpy.restore();
+    });
+
+    test('test blameFile slash succeeds', async () => {
+        const spy = sinon.spy(blameMock, 'promiseExec');
+
+        await blameMock.blameFile('path/to/file/test.ts');
+        
+        assert.ok(spy.calledWith(`cd path/to/file/ && git blame test.ts`));
+        spy.restore();
+    });
+
+    test('test blameFile backslash succeeds', async () => {
+        const spy = sinon.spy(blameMock, 'promiseExec');
+
+        await blameMock.blameFile('path\\to\\file\\test.ts');
+
+        assert.ok(spy.calledWith('cd path\\to\\file\\ && git blame test.ts'));
+        spy.restore();
+    });
+
+    test('test blameFile filename with dash succeeds', async () => {
+        const spy = sinon.spy(blameMock, 'promiseExec');
+
+        await blameMock.blameFile('path/to/file/test-this.txt');
+
+        assert.ok(spy.calledWith(`cd path/to/file/ && git blame test-this.txt`));
+        spy.restore();
     });
     
     test('test blame function', async () => {
@@ -108,5 +137,6 @@ suite('Test Blame', () => {
 
         assert.ok(notificationSpy.calledOnce);
         assert.strictEqual(2, blamed.length);
+        notificationSpy.restore();
     });
 });
