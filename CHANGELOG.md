@@ -2,6 +2,11 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.8]
+
+### Fixes
+ - Fixed a bug with file name resolving on Windows
+
 ## [0.0.7]
 
 ### Updates

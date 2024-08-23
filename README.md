@@ -22,5 +22,5 @@ Idea like git blame annotations for VS Code!
 
 #### Change of the heat map colors from light to dark and vise versa require a restart of the VS Code.
 
-### How to find extension settigns
+### How to find extension settings
 ![How to find settings](settings.gif)
