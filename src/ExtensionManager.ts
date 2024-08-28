@@ -26,6 +26,14 @@ class ExtensionManager {
             this.blameManager.closeBlame();
         });
 
+        vscode.window.onDidChangeActiveColorTheme(() => {
+            this.blameManager.refresh();
+        });
+
+        vscode.workspace.onDidChangeTextDocument(() => {
+            this.blameManager.refresh();
+        });
+
         this.context.subscriptions.push(debugCommand, blameCommand);
     }
 

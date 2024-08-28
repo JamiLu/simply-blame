@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { parseDate } from "./Date";
+import { getFilename } from "./Utils";
 import Notifications from "./Notifications";
 
 export interface BlamedDate {
@@ -39,8 +40,7 @@ const createDate = (str: string): BlamedDate => {
 };
 
 export const blameFile = async (file: string) => {
-	const sepIndex = file.lastIndexOf('/');
-	const name =  file.substring(sepIndex > -1 ? sepIndex + 1 : file.lastIndexOf('\\') + 1);
+	const name = getFilename(file);
 	const location = file.replace(name || '', '');
 
 	try {

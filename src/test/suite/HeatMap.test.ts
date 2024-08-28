@@ -3,10 +3,13 @@ import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as blameMock from '../../Blame';
 import * as heatMapMock from '../../HeatMap';
+import Settings from '../../Settings';
 import { activateExtension, document } from './helpers';
 import { getBlame, getErrornousBlame } from './Blame.test';
 
 suite('Test HeatMap', () => {
+
+    const heatColors = Settings.getHeatMapColors();
 
     mocha.before(async () => {
         await activateExtension();
@@ -17,7 +20,7 @@ suite('Test HeatMap', () => {
 
         const blamed = await blameMock.blame(document);
 
-        const heatMap = heatMapMock.indexHeatColors(blamed);
+        const heatMap = heatMapMock.indexHeatColors(blamed, heatColors);
 
         assert.ok(blameFileStub.calledOnce);
         assert.strictEqual(24, blamed.length);
@@ -31,7 +34,7 @@ suite('Test HeatMap', () => {
         
         const blamed = (await blameMock.blame(document)).filter(Boolean);
 
-        const heatMap = heatMapMock.indexHeatColors(blamed);
+        const heatMap = heatMapMock.indexHeatColors(blamed, heatColors);
 
         assert.ok(blameFileStub.calledOnce);
         assert.strictEqual(2, blamed.length);
@@ -39,7 +42,5 @@ suite('Test HeatMap', () => {
 
         blameFileStub.restore();
     });
-
-
 
 });
