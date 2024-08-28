@@ -20,7 +20,5 @@ Idea like git blame annotations for VS Code!
     * System will use the locale used by the VS Code.
     * Or you can choose other pre existing date formats.
 
-#### Change of the heat map colors from light to dark and vise versa require a restart of the VS Code.
-
 ### How to find extension settings
 ![How to find settings](settings.gif)
