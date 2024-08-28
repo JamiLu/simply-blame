@@ -1,13 +1,28 @@
 import * as vscode from 'vscode';
+import HeatMapManager from './HeatMapManager';
 import { BlamedDocument, blame, blameFile } from './Blame';
-import { IndexedHeatMap, getHeatColor, indexHeatColors } from './HeatMap';
+import { getFilename } from './Utils';
+
+type BlameDecoration = [vscode.ThemableDecorationAttachmentRenderOptions?, vscode.ThemableDecorationAttachmentRenderOptions?, vscode.MarkdownString?];
 
 class BlameManager {
 
     private isOpen: boolean = false;
     private blamedDocument: BlamedDocument[] = [];
-    private heatMap: IndexedHeatMap = {};
-    private decorationRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
+	private heatMapManager = new HeatMapManager();
+    private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
+		dark: {
+			color: new vscode.ThemeColor('editor.foreground')
+		},
+		light: {
+			color: '#000000'
+		},
+		before: {
+			color: new vscode.ThemeColor('editor.foreground'),
+			height: 'editor.lineHeight',
+		}
+	});
+	private dateRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
 		dark: {
 			color: new vscode.ThemeColor('editor.foreground')
 		},
@@ -27,32 +42,44 @@ class BlameManager {
         if (this.isOpen) {
             this.blamedDocument = await blame(editor.document);
 			if (this.blamedDocument.length > 0) {
-				this.heatMap = indexHeatColors(this.blamedDocument);
+				this.heatMapManager.indexHeatMap(this.blamedDocument);
 
-				const decorations = await this.getBlamedDecorations(editor.document);
-				editor.setDecorations(this.decorationRoot, decorations);
-
-				vscode.workspace.onDidChangeTextDocument(() => {
-					if (this.isOpen) {
-						editor.setDecorations(this.decorationRoot, decorations);
-					}
-				});
+				const [decorations, dateDeco] = this.getBlamedDecorations(editor.document);
+				editor.setDecorations(this.nameRoot, decorations);
+				editor.setDecorations(this.dateRoot, dateDeco);
 			} else {
 				this.isOpen = false;
 			}
         } else {
-            editor.setDecorations(this.decorationRoot, []);
+            editor.setDecorations(this.nameRoot, []);
+			editor.setDecorations(this.dateRoot, []);
         }
     }
 
+	refresh() {
+		if (this.isOpen) {
+			const editor = vscode.window.activeTextEditor;
+			if (editor) {
+				this.heatMapManager.refreshColors();
+				this.heatMapManager.indexHeatMap(this.blamedDocument);
+				const [name, date] = this.getBlamedDecorations(editor.document);
+				editor.setDecorations(this.nameRoot, name);
+				editor.setDecorations(this.dateRoot, date);
+			}
+		}
+	}
+
 	closeBlame() {
 		this.isOpen = false;
+		const editor = vscode.window.activeTextEditor;
+		editor?.setDecorations(this.nameRoot, []);
+		editor?.setDecorations(this.dateRoot, []);
 	}
 
 	async openBlameEditor(editor: vscode.TextEditor) {
 		const blamedContent = await blameFile(editor.document.fileName);
 
-		const panel = vscode.window.createWebviewPanel('blame', `Blame - ${this.getFilename(editor.document)}`, vscode.ViewColumn.Beside);
+		const panel = vscode.window.createWebviewPanel('blame', `Blame - ${getFilename(editor.document.uri.path)}`, vscode.ViewColumn.Beside);
 
 		panel.webview.html = this.getHtmlForEditor(blamedContent);
 	}
@@ -68,56 +95,44 @@ ${content}
 </html>`;
 	}
 
-	private getFilename(document: vscode.TextDocument) {
-		return document.uri.path.substring(document.uri.path.lastIndexOf('/'));
-	}
-
-    private createContentLine(author: string, date: string, defaultLength: number) {
-		const maxLength = defaultLength + 16;
-		let line = `\u2003${author}_${date}\u2003`;
-		const multiplier = maxLength - line.length;
-		
-		let space = '';
-		for (let i = 0; i < multiplier; i++) {
-			space += '\u2003';
-		}
-		
-		line = line.replace('_', space);
-
-		return line;
-	};
-
-	private createDecorations(lineIdx: number, contentLineDefaultLength: number) {
+	private createDecorations(lineIdx: number, contentLineDefaultLength: number): BlameDecoration {
 		const blamedDocument = this.blamedDocument[lineIdx];
 
 		if (blamedDocument) {
 			return [
 				{
-					contentText: this.createContentLine(blamedDocument.author, blamedDocument.date.localDate, contentLineDefaultLength),
-					backgroundColor: getHeatColor(blamedDocument.date, this.heatMap)
+					contentText: `\u2003${blamedDocument.author}`,
+					backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
+					width: `${contentLineDefaultLength * 10 + 40}px`
+				},
+				{
+					contentText: `${blamedDocument.date.localDate}\u2003`,
+					backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
 				},
 				new vscode.MarkdownString(`### ${blamedDocument.hash}`)	
 			];
-		} else if (this.blamedDocument.length - 1 === lineIdx) {
+		} else if (this.blamedDocument.length - 1 <= lineIdx) {
 			return [];
 		} else {
 			return [
 				{
-					contentText: this.createContentLine('parsing failed', '', contentLineDefaultLength),
-					backgroundColor: new vscode.ThemeColor('editor.background')
-				},
-				undefined
+					contentText: `\u2003parsing failed\u2003`,
+					backgroundColor: new vscode.ThemeColor('editor.background'),
+					width: `${contentLineDefaultLength * 10 + 40}px`
+				}
 			];
 		}
 	}
 
-	private async getBlamedDecorations(document: vscode.TextDocument) {
+	private getBlamedDecorations(document: vscode.TextDocument) {
 
-			const decorations: vscode.DecorationOptions[] = [];
+			const nameDecorations: vscode.DecorationOptions[] = [];
+
+			const dateDecorations: vscode.DecorationOptions[] = [];
 
 			const linecount = document.lineCount || 0;
 
-			const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 0);
+			const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 10);
 
 			if (this.blamedDocument.length > 0) {
 				for (let i = 0; i < linecount; i++) {
@@ -125,19 +140,26 @@ ${content}
 					const endPos = new vscode.Position(i, 0);
 					let range = new vscode.Range(startPos, endPos);
 
-					const [decorationOptions, hoverMessage] = this.createDecorations(i, longestAuthor);
-	
-					decorations.push({
+					const [name, date, hoverMessage] = this.createDecorations(i, longestAuthor);
+					
+					nameDecorations.push({
 						range,
 						renderOptions: {
-							before: decorationOptions as vscode.ThemableDecorationAttachmentRenderOptions
+							before: name
 						},
-						hoverMessage: hoverMessage as vscode.MarkdownString
+						hoverMessage: hoverMessage
+					});
+
+					dateDecorations.push({
+						range,
+						renderOptions: {
+							before: date
+						},
 					});
 				}
 			}
 
-			return decorations;
+			return [nameDecorations, dateDecorations];
 	};
 }
 

@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
+import { isDarkTheme } from './Utils';
 
 class Settings {
 
     private static conf = 'simplyblame';
 
     static getHeatMapColors(): string[] {
-        if ([vscode.ColorThemeKind.Dark, vscode.ColorThemeKind.HighContrast].includes(vscode.window.activeColorTheme.kind)) {
+        if (isDarkTheme()) {
             return vscode.workspace.getConfiguration(this.conf).heatMapColorsDark;
         } else {
             return vscode.workspace.getConfiguration(this.conf).heatMapColorsLight;
