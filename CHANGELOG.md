@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.10]
+### Fixed
+ * Fix timezone parsing
+
 ## [0.0.9]
 ### Updates
  - Fix uneven edge issue for unsymmetric fonts
