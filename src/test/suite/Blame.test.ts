@@ -28,7 +28,8 @@ export const getBlame = () => `2efb8e96 (Jami Lu 2019-02-19 14:07:41 +0200   1) 
 3e195561 (שלוםV   2023-05-24 22:48:51 +0300   4) import Resolver from '../template';
 3e195561 (שלום   2023-05-24 22:48:51 +0300   4) import Resolver from '../template';
 3e195561 (שלום שלום   2023-05-24 22:48:51 +0300   4) import Resolver from '../template';
-^d23637d7 src/components/testi.tsx (abc        2021-09-08 17:16:51 +0530  789)   React.useEffect(() => {`;
+^d23637d7 src/components/testi.tsx (abc        2021-09-08 17:16:51 +0530  789)   React.useEffect(() => {
+cf3a0b5355c6 (Colin Cross     2017-11-16 00:15:28 -0800 19) `;
 
 export const getErrornousBlame = () => `34e8cfc5ba9 src/components/testi.tsx (pa a lasse      2021-08-02 15:12:15 +0530  785)       )}
 343abc32 src/components/testi.tsx (aa ()/f      2021-08-02 15:12:15 +0530  785)       )}
@@ -126,7 +127,8 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[21].author, 'שלום');
         assert.strictEqual(blamed[22].author, 'שלום שלום');
         assert.strictEqual(blamed[23].author, 'abc');
-        assert.strictEqual(24, blamed.length);
+        assert.strictEqual(blamed[24].author, 'Colin Cross');
+        assert.strictEqual(25, blamed.length);
     });
 
     test('test blame function fails notification is shown', async () => {
