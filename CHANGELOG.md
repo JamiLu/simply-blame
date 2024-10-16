@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.11]
+### Updates
+ - Add support for ISO 8601 date format
+
 ## [0.0.10]
 ### Fixed
  * Fix timezone parsing
