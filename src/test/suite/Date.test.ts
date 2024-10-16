@@ -4,7 +4,27 @@ import * as dateMock from "../../Date";
 import Settings from "../../Settings";
 
 suite("Test Date", () => {
-    test("test parse iso date format", async () => {
+    test("test parse YYYY/MM/DD date format", async () => {
+        const stub = sinon.stub(Settings, "getDateFormat").callsFake(() => { return "YYYY/MM/DD"; });
+
+        const res = dateMock.parseDate(new Date("2024-12-31")).toString();
+
+        assert.strictEqual(res, "2024/12/31");
+
+        stub.restore();
+    });
+
+    test("test parse YYYY.MM.DD date format", async () => {
+        const stub = sinon.stub(Settings, "getDateFormat").callsFake(() => { return "YYYY.MM.DD"; });
+
+        const res = dateMock.parseDate(new Date("2024-12-31")).toString();
+
+        assert.strictEqual(res, "2024.12.31");
+
+        stub.restore();
+    });
+
+    test("test parse YYYY-MM-DD date format", async () => {
         const stub = sinon.stub(Settings, "getDateFormat").callsFake(() => { return "YYYY-MM-DD"; });
 
         const res = dateMock.parseDate(new Date("2024-12-31")).toString();
