@@ -6,20 +6,33 @@ const appendZeroToString = (num: number): string => {
 };
 
 export const parseDate = (date: Date) => {
+    const defaultDateString = date.toLocaleDateString(vscode.env.language);
+    
     const dateFormat = Settings.getDateFormat();
     if (dateFormat === 'system') {
-        return date.toLocaleDateString(vscode.env.language);
+        return defaultDateString;
     }
 
     const delimitter = dateFormat.match(/\-|\.|\//)?.join();
-    const startDate = dateFormat.indexOf('D') === 0;
+    if (delimitter === null) {
+        return defaultDateString;
+    }
+
+    const words = dateFormat.split(delimitter!);
+    if (words.length === 0) {
+        return defaultDateString;
+    }
+
     const days = date.getDate();
     const months = date.getMonth() + 1;
     const year = date.getFullYear();
 
-    if (startDate) {
-        return [days, months, year].map(appendZeroToString).join(delimitter);
-    } else {
-        return [months, days, year].map(appendZeroToString).join(delimitter);
+    switch (words[0]) {
+        case "YYYY":
+            return [year, months, days].map(appendZeroToString).join(delimitter);
+        case "DD":
+            return [days, months, year].map(appendZeroToString).join(delimitter);
+        default:
+            return [months, days, year].map(appendZeroToString).join(delimitter);
     }
 };
