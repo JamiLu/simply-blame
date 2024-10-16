@@ -75,7 +75,8 @@
             "DD.MM.YYYY",
             "MM.DD.YYYY",
             "DD-MM-YYYY",
-            "MM-DD-YYYY"
+            "MM-DD-YYYY",
+            "YYYY-MM-DD"
           ],
           "default": "system",
           "description": "Date format for git blame."
