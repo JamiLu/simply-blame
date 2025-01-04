@@ -2,6 +2,9 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [0.0.12]
+ - Allow forwardslash and backslash in blame name
+
 ## [0.0.11]
 ### Updates
  - Add support for ISO 8601 date format
