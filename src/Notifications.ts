@@ -11,7 +11,18 @@ class Notifications {
             vscode.env.openExternal(vscode.Uri.parse(`https://github.com/JamiLu/simply-blame/issues/new?labels=bug&title=Parsing+name+failed&body=Press+CTRL+-+V+to+paste+failed+lines+below:\n`));
         }
     };
-    static commonErrorNotification = (message?: string) => vscode.window.showErrorMessage(message ?? 'Something went wrong');
+    static commonErrorNotification = async (e?: Error, reportBug?: boolean) => {
+        if (e && reportBug) {
+            const submit = await vscode.window.showErrorMessage(e.message, 'Submit a bug report');
+
+            if (!!submit) {
+                vscode.env.clipboard.writeText(`${e.name}\n\n${e.message}\n\n${e.stack}`);
+                vscode.env.openExternal(vscode.Uri.parse(`https://github.com/JamiLu/simply-blame/issues/new?labels=bug&title=${e.message}&body=Press+CTRL+-+V+to+paste+stacktrace:\n`));
+            }
+        } else {
+            vscode.window.showErrorMessage(e?.message ?? 'Something went wrong');
+        }
+    };
 
 }
 
