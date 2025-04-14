@@ -122,10 +122,10 @@ suite('Test Blame', () => {
         
         assert.strictEqual(first.author, 'Jami Lu');
         assert.strictEqual(first.linenumber, '1');
-        assert.strictEqual(first.email, '<test@example.com>');
+        assert.strictEqual(first.email, 'test@example.com');
         assert.strictEqual(first.summary, 'This is a test commit message');
         assert.strictEqual(first.hash, '14728a3afb0871ac18e84d4d3e41bd34f0283170');
-        assert.strictEqual(first.date.dateString, '1715896852');
+        assert.strictEqual(first.date.dateString, '2024417');
         assert.strictEqual(first.filename, 'src/test.ts');
         assert.ok(first.codeline.includes('import * as vscode from "vscode"'));
         assert.strictEqual(blamed[1].author, 'über D.ber');

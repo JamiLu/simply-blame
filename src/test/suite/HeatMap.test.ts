@@ -38,6 +38,7 @@ suite('Test HeatMap', () => {
                 dateMillis: d.getTime(),
                 dateString: `${d.getTime() / 1000}`,
                 localDate: `${d.getFullYear()} ${d.getMonth()} ${d.getDate()}`,
+                timeString: `${d.getHours()}:${d.getMinutes()}`,
             },
             email: 'test@test',
             filename: 'test.ts',

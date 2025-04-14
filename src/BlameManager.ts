@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import DecorationManager from './DecorationManager';
 import HeatMapManager from './HeatMapManager';
 import { BlamedDocument, blame, blameFile } from './Blame';
 import { getFilename } from './Utils';
@@ -10,6 +11,7 @@ class BlameManager {
     private isOpen: boolean = false;
     private blamedDocument: BlamedDocument[] = [];
 	private heatMapManager = new HeatMapManager();
+	private decorationManager = new DecorationManager();
     private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
 		dark: {
 			color: new vscode.ThemeColor('editor.foreground')
@@ -44,9 +46,9 @@ class BlameManager {
 			if (this.blamedDocument.length > 0) {
 				this.heatMapManager.indexHeatMap(this.blamedDocument);
 
-				const [decorations, dateDeco] = this.getBlamedDecorations(editor.document);
-				editor.setDecorations(this.nameRoot, decorations);
-				editor.setDecorations(this.dateRoot, dateDeco);
+				const [name, date] = this.getBlamedDecorations(editor.document.lineCount);
+				editor.setDecorations(this.nameRoot, name);
+				editor.setDecorations(this.dateRoot, date);
 			} else {
 				this.isOpen = false;
 			}
@@ -62,7 +64,7 @@ class BlameManager {
 			if (editor) {
 				this.heatMapManager.refreshColors();
 				this.heatMapManager.indexHeatMap(this.blamedDocument);
-				const [name, date] = this.getBlamedDecorations(editor.document);
+				const [name, date] = this.getBlamedDecorations(editor.document.lineCount);
 				editor.setDecorations(this.nameRoot, name);
 				editor.setDecorations(this.dateRoot, date);
 			}
@@ -103,34 +105,23 @@ ${content}
 				{
 					contentText: `\u2003${blamedDocument.author}`,
 					backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-					width: `${contentLineDefaultLength * 10 + 40}px`
+					width: `${contentLineDefaultLength * 10 + 10}px`
 				},
 				{
 					contentText: `${blamedDocument.date.localDate}\u2003`,
 					backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
 				},
-				new vscode.MarkdownString(`### ${blamedDocument.hash}`)	
+				this.decorationManager.createHoverMessage(blamedDocument)
 			];
-		} else if (this.blamedDocument.length - 1 <= lineIdx) {
-			return [];
-		} else {
-			return [
-				{
-					contentText: `\u2003parsing failed\u2003`,
-					backgroundColor: new vscode.ThemeColor('editor.background'),
-					width: `${contentLineDefaultLength * 10 + 40}px`
-				}
-			];
-		}
+		} 
+		return [];
 	}
 
-	private getBlamedDecorations(document: vscode.TextDocument) {
+	private getBlamedDecorations(linecount: number) {
 
 			const nameDecorations: vscode.DecorationOptions[] = [];
 
 			const dateDecorations: vscode.DecorationOptions[] = [];
-
-			const linecount = document.lineCount || 0;
 
 			const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 10);
 

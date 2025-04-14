@@ -3,7 +3,7 @@
   "displayName": "Simply Blame",
   "description": "Idea like git blame annotations",
   "publisher": "JamiTech",
-  "version": "0.0.13",
+  "version": "0.0.12",
   "repository": {
     "type": "github",
     "url": "https://github.com/JamiLu/simply-blame"
@@ -23,10 +23,27 @@
     "configuration": {
       "title": "SimplyBlame",
       "properties": {
-        "simplyblame.enableOpenBlameEditor": {
+        "simplyBlame.keepBlamesOpen": {
+          "default": true,
           "type": "boolean",
-          "default": false,
-          "description": "Show a command to open raw blame file on the editor."
+          "description": "Blame annotations are not closed when ticked"
+        },
+        "simplyblame.dateFormat": {
+          "type": "string",
+          "enum": [
+            "system",
+            "DD/MM/YYYY",
+            "MM/DD/YYYY",
+            "YYYY/MM/DD",
+            "DD.MM.YYYY",
+            "MM.DD.YYYY",
+            "YYYY.MM.DD",
+            "DD-MM-YYYY",
+            "MM-DD-YYYY",
+            "YYYY-MM-DD"
+          ],
+          "default": "system",
+          "description": "Date format for git blame."
         },
         "simplyblame.heatMapColorsDark": {
           "type": "array",
@@ -45,7 +62,7 @@
             "#544545",
             "#382e2e"
           ],
-          "description": "Default dard colors of the heat map."
+          "description": "Default dark colors of the heat map."
         },
         "simplyblame.heatMapColorsLight": {
           "type": "array",
@@ -64,24 +81,12 @@
             "#e8e3e3",
             "#e6e6e6"
           ],
-          "description": "Default dard colors of the heat map."
+          "description": "Default light colors of the heat map."
         },
-        "simplyblame.dateFormat": {
-          "type": "string",
-          "enum": [
-            "system",
-            "DD/MM/YYYY",
-            "MM/DD/YYYY",
-            "YYYY/MM/DD",
-            "DD.MM.YYYY",
-            "MM.DD.YYYY",
-            "YYYY.MM.DD",
-            "DD-MM-YYYY",
-            "MM-DD-YYYY",
-            "YYYY-MM-DD"
-          ],
-          "default": "system",
-          "description": "Date format for git blame."
+        "simplyblame.enableOpenBlameEditor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show a command to open raw blame file on the editor."
         }
       }
     },

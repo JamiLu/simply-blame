@@ -1,16 +1,16 @@
-import * as vscode from "vscode";
-import { exec } from "child_process";
-import { promisify } from "util";
-import { parseDate } from "./Date";
-import { getFilename } from "./Utils";
-import Notifications from "./Notifications";
-import Logger from './Logger';
+import * as vscode from 'vscode';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { parseDate } from './Date';
+import { getFilename } from './Utils';
+import Notifications from './Notifications';
 
 export interface BlamedDate {
 	dateString: string;
 	date: Date;
 	localDate: string;
 	dateMillis: number;
+	timeString: string;
 }
 
 export interface BlamedDocument {
@@ -32,10 +32,11 @@ export const promiseExec = promisify(exec);
 const createDate = (seconds: number): BlamedDate => {
 	const d = new Date(seconds * 1000);
 	return {
-		dateString:  `${seconds}`,
+		dateString:  `${d.getFullYear()}${d.getMonth()}${d.getDate()}`,
 		date: d,
 		localDate: parseDate(d),
 		dateMillis: d.getTime(),
+		timeString: `${d.getHours()}:${d.getMinutes()}`
 	};
 };
 
@@ -48,7 +49,6 @@ export const blameFile = async (file: string) => {
 	do {
 		try {
 			const bufferLength = BUFFER + retryCount * 512;
-			Logger.log(`buffer length ${bufferLength}`);
 			const { stdout } = await promiseExec(`cd ${location} && git blame --line-porcelain ${name}`, { maxBuffer: bufferLength * bufferLength });
 	
 			return stdout;
@@ -59,14 +59,12 @@ export const blameFile = async (file: string) => {
 				if (retryCount < MAX_RETRY) {
 					retryCount++;
 					shouldRetry = true;
-					Logger.log(`retying ${retryCount}`);
 				} else {
 					Notifications.commonErrorNotification(e as Error, true);
 				}
 			} else {
 				Notifications.commonErrorNotification(e as Error);
 			}
-			Logger.log((e as Error).message);
 		  }
 	} while (shouldRetry);
 	
@@ -98,7 +96,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
 			const entry = parsed.at(-1)!;
 
 			const [,, author] = line.match(/(author\s)(.*)/) ?? [];
-			const [,, email] = line.match(/(author-mail\s)(.*)/) ?? [];
+			const [,, email] = line.match(/(author-mail\s)<(.*)>/) ?? [];
 			const [,, time] = line.match(/(author-time\s)(.*)/) ?? [];
 			const [,, summary] = line.match(/(summary\s)(.*)/) ?? [];
 			const [,, filename] = line.match(/(filename\s)(.*)/) ?? [];
