@@ -2,27 +2,26 @@ import * as vscode from 'vscode';
 
 class Logger {
 
-    static instance: Logger;
-    
-    private context: vscode.ExtensionContext;
+    private static logger: Logger;
+    private channel: vscode.LogOutputChannel;
 
-    constructor(context: vscode.ExtensionContext) {
-        this.context = context;
-        vscode.workspace.fs.createDirectory(context.logUri);
-        // vscode.workspace.fs.writeFile(context.logUri, Uint8Array.from(''.toString()));
+    constructor() {
+        this.channel = vscode.window.createOutputChannel('simply-blame', { log: true});
     }
 
     log(msg: string) {
-        
-        
+        this.channel.appendLine(msg);
     }
-    
 
-    static initialize(context: vscode.ExtensionContext) {
-        if (!this.instance) {
-            this.instance = new Logger(context);
+    dispose() {
+        this.channel.dispose();
+    }
+
+    static get instance() {
+        if (!this.logger) {
+            this.logger = new Logger();
         }
-        return this.instance;
+        return this.logger;
     }
 }
 

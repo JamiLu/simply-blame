@@ -22,6 +22,12 @@ class ExtensionManager {
             await this.blameManager.toggleBlame(textEditor);
         });
 
+        const copyHashCommand = vscode.commands.registerCommand('simply-blame.copyCommit', (args: any) => {
+            const { hash } = args;
+            vscode.env.clipboard.writeText(hash);
+            vscode.window.showInformationMessage(`Commit ${hash} copied to clipboard`);
+        });
+
         vscode.window.onDidChangeActiveTextEditor(() => {
             this.blameManager.closeBlame();
         });
@@ -34,7 +40,7 @@ class ExtensionManager {
             this.blameManager.refresh();
         });
 
-        this.context.subscriptions.push(debugCommand, blameCommand);
+        this.context.subscriptions.push(debugCommand, blameCommand, copyHashCommand);
     }
 
     static getInstance(context: vscode.ExtensionContext) {

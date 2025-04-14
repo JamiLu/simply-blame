@@ -8,8 +8,10 @@ Idea like git blame annotations for VS Code!
 3. You will see who to blame
 
 ### Screenshots
-![Blame gif](blame-005.gif)
-![Blame screeshot](blame-005.png)
+![Blame gif](blame100.gif)
+![Blame screenshot](blame100c.png)
+
+**If you click the commit hash on the hover info box the commit hash will be copied to clipboard**
 
 ## Settings
  * Enable/disable a command to open a blame file in a new text editor tab, disabled by default.
