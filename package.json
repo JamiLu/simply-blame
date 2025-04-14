@@ -23,11 +23,6 @@
     "configuration": {
       "title": "SimplyBlame",
       "properties": {
-        "simplyBlame.keepBlamesOpen": {
-          "default": true,
-          "type": "boolean",
-          "description": "Blame annotations are not closed when ticked"
-        },
         "simplyblame.dateFormat": {
           "type": "string",
           "enum": [
