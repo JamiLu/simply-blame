@@ -4,7 +4,8 @@ import { BlamedDocument } from './Blame';
 class DecorationManager {
 
     public createHoverMessage(blame: BlamedDocument): vscode.MarkdownString {
-		return this.trustedMdString().appendMarkdown(`$(person) &nbsp; ${blame.author}`)	
+		return this.trustedMdString()
+			.appendMarkdown(`$(account) &nbsp; ${blame.author}`)	
 			.appendText('\n')
 			.appendMarkdown(`$(mail) &nbsp; ${blame.email}`)
 			.appendText('\n')
