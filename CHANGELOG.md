@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.0.2]
+###
+ - Fix parse blame issue
+
 ## [1.0.1]
 ### Update
  - change info box icon
