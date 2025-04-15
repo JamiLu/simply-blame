@@ -79,7 +79,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
 	const parsed: BlamedDocument[] = [];
 	
 	blamed.map((line) => {
-		const [, hash,, linenumber] = line.match((/([0-9a-f]+)\s(\d+)\s(\d+)\s?(\d*)/)) ?? [];
+		const [, hash,, linenumber] = line.match((/([0-9a-f]{40})\s(\d+)\s(\d+)\s?(\d*)/)) ?? [];
 
 		if (hash && linenumber) {
 			parsed.push({
