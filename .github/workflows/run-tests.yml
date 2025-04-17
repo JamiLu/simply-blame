@@ -8,5 +8,5 @@ jobs:
         uses: actions/checkout@v4
       - name: setup node
         uses: actions/setup-node@v4
-      - name: run tests
+      - name: xfvb-run -a run tests
         run: npm test
