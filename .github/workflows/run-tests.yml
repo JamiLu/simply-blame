@@ -8,6 +8,8 @@ jobs:
         uses: actions/checkout@v4
       - name: setup node
         uses: actions/setup-node@v4
+        with:
+          node-version: 18
       - name: install dependencies
         run: npm ci
       - name: create out directory
