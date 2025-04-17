@@ -15,6 +15,8 @@ jobs:
       - name: copy fixtures
         run: npm run copy-fixtures
       - name: set tz helsinki
-        run: TZ='Europe/Helsinki'; export TZ
+        run: | 
+          echo date
+          
       - name: run test
         run: xvfb-run -a npm test
