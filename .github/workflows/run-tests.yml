@@ -1,5 +1,5 @@
 name: run tests
-on: [pull_request]
+on: pull_request
 jobs: 
   test:
     runs-on: ubuntu-latest
@@ -8,5 +8,7 @@ jobs:
         uses: actions/checkout@v4
       - name: setup node
         uses: actions/setup-node@v4
+      - name: install dependencies
+        run: npm ci
       - name: xfvb-run -a run tests
         run: npm test
