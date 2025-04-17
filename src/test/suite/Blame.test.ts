@@ -119,6 +119,8 @@ suite('Test Blame', () => {
         const blamed = await blameMock.blame(document);
 
         const first = blamed[0];
+
+        console.log(new Date().getTimezoneOffset());
         
         assert.strictEqual(first.author, 'Jami Lu');
         assert.strictEqual(first.linenumber, '1');
