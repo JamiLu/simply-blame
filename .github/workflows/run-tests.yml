@@ -1,9 +1,5 @@
 name: run tests
-on: 
-  pull_request:
-    branches: '**'
-  push:
-    branches: main
+on: pull_request
 jobs: 
   test:
     runs-on: ubuntu-latest
@@ -15,4 +11,4 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: run test
-        run: xvfb-run -a run tests
+        run: xvfb-run -a npm test
