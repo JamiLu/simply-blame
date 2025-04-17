@@ -23,4 +23,5 @@ jobs:
       - name: run test
         run: |
           export TZ='Europe/Helsinki'
+          date
           xvfb-run -a npm test
