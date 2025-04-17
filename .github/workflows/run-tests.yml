@@ -10,6 +10,8 @@ jobs:
         uses: actions/setup-node@v4
       - name: install dependencies
         run: npm ci
+      - name: create out directory
+        run: mkdir -p ./out/test/
       - name: copy fixtures
         run: npm run copy-fixtures
       - name: run test
