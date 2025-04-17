@@ -1,5 +1,9 @@
 name: run tests
-on: pull_request
+on: 
+  - pull_request:
+    branches: '**'
+  - push:
+    branches: main
 jobs: 
   test:
     runs-on: ubuntu-latest
@@ -10,5 +14,5 @@ jobs:
         uses: actions/setup-node@v4
       - name: install dependencies
         run: npm ci
-      - name: xfvb-run -a run tests
-        run: npm test
+      - name: run test
+        run: xvfb-run -a run tests
