@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { parseDate } from './Date';
+import { parseDate, prependZero } from './Date';
 import { getFilename } from './Utils';
 import Notifications from './Notifications';
 
@@ -36,7 +36,7 @@ const createDate = (seconds: number): BlamedDate => {
 		date: d,
 		localDate: parseDate(d),
 		dateMillis: d.getTime(),
-		timeString: `${d.getHours()}:${d.getMinutes()}`
+		timeString: `${prependZero(d.getHours())}:${prependZero(d.getMinutes())}`
 	};
 };
 
