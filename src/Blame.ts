@@ -53,9 +53,9 @@ export const blameFile = async (file: string) => {
 	
 			return stdout;
 		} catch (e) {
-			if ((e as Error).message.includes('git: not found')) {
+			if ((e as Error).message.match(/git\:?\s*(not found)?/)) {
 				Notifications.gitNotFoundNotification();
-			} else if ((e as Error).message.includes('maxBuffer length exceeded')) {
+			} else if (e instanceof RangeError) {
 				if (retryCount < MAX_RETRY) {
 					retryCount++;
 					shouldRetry = true;
@@ -63,7 +63,7 @@ export const blameFile = async (file: string) => {
 					Notifications.commonErrorNotification(e as Error, true);
 				}
 			} else {
-				Notifications.commonErrorNotification(e as Error);
+				Notifications.commonErrorNotification(e as Error, true);
 			}
 		  }
 	} while (shouldRetry);
