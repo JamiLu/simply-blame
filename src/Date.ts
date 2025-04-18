@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import Settings from "./Settings";
 
-const prependZero = (num: number): string => {
+export const prependZero = (num: number): string => {
     return num < 10 ? `0${num}` : `${num}`;
 };
 
