@@ -2,8 +2,14 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.0.3]
+### Update
+ - Improve error handling
+ - Improve blame width spacing
+ - Improve date time parsing
+
 ## [1.0.2]
-###
+### Fix
  - Fix parse blame issue
 
 ## [1.0.1]
