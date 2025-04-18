@@ -9,7 +9,7 @@ class DecorationManager {
 			.appendText('\n')
 			.appendMarkdown(`$(mail) &nbsp; ${blame.email}`)
 			.appendText('\n')
-			.appendMarkdown(`$(calendar) &nbsp; ${blame.date.localDate} ${blame.date.timeString}`)
+			.appendMarkdown(`$(calendar) &nbsp; ${blame.date.localDate.trim()} ${blame.date.timeString}`)
 			.appendText('\n')
 			.appendMarkdown('***')
 			.appendText('\n')
