@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.2.0]
+### Add
+ - Add new heat map coloring strategy
+
 ## [1.1.0]
 ### Add
  - Add support for shorter date formats.
