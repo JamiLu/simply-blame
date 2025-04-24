@@ -46,9 +46,18 @@
           "default": "system",
           "description": "Date format for git blame."
         },
+        "simplyblame.heatColorIndexStrategy": {
+          "type": "string",
+          "default": "scale",
+          "description": "Defines how the heat of the blame annotations are shown.",
+          "enum": [
+            "scale",
+            "highlight"
+          ]
+        },
         "simplyblame.heatMapColorsDark": {
           "type": "array",
-          "maxItems": 11,
+          "minItems": 6,
           "pattern": "^#[a-fA-F0-9]{6}",
           "default": [
             "#990000",
@@ -67,7 +76,7 @@
         },
         "simplyblame.heatMapColorsLight": {
           "type": "array",
-          "maxItems": 11,
+          "minItems": 6,
           "pattern": "^#[a-fA-F0-9]{6}",
           "default": [
             "#ffcccc",

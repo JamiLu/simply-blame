@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import * as assert from 'assert';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
@@ -9,13 +10,36 @@ import { getBlame } from './Blame.test';
 
 suite('Test HeatMap', () => {
 
-    const heatColors = Settings.getHeatMapColors();
+    const heatColors = [
+        "#990000",
+        "#910808",
+        "#8a0f0f",
+        "#821717",
+        "#7a1f1f",
+        "#732626",
+        "#6b2e2e",
+        "#633636",
+        "#5c3d3d",
+        "#544545",
+        "#382e2e"
+    ];
+
+    let strategyStub: sinon.SinonStub;
 
     mocha.before(async () => {
         await activateExtension();
     });
 
-    test('test heatmap generation', async () => {
+    mocha.beforeEach(() => {
+        strategyStub = sinon.stub(Settings, 'getHeatColorIndexStrategy');
+    });
+
+    mocha.afterEach(() => {
+        strategyStub.restore();
+    });
+
+    test('test heatmap generation highlight strategy', async () => {
+        strategyStub.returns('highlight');
         const blameFileStub = sinon.stub(blameMock, 'blameFile').returns(Promise.resolve(getBlame()));
 
         const blamed = await blameMock.blame(document);
@@ -48,17 +72,40 @@ suite('Test HeatMap', () => {
         };
     };
 
-    test('test heatmap max color generation', () => {
+    const createMockBlamedDocument = () => {
         const date = new Date(2024, 0, 30); // Jan 30 2024
         const blamed: blameMock.BlamedDocument[] = [];
         for (let i = 25; i > 10; i--) {
             date.setDate(i);
             blamed.push(createMockBlame(i, date));
         }
+        return blamed;
+    };
+
+    test('test heatmap max color generation highlight strategy', () => {
+        strategyStub.returns('highlight');
+        const blamed = createMockBlamedDocument();
 
         const heatMap = heatMapMock.indexHeatColors(blamed, heatColors);
 
         assert.strictEqual(15, blamed.length);
         assert.strictEqual(11, Object.keys(heatMap).length);
+    });
+
+    test('test heatmap max color generation scale strategy', () => {
+        strategyStub.returns('scale');
+        const blamed = createMockBlamedDocument();
+
+        const heatMap = heatMapMock.indexHeatColors(blamed, heatColors);
+        const distinctColors = Object.values(heatMap).reduce((prev: string[] | vscode.ThemeColor[], cur: string | vscode.ThemeColor) => {
+            if (!prev.includes(cur as string)) {
+                prev.push(cur as string);
+            }
+            return prev;
+        }, []);
+
+        assert.strictEqual(15, blamed.length);
+        assert.strictEqual(15, Object.keys(heatMap).length);
+        assert.strictEqual(11, distinctColors.length);
     });
 });

@@ -20,6 +20,10 @@ class Settings {
     static getDateFormat(): string {
         return vscode.workspace.getConfiguration(this.conf).dateFormat;
     }
+
+    static getHeatColorIndexStrategy(): 'scale' | 'highlight' {
+        return vscode.workspace.getConfiguration(this.conf).heatColorIndexStrategy;
+    }
 }
 
 export default Settings;

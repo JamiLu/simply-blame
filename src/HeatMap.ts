@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { BlamedDocument, BlamedDate } from './Blame';
+import Settings from './Settings';
 
 export interface IndexedHeatMap {
   	[key: string]: string | vscode.ThemeColor;
@@ -22,17 +23,36 @@ export const indexHeatColors = (blamedDocument: BlamedDocument[], heatColors: st
 
 	const indexedHeatMap = {} as IndexedHeatMap;
 
-	distinctDates.forEach((date, idx) => {
-		if (idx < heatColors.length) {
-			indexedHeatMap[date.dateString] = heatColors[idx];
+	const strategy = Settings.getHeatColorIndexStrategy();
+
+	if (strategy === 'scale') {
+		const first = distinctDates.shift();
+		const last = distinctDates.pop();
+
+		if (first) {
+			indexedHeatMap[first.dateString] = heatColors[0];
 		}
-	});
+
+		const commitPerColor = Math.max(1, Math.round(distinctDates.length / (heatColors.length - 2)));
+
+		let colorIndex = 1;
+		distinctDates.forEach((date, idx) => {
+			indexedHeatMap[date.dateString] = heatColors[colorIndex] || heatColors.at(-1)!;
+			if (idx % commitPerColor === 0) {
+				colorIndex++;
+			}
+		});
+
+		if (last) {
+			indexedHeatMap[last.dateString] = heatColors.at(-1)!;
+		}
+	} else {
+		distinctDates.forEach((date, idx) => {
+			if (idx < heatColors.length) {
+				indexedHeatMap[date.dateString] = heatColors[idx];
+			}
+		});
+	}
 
 	return indexedHeatMap;
-};
-
-export const getHeatColor = (date: BlamedDate, heatMap: IndexedHeatMap, defaultColors: string[]) => {
-	return (
-		heatMap[date.dateString] || defaultColors[defaultColors.length - 1]
-	);
 };
