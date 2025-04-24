@@ -3,7 +3,7 @@
   "displayName": "Simply Blame",
   "description": "Idea like git blame annotations",
   "publisher": "JamiTech",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "repository": {
     "type": "github",
     "url": "https://github.com/JamiLu/simply-blame"
