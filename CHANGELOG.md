@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.1.0]
+### Add
+ - Add support for shorter date formats.
+
 ## [1.0.3]
 ### Update
  - Improve error handling
@@ -20,6 +24,7 @@ All notable changes to the "simply-blame" extension will be documented in this f
 ### Add
  - New blame annotation hover info box
 ### Update
+ - Rewrite blame functionality
  - Improved date format parsing
 
 ## [0.0.12]
