@@ -3,7 +3,7 @@
   "displayName": "Simply Blame",
   "description": "Idea like git blame annotations",
   "publisher": "JamiTech",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "repository": {
     "type": "github",
     "url": "https://github.com/JamiLu/simply-blame"
@@ -64,7 +64,7 @@
           "order": 3
         },
         "simplyblame.heatMapRGBColorsDarkList": {
-          "type":"object",
+          "type": "object",
           "markdownDescription": "Add, edit, choose a color to be used as a heat color. \n* **Add** a new color or **Edit** an old color \n * The **color** must follow **format** **r**0-255,**g**0-255,**b**0-255,**c**0-9. The **r,g,b** stands for **red,green,blue**, the **c** stands for **change percentage** and it can **be less than 10**.\n* **Choose** a color by **setting** the value **true** in the table below. The first matcing true is used if nothing matches the first color will be used.",
           "default": {
             "Lava: r155,g0,b0,c3": true,
