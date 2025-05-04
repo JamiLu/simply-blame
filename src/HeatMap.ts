@@ -73,11 +73,11 @@ const toHex =(n: number) => {
 		return `1${hex}`;
 	}
 	return hex;
-}
+};
 
 const createColor = (r: number, g: number, b: number) => {
 	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
+};
 
 const equalizedColor = (orig: RGBC, i: number, c: number) => {
 	// normal increment value
@@ -95,7 +95,7 @@ const equalizedColor = (orig: RGBC, i: number, c: number) => {
 	const b = nb < max ? lb : nb + (i - 5) * c - (i - 5);
 
 	return createColor(r, g, b);
-}
+};
 
 export const generateHeatMapColors = (color: RGBC) => {
 	const change = Math.round(255 / 100 * color.c);
