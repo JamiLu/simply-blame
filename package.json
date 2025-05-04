@@ -44,21 +44,64 @@
             "YYYY-MM-DD"
           ],
           "default": "system",
-          "description": "Date format for git blame."
+          "description": "Date format for git blame.",
+          "order": 0
         },
         "simplyblame.heatColorIndexStrategy": {
           "type": "string",
           "default": "scale",
-          "description": "Defines how the heat of the blame annotations are shown.",
+          "description": "Choose how the heat colors are shown. Scale through the commits or highlight the latest commits.",
           "enum": [
             "scale",
             "highlight"
-          ]
+          ],
+          "order": 1
+        },
+        "simplyblame.useRGBColor": {
+          "type": "boolean",
+          "default": true,
+          "description": "If selected the RGBColors Dark/Light Lists will be used, otherwise the hex color lists are used.",
+          "order": 3
+        },
+        "simplyblame.heatMapRGBColorsDarkList": {
+          "type":"object",
+          "markdownDescription": "Add, edit, choose a color to be used as a heat color. \n* **Add** a new color or **Edit** an old color \n * The **color** must follow **format** **r**0-255,**g**0-255,**b**0-255,**c**0-9. The **r,g,b** stands for **red,green,blue**, the **c** stands for **change percentage** and it can **be less than 10**.\n* **Choose** a color by **setting** the value **true** in the table below. The first matcing true is used if nothing matches the first color will be used.",
+          "default": {
+            "Lava: r155,g0,b0,c3": true,
+            "Matcha: r0,g155,b50,c3": false,
+            "Night: r55,g55,b170,c3": false,
+            "Teal: r0,g105,b160,c4": false,
+            "Gold: r205,g155,b0,c4": false
+          },
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "order": 4
+        },
+        "simplyblame.heatMapRGBColorsLightList": {
+          "type": "object",
+          "markdownDescription": "Add, edit, choose a color to be used as a heat color. \n* **Add** a new color or **Edit** an old color \n * The **color** must follow **format** **r**0-255,**g**0-255,**b**0-255,**c**0-9. The **r,g,b** stands for **red,green,blue**, the **c** stands for **change percentage** and it can **be less than 10**.\n* **Choose** a color by **setting** the value **true** in the table below. The first matcing true is used if nothing matches the first color will be used.",
+          "default": {
+            "Candy: r255,g204,b204,c3": true,
+            "Grass: r150,g255,b150,c4": false,
+            "Lemon: r255,g255,b150,c4": false,
+            "Sky: r204,g255,b255,c3": false,
+            "Ash: r230,g230,b230,c2": false
+          },
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "order": 4
         },
         "simplyblame.heatMapColorsDark": {
           "type": "array",
           "minItems": 6,
-          "pattern": "^#[a-fA-F0-9]{6}",
+          "items": {
+            "type": "string",
+            "pattern": "^#[a-fA-F0-9]{6}"
+          },
           "default": [
             "#990000",
             "#910808",
@@ -72,12 +115,16 @@
             "#544545",
             "#382e2e"
           ],
-          "description": "Default dark colors of the heat map."
+          "description": "Default dark colors of the heat map.",
+          "order": 5
         },
         "simplyblame.heatMapColorsLight": {
           "type": "array",
           "minItems": 6,
-          "pattern": "^#[a-fA-F0-9]{6}",
+          "items": {
+            "type": "string",
+            "pattern": "^#[a-fA-F0-9]{6}"
+          },
           "default": [
             "#ffcccc",
             "#fccfcf",
@@ -91,12 +138,14 @@
             "#e8e3e3",
             "#e6e6e6"
           ],
-          "description": "Default light colors of the heat map."
+          "description": "Default light colors of the heat map.",
+          "order": 5
         },
         "simplyblame.enableOpenBlameEditor": {
           "type": "boolean",
           "default": false,
-          "description": "Show a command to open raw blame file on the editor."
+          "description": "Show a command to open raw blame file on the editor.",
+          "order": 10
         }
       }
     },

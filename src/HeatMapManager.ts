@@ -1,4 +1,4 @@
-import { IndexedHeatMap, indexHeatColors } from './HeatMap';
+import { generateHeatMapColors, IndexedHeatMap, indexHeatColors } from './HeatMap';
 import { BlamedDate, BlamedDocument } from './Blame';
 import { isDarkTheme } from './Utils';
 import Settings from './Settings';
@@ -6,11 +6,11 @@ import Settings from './Settings';
 class HeatMapManager {
 
     private heatMap: IndexedHeatMap = {};
-    private heatColors: string[];
+    private heatColors: string[] = [];
     private isDarkTheme: boolean = isDarkTheme();
 
     constructor() {
-        this.heatColors = Settings.getHeatMapColors();
+        this.initHeatColors();
     }
 
     indexHeatMap(document: BlamedDocument[]) {
@@ -24,9 +24,15 @@ class HeatMapManager {
     refreshColors() {
         const nextTheme = isDarkTheme();
         if (this.isDarkTheme !== nextTheme) {
-            this.heatColors = Settings.getHeatMapColors();
+            this.initHeatColors();
             this.isDarkTheme = nextTheme;
         }
+    }
+
+    initHeatColors() {
+        this.heatColors = Settings.useRGBColors() 
+            ? generateHeatMapColors(Settings.getHeatMapRGBColor())
+            : Settings.getHeatMapColors();
     }
     
 }

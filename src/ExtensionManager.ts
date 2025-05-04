@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import BlameManager from './BlameManager';
+import Settings from './Settings';
 
 class ExtensionManager {
 
@@ -26,6 +27,12 @@ class ExtensionManager {
             const { hash } = args;
             vscode.env.clipboard.writeText(hash);
             vscode.window.showInformationMessage(`Commit ${hash} copied to clipboard`);
+        });
+
+        vscode.workspace.onDidChangeConfiguration((event) => {
+            if (event.affectsConfiguration(Settings.config)) {
+                this.blameManager.refresh();
+            }
         });
 
         vscode.window.onDidChangeActiveTextEditor(() => {
