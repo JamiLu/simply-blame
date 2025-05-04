@@ -1,4 +1,4 @@
-# SB - Simply Blame
+# SB - Simply Blame [![run tests](https://github.com/JamiLu/simply-blame/actions/workflows/run-tests.yml/badge.svg)](https://github.com/JamiLu/simply-blame/actions/workflows/run-tests.yml)
 
 Idea like git blame annotations for VS Code!
 
