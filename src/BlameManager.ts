@@ -13,28 +13,20 @@ class BlameManager {
 	private heatMapManager = new HeatMapManager();
 	private decorationManager = new DecorationManager();
     private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
-		dark: {
-			color: new vscode.ThemeColor('editor.foreground')
-		},
-		light: {
-			color: '#000000'
-		},
 		before: {
 			color: new vscode.ThemeColor('editor.foreground'),
 			height: 'editor.lineHeight',
+			fontStyle: 'normal',
+			fontWeight: 'normal'
 		}
 	});
 	private dateRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
-		dark: {
-			color: new vscode.ThemeColor('editor.foreground')
-		},
-		light: {
-			color: '#000000'
-		},
 		before: {
 			color: new vscode.ThemeColor('editor.foreground'),
 			height: 'editor.lineHeight',
 			margin: '0 10px 0 0',
+			fontStyle: 'normal',
+			fontWeight: 'normal'
 		}
 	});
 
@@ -68,6 +60,8 @@ class BlameManager {
 				editor.setDecorations(this.nameRoot, name);
 				editor.setDecorations(this.dateRoot, date);
 			}
+		} else {
+			this.heatMapManager.initHeatColors();
 		}
 	}
 

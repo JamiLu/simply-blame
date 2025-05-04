@@ -2,6 +2,17 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.3.0]
+### Add
+ - Add new heat color settings
+ - Add new dark theme heat colors
+ - Add new light theme heat colors
+### Fix
+ - Fix heat color update issue
+### Update
+ - Update heat color hex string array settings
+ - Update settings order
+
 ## [1.2.0]
 ### Add
  - Add new heat map coloring strategy
