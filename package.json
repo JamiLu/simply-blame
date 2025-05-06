@@ -191,6 +191,7 @@
     "pretest": "npm run compile && npm run lint",
     "pretest-copy-fixtures": "npm run pretest && npm run copy-fixtures",
     "lint": "eslint src --ext ts",
+    "lint:fix": "npm run lint -- --fix",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {

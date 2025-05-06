@@ -69,7 +69,7 @@ export const blameFile = async (file: string) => {
 	} while (shouldRetry);
 	
 
-  return '';
+	return '';
 };
 
 export const blame = async (document: vscode.TextDocument): Promise<BlamedDocument[]> => {

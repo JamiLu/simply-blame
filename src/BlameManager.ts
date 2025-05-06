@@ -8,11 +8,11 @@ type BlameDecoration = [vscode.ThemableDecorationAttachmentRenderOptions?, vscod
 
 class BlameManager {
 
-    private isOpen: boolean = false;
-    private blamedDocument: BlamedDocument[] = [];
+	private isOpen: boolean = false;
+	private blamedDocument: BlamedDocument[] = [];
 	private heatMapManager = new HeatMapManager();
 	private decorationManager = new DecorationManager();
-    private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
+	private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
 		before: {
 			color: new vscode.ThemeColor('editor.foreground'),
 			height: 'editor.lineHeight',
@@ -30,11 +30,11 @@ class BlameManager {
 		}
 	});
 
-    async toggleBlame(editor: vscode.TextEditor) {
-        this.isOpen = !this.isOpen;
+	async toggleBlame(editor: vscode.TextEditor) {
+		this.isOpen = !this.isOpen;
 
-        if (this.isOpen) {
-            this.blamedDocument = await blame(editor.document);
+		if (this.isOpen) {
+			this.blamedDocument = await blame(editor.document);
 			if (this.blamedDocument.length > 0) {
 				this.heatMapManager.indexHeatMap(this.blamedDocument);
 
@@ -44,11 +44,11 @@ class BlameManager {
 			} else {
 				this.isOpen = false;
 			}
-        } else {
-            editor.setDecorations(this.nameRoot, []);
+		} else {
+			editor.setDecorations(this.nameRoot, []);
 			editor.setDecorations(this.dateRoot, []);
-        }
-    }
+		}
+	}
 
 	refresh() {
 		if (this.isOpen) {
@@ -113,38 +113,38 @@ ${content}
 
 	private getBlamedDecorations(linecount: number) {
 
-			const nameDecorations: vscode.DecorationOptions[] = [];
+		const nameDecorations: vscode.DecorationOptions[] = [];
 
-			const dateDecorations: vscode.DecorationOptions[] = [];
+		const dateDecorations: vscode.DecorationOptions[] = [];
 
-			const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 0);
+		const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 0);
 
-			if (this.blamedDocument.length > 0) {
-				for (let i = 0; i < linecount; i++) {
-					const startPos = new vscode.Position(i, 0);
-					const endPos = new vscode.Position(i, 0);
-					let range = new vscode.Range(startPos, endPos);
+		if (this.blamedDocument.length > 0) {
+			for (let i = 0; i < linecount; i++) {
+				const startPos = new vscode.Position(i, 0);
+				const endPos = new vscode.Position(i, 0);
+				let range = new vscode.Range(startPos, endPos);
 
-					const [name, date, hoverMessage] = this.createDecorations(i, longestAuthor);
+				const [name, date, hoverMessage] = this.createDecorations(i, longestAuthor);
 					
-					nameDecorations.push({
-						range,
-						renderOptions: {
-							before: name
-						},
-						hoverMessage: hoverMessage
-					});
+				nameDecorations.push({
+					range,
+					renderOptions: {
+						before: name
+					},
+					hoverMessage: hoverMessage
+				});
 
-					dateDecorations.push({
-						range,
-						renderOptions: {
-							before: date
-						},
-					});
-				}
+				dateDecorations.push({
+					range,
+					renderOptions: {
+						before: date
+					},
+				});
 			}
+		}
 
-			return [nameDecorations, dateDecorations];
+		return [nameDecorations, dateDecorations];
 	};
 }
 
