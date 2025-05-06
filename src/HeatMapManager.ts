@@ -19,7 +19,7 @@ class HeatMapManager {
 
 	getHeatColor(date: BlamedDate) {
 		return this.heatMap[date.dateString] || this.heatColors.at(-1);
-		}
+	}
 
 	refreshColors() {
 		const nextTheme = isDarkTheme();
