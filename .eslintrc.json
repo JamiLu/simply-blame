@@ -14,7 +14,7 @@
         "eqeqeq": "error",
         "no-throw-literal": "error",
         "semi": "error",
-        "indent": ["error", "tab"]
+        "indent": ["error"]
     },
     "ignorePatterns": [
         "out",
