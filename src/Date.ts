@@ -25,15 +25,15 @@ export const parseDate = (date: Date) => {
     const year = date.getFullYear();
 
     switch (dateFormatParts[0]) {
-        case 'YYYY':
-            return [year, months, days].map(prependZero).join(delimitter);
-        case 'DD':
-            return [days, months, year].map(prependZero).join(delimitter);
-        case 'D':
-            return prependSpace([days, months, year].join(delimitter));
-        case 'MM':
-            return [months, days, year].map(prependZero).join(delimitter);
-        default:
-            return prependSpace([months, days, year].join(delimitter));
+    case 'YYYY':
+        return [year, months, days].map(prependZero).join(delimitter);
+    case 'DD':
+        return [days, months, year].map(prependZero).join(delimitter);
+    case 'D':
+        return prependSpace([days, months, year].join(delimitter));
+    case 'MM':
+        return [months, days, year].map(prependZero).join(delimitter);
+    default:
+        return prependSpace([months, days, year].join(delimitter));
     }
 };
