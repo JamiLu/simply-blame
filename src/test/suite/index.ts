@@ -9,6 +9,10 @@ export function run(): Promise<void> {
         color: true
     });
 
+    if (process.env.G) {
+        mocha.grep(process.env.G);
+    }
+
     const testsRoot = path.resolve(__dirname, '..');
 
     return new Promise((c, e) => {

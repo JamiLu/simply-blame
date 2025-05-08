@@ -97,7 +97,7 @@ ${content}
         if (blamedDocument) {
             return [
                 {
-                    contentText: `\u2003${blamedDocument.author}`,
+                    contentText: `\u2003${blamedDocument.author.displayName}`,
                     backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
                     width: `${contentLineDefaultLength * 9 + 25}px`
                 },
@@ -117,7 +117,7 @@ ${content}
 
         const dateDecorations: vscode.DecorationOptions[] = [];
 
-        const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.length).reduce((prev, curr) => prev > curr ? prev : curr, 0);
+        const longestAuthor = this.blamedDocument.filter(Boolean).map(line => line.author.displayName.length).reduce((prev, curr) => prev > curr ? prev : curr, 0);
 
         if (this.blamedDocument.length > 0) {
             for (let i = 0; i < linecount; i++) {

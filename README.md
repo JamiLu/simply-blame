@@ -18,6 +18,8 @@ Idea like git blame annotations for VS Code!
  * **Date Format**
    * System will use the locale used by the VS Code.
    * Or you can choose any other pre existing date format to use.
+* **Author Style**
+   * Select an author style for the blame annotations. Supported styles are full name, first name, last name.
 * **Heat Color Index Strategy**
    * Choose how the heat colors are shown. Scale through the commits, this is the default or highlight the latest commits.
 * **Use RGBColor**
