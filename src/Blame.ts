@@ -124,15 +124,15 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
             const [,, summary] = line.match(/(summary\s)(.*)/) ?? [];
             const [,, filename] = line.match(/(filename\s)(.*)/) ?? [];
 
-            if (author && !codelineNext) {
+            if (author && !codelineNext && !email && !time && !summary && !filename) {
                 entry.author = createAuthor(author, authorStyle);
-            } else if (email && !codelineNext) {
+            } else if (email && !codelineNext && !author && !time && !summary && !filename) {
                 entry.email = email;
-            } else if (time && !codelineNext) {
+            } else if (time && !codelineNext && !author && !email && !summary && !filename) {
                 entry.date = createDate(Number(time), dateFormat);
-            } else if (summary && !codelineNext) {
+            } else if (summary && !codelineNext && !author && !email && !time && !filename) {
                 entry.summary = summary;
-            } else if (filename && !codelineNext) {
+            } else if (filename && !codelineNext && !author && !email && !time && !summary) {
                 entry.filename = filename;
                 codelineNext = true;
             } else if (codelineNext) {
