@@ -4,6 +4,12 @@ import { promisify } from 'util';
 import { parseDate, prependZero } from './Date';
 import { getFilename } from './Utils';
 import Notifications from './Notifications';
+import Settings from './Settings';
+
+export interface BlamedAuthor {
+    name: string;
+    displayName: string;
+}
 
 export interface BlamedDate {
 	dateString: string;
@@ -16,7 +22,7 @@ export interface BlamedDate {
 export interface BlamedDocument {
 	hash: string;
 	date: BlamedDate;
-	author: string;
+	author: BlamedAuthor;
 	email: string;
 	codeline: string;
 	linenumber: string;
@@ -29,12 +35,27 @@ const BUFFER = 1024;
 
 export const promiseExec = promisify(exec);
 
-const createDate = (seconds: number): BlamedDate => {
+const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
+    const blamedAuthor = { name: author, displayName: author };
+    switch (authorStyle) {
+    case 'full':
+        return blamedAuthor;
+    case 'first':
+        const first = author.substring(0, author.lastIndexOf(' '));
+        blamedAuthor.displayName = first || author;
+        return blamedAuthor;
+    case 'last':
+        blamedAuthor.displayName = author.substring(author.lastIndexOf(' ') + 1);
+        return blamedAuthor;
+    }
+};
+
+const createDate = (seconds: number, dateFormat: string): BlamedDate => {
     const d = new Date(seconds * 1000);
     return {
         dateString:  `${d.getFullYear()}${d.getMonth()}${d.getDate()}`,
         date: d,
-        localDate: parseDate(d),
+        localDate: parseDate(d, dateFormat),
         dateMillis: d.getTime(),
         timeString: `${prependZero(d.getHours())}:${prependZero(d.getMinutes())}`
     };
@@ -74,6 +95,8 @@ export const blameFile = async (file: string) => {
 
 export const blame = async (document: vscode.TextDocument): Promise<BlamedDocument[]> => {
   	const blamed = (await blameFile(document.fileName)).split("\n");
+    const authorStyle = Settings.getAuthorStyle();
+    const dateFormat = Settings.getDateFormat();
 
     let codelineNext = false;
     const parsed: BlamedDocument[] = [];
@@ -81,11 +104,11 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
     blamed.map((line) => {
         const [, hash,, linenumber] = line.match((/([0-9a-f]{40})\s(\d+)\s(\d+)\s?(\d*)/)) ?? [];
 
-        if (hash && linenumber) {
+        if (hash && linenumber && !codelineNext) {
             parsed.push({
                 hash,
                 linenumber,
-                author: '',
+                author: {} as BlamedAuthor,
                 email: '',
                 codeline: '',
                 date: {} as BlamedDate,
@@ -101,15 +124,15 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
             const [,, summary] = line.match(/(summary\s)(.*)/) ?? [];
             const [,, filename] = line.match(/(filename\s)(.*)/) ?? [];
 
-            if (author) {
-                entry.author = author;
-            } else if (email) {
+            if (author && !codelineNext) {
+                entry.author = createAuthor(author, authorStyle);
+            } else if (email && !codelineNext) {
                 entry.email = email;
-            } else if (time) {
-                entry.date = createDate(Number(time));
-            } else if (summary) {
+            } else if (time && !codelineNext) {
+                entry.date = createDate(Number(time), dateFormat);
+            } else if (summary && !codelineNext) {
                 entry.summary = summary;
-            } else if (filename) {
+            } else if (filename && !codelineNext) {
                 entry.filename = filename;
                 codelineNext = true;
             } else if (codelineNext) {

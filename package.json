@@ -3,7 +3,7 @@
   "displayName": "Simply Blame",
   "description": "Idea like git blame annotations",
   "publisher": "JamiTech",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "repository": {
     "type": "github",
     "url": "https://github.com/JamiLu/simply-blame"
@@ -44,8 +44,24 @@
             "YYYY-MM-DD"
           ],
           "default": "system",
-          "description": "Date format for git blame.",
+          "description": "Select a date format for the blame annotations.",
           "order": 0
+        },
+        "simplyblame.authorStyle": {
+          "type": "string",
+          "enum": [
+            "full",
+            "first",
+            "last"
+          ],
+          "enumItemLabels": [
+            "Full name",
+            "First name",
+            "Last name"
+          ],
+          "default": "full",
+          "description": "Select an author style for the blame annotations.",
+          "order": 1
         },
         "simplyblame.heatColorIndexStrategy": {
           "type": "string",
@@ -55,7 +71,7 @@
             "scale",
             "highlight"
           ],
-          "order": 1
+          "order": 2
         },
         "simplyblame.useRGBColor": {
           "type": "boolean",

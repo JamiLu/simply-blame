@@ -48,7 +48,7 @@ suite('Test HeatMap', () => {
         const heatMap = heatMapMock.indexHeatColors(blamed, heatColors);
 
         assert.ok(blameFileStub.calledOnce);
-        assert.strictEqual(6, blamed.length);
+        assert.strictEqual(7, blamed.length);
         assert.strictEqual(6, Object.keys(heatMap).length);
 
         blameFileStub.restore();
@@ -56,7 +56,7 @@ suite('Test HeatMap', () => {
 
     const createMockBlame = (i: number, d: Date): blameMock.BlamedDocument => {
         return {
-            author: 'test',
+            author: { name: 'test', displayName: 'test' },
             codeline: '1',
             date: {
                 date: d,

@@ -2,6 +2,14 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.4.0]
+### Add
+ - Support configuring author style in blame annotations
+### Fix
+ - Fix blame parse issues
+### Update
+ - Optimize blame parse
+
 ## [1.3.0]
 ### Add
  - Add new heat color settings

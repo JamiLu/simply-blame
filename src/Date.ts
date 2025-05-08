@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import Settings from "./Settings";
 
 export const prependZero = (num: number): string => {
     return num < 10 ? `0${num}` : `${num}`;
@@ -9,10 +8,9 @@ const prependSpace = (date: string) => {
     return date.padStart(10 - date.length + date.length, '\u2007');
 };
 
-export const parseDate = (date: Date) => {
+export const parseDate = (date: Date, dateFormat: string) => {
     const defaultDateString = date.toLocaleDateString(vscode.env.language);
     
-    const dateFormat = Settings.getDateFormat();
     if (dateFormat === 'system') {
         return prependSpace(defaultDateString);
     }

@@ -46,6 +46,10 @@ class Settings {
         const [, r, g, b, c ] = color.match(/r(\d+),g(\d+),b(\d+),c(\d)/) || [];
         return { r: Number(r), g: Number(g), b: Number(b), c: Number(c) };
     }
+
+    static getAuthorStyle(): 'full' | 'first' | 'last' & string {
+        return vscode.workspace.getConfiguration(this.config).authorStyle;
+    }
 }
 
 export default Settings;
