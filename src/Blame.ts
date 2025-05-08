@@ -38,15 +38,15 @@ export const promiseExec = promisify(exec);
 const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
     const blamedAuthor = { name: author, displayName: author };
     switch (authorStyle) {
-    case 'full':
-        return blamedAuthor;
-    case 'first':
-        const first = author.substring(0, author.lastIndexOf(' '));
-        blamedAuthor.displayName = first || author;
-        return blamedAuthor;
-    case 'last':
-        blamedAuthor.displayName = author.substring(author.lastIndexOf(' ') + 1);
-        return blamedAuthor;
+        case 'full':
+            return blamedAuthor;
+        case 'first':
+            const first = author.substring(0, author.lastIndexOf(' '));
+            blamedAuthor.displayName = first || author;
+            return blamedAuthor;
+        case 'last':
+            blamedAuthor.displayName = author.substring(author.lastIndexOf(' ') + 1);
+            return blamedAuthor;
     }
 };
 

@@ -14,7 +14,7 @@
         "eqeqeq": "error",
         "no-throw-literal": "error",
         "semi": "error",
-        "indent": ["error"]
+        "indent": ["error", 4, { "SwitchCase": 1 }]
     },
     "ignorePatterns": [
         "out",
