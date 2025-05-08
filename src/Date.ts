@@ -9,10 +9,8 @@ const prependSpace = (date: string) => {
 };
 
 export const parseDate = (date: Date, dateFormat: string) => {
-    const defaultDateString = date.toLocaleDateString(vscode.env.language);
-    
     if (dateFormat === 'system') {
-        return prependSpace(defaultDateString);
+        return prependSpace(date.toLocaleDateString(vscode.env.language));
     }
 
     const delimitter = dateFormat.match(/\-|\.|\//)?.join();
