@@ -27,6 +27,10 @@ jobs:
         id: bumb
         run: echo updating to version ${{ inputs.increment }}
       - name: read version
-        run: echo nextVersion=$(cat ./package.json | jq '.version' | sed 's/"//g')
+        run: |
+          version=$(cat ./package.json | jq '.version' | sed 's/"//g')
+          echo "nextVersion=$version" >> "$GITHUB_OUTPUT"
       - name: create release
-        run: echo release ${{ steps.bumb.outputs.nextVersion }}
+        env:
+          VERSION: ${{ steps.bump.outputs.nextVersion }}
+        run: echo release $VERSION ${{ steps.bumb.outputs.nextVersion }}
