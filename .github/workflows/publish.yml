@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4
       - name: update version
         id: bumb
-        run: ehco updating to version ${{ inputs.increment }}
+        run: echo updating to version ${{ inputs.increment }}
       - name: read version
         run: echo nextVersion=$(cat ./package.json | jq '.version' | sed 's/"//g')
       - name: create release
