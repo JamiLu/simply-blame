@@ -28,7 +28,9 @@ jobs:
         run: echo updating to version ${{ inputs.increment }}
       - name: read version
         run: |
-          echo "version=$(cat ./package.json | jq '.version' | sed 's/"//g')" >> "$GITHUB_OUTPUT"
+          version=$(cat ./package.json | jq '.version' | sed 's/"//g')
+          echo next version is this $version
+          echo "nextVersion=$version" >> $GITHUB_OUTPUT
         
       - name: create release
         env:
