@@ -18,8 +18,6 @@ jobs:
   publish:
     needs: build-test-lint
     runs-on: ubuntu-latest
-    outputs:
-      nextVersion: ${{ steps.bump.outputs.nextVersion }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -31,4 +29,4 @@ jobs:
       - name: read version
         run: echo nextVersion=$(cat ./package.json | jq '.version' | sed 's/"//g')
       - name: create release
-        run: echo release ${{ outputs.nextVersion }}
+        run: echo release ${{ steps.bumb.outputs.nextVersion }}
