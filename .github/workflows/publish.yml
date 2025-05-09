@@ -18,15 +18,19 @@ jobs:
   publish:
     needs: build-test-lint
     runs-on: ubuntu-latest
+    outputs:
+      nextVersion: ${{ steps.bump.outputs.version }}
     steps:
-      - name: One
-        run: echo ${{ inputs.increment }}
       - name: checkout
         uses: actions/checkout@v4
       - name: setup node
         uses: actions/setup-node@v4
-      - name: create release
-        run: echo release
       - name: update version
+        id: bumb
         run: ehco updating to version ${{ inputs.increment }}
-  
+      - name: read version
+        run: |
+          version=$(echo ./package.json | jq '.version' | sed 's/"//g')
+          
+      - name: create release
+        run: echo release ${{ outputs.nextVersion }}
