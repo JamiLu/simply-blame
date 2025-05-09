@@ -19,7 +19,7 @@ jobs:
     needs: build-test-lint
     runs-on: ubuntu-latest
     outputs:
-      nextVersion: ${{ steps.bump.outputs.version }}
+      nextVersion: ${{ steps.bump.outputs.nextVersion }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -29,8 +29,6 @@ jobs:
         id: bumb
         run: ehco updating to version ${{ inputs.increment }}
       - name: read version
-        run: |
-          version=$(echo ./package.json | jq '.version' | sed 's/"//g')
-          
+        run: echo nextVersion=$(cat ./package.json | jq '.version' | sed 's/"//g')
       - name: create release
         run: echo release ${{ outputs.nextVersion }}
