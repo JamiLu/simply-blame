@@ -1,3 +1,6 @@
+/**
+ * License GPL-2.0
+ */
 import * as path from 'path';
 import * as Mocha from 'mocha';
 import * as glob from 'glob';
