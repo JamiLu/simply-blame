@@ -12,14 +12,11 @@ on:
           - minor
           - major
 jobs:
-  check-branch:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
   build-test-lint:
-    needs: check-branch
+    if: ${{ github.ref == 'refs/heads/master' }}
     uses: ./.github/workflows/run-tests.yml
   publish:
-    needs: [check-branch, build-test-lint]
+    needs: build-test-lint
     runs-on: ubuntu-latest
     steps:
       - name: One
