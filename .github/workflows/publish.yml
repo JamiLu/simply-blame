@@ -34,5 +34,5 @@ jobs:
         
       - name: create release
         env:
-          VERSION: ${{ steps.bump.outputs.version }}
-        run: echo release $VERSION ${{ steps.bumb.outputs.version }}
+          VERSION: ${{ steps.bump.outputs.nextVersion }}
+        run: echo release $VERSION ${{ steps.bumb.outputs.nextVersion }}
