@@ -8,7 +8,7 @@ class DecorationManager {
 
     public createHoverMessage(blame: BlamedDocument): vscode.MarkdownString {
         return this.trustedMdString()
-            .appendMarkdown(`$(account) &nbsp; ${blame.author}`)	
+            .appendMarkdown(`$(account) &nbsp; ${blame.author.name}`)
             .appendText('\n')
             .appendMarkdown(`$(mail) &nbsp; ${blame.email}`)
             .appendText('\n')
@@ -18,8 +18,7 @@ class DecorationManager {
             .appendText('\n')
             .appendMarkdown(`[$(copy) &nbsp; ${blame.hash}](${vscode.Uri.parse(`command:simply-blame.copyCommit?${JSON.stringify([{ hash: blame.hash }])}`)})`)
             .appendText('\n')
-            .appendMarkdown(`****`)
-            .appendText('\n&nbsp;\n')
+            .appendMarkdown(`****\n`)
             .appendMarkdown(`${blame.summary}`);
     }
 
