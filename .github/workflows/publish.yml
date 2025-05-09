@@ -21,4 +21,12 @@ jobs:
     steps:
       - name: One
         run: echo ${{ inputs.increment }}
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup node
+        uses: actions/setup-node@v4
+      - name: create release
+        run: echo release
+      - name: update version
+        run: ehco updating to version ${{ inputs.increment }}
   
