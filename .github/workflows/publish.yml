@@ -33,4 +33,4 @@ jobs:
           version=$(echo ./package.json | jq '.version' | sed 's/"//g')
           
       - name: create release
-        run: echo release ${{ outputs.version }}
+        run: echo release ${{ outputs.nextVersion }}
