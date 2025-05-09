@@ -14,7 +14,7 @@ on:
 jobs:
   check-branch:
     runs-on: ubuntu-latest
-    if: ${{ github.ref === 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
   build-test-lint:
     needs: check-branch
     uses: ./.github/workflows/run-tests.yml
