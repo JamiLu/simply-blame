@@ -1,5 +1,6 @@
 name: build and test
-on: 
+on:
+  workflow_call:
   push:
     branches:
     - master
@@ -8,7 +9,6 @@ on:
     - '**'
   merge_group:
     types: [checks_requested]
-  workflow_call
 jobs: 
   test:
     runs-on: ubuntu-latest
