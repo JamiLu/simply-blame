@@ -1,3 +1,6 @@
+/**
+ * License GPL-2.0
+ */
 import { generateHeatMapColors, IndexedHeatMap, indexHeatColors } from './HeatMap';
 import { BlamedDate, BlamedDocument } from './Blame';
 import { isDarkTheme } from './Utils';

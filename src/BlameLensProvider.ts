@@ -1,3 +1,6 @@
+/**
+ * License GPL-2.0
+ */
 import { CancellationToken, CodeLens, CodeLensProvider, ProviderResult, Range, TextDocument } from "vscode";
 
 export class BlameLensProvider implements CodeLensProvider {

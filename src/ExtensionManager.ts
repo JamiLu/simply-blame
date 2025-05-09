@@ -1,3 +1,6 @@
+/**
+ * License GPL-2.0
+ */
 import * as vscode from 'vscode';
 import BlameManager from './BlameManager';
 import Settings from './Settings';

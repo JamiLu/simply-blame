@@ -1,3 +1,6 @@
+/**
+ * License GPL-2.0
+ */
 import * as assert from 'assert';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';

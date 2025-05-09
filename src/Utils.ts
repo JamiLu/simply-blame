@@ -1,3 +1,6 @@
+/**
+ * License GPL-2.0
+ */
 import * as vscode from 'vscode';
 
 export const getFilename = (path: string) => {
