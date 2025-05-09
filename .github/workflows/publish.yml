@@ -12,12 +12,16 @@ on:
           - minor
           - major
 jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref === 'refs/heads/master' }}
   build-test-lint:
+    needs: check-branch
     uses: ./.github/workflows/run-tests.yml
   publish:
-    needs: build-test-lint
+    needs: [check-branch, build-test-lint]
     runs-on: ubuntu-latest
     steps:
       - name: One
-        run: echo done
+        run: echo ${{ inputs.increment }}
   
