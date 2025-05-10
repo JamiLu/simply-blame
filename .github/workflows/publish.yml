@@ -40,6 +40,5 @@ jobs:
         run: gh release create $VERSION --fail-on-no-commits --generate-notes -t 'Release $VERSION'
       - name: publish extension
         env: 
-          VERSION: ${{ steps.read-version.outputs.nextVersion }}
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: npm deploy
+        run: npm run deploy
