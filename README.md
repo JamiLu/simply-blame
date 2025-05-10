@@ -10,7 +10,7 @@ Idea like git blame annotations for VS Code!
 ### Screenshots
 ![Dark RGB Colors](dark-rgb-colors.png)
 ![Light RGB Colors](light-rgb-colors.png)
-![Blame gif](blame100.gif)
+![Blame gif](blame.gif)
 
 **If you click the commit hash on the hover info box the commit hash will be copied to clipboard**
 
