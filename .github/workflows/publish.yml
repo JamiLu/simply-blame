@@ -24,15 +24,22 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
       - name: update version
-        run: echo updating to version ${{ inputs.increment }}
+        run: |
+          npm version ${{ inputs.increment }}
+          git push origin master
+      
       - name: read version
-        id: bumb
+        id: read-version
         run: |
           version=$(cat ./package.json | jq '.version' | sed 's/"//g')
-          echo next version is this $version
           echo "nextVersion=$version" >> "$GITHUB_OUTPUT"
         
       - name: create release
         env:
-          VERSION: ${{ steps.bump.outputs.nextVersion }}
-        run: echo release $VERSION ${{ steps.bumb.outputs.nextVersion }}
+          VERSION: ${{ steps.read-version.outputs.nextVersion }}
+        run: gh release create $VERSION --fail-on-no-commits --generate-notes -t 'Release $VERSION'
+      - name: publish extension
+        env: 
+          VERSION: ${{ steps.read-version.outputs.nextVersion }}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npm deploy
