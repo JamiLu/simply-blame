@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.4.3]
+### Update
+ - Update README
+
 ## [1.4.2]
 ### Fix
  - Fix author name in the blame annotation hover message
