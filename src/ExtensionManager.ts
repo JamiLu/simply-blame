@@ -46,8 +46,10 @@ class ExtensionManager {
             this.blameManager.refresh();
         });
 
-        vscode.workspace.onDidChangeTextDocument(() => {
-            this.blameManager.refresh();
+        vscode.workspace.onDidChangeTextDocument((event) => {
+            if (event.document.isDirty) {
+                this.blameManager.refresh(event);
+            }
         });
 
         this.context.subscriptions.push(debugCommand, blameCommand, copyHashCommand);

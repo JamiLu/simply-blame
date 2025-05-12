@@ -7,7 +7,7 @@ export const prependZero = (num: number): string => {
     return num < 10 ? `0${num}` : `${num}`;
 };
 
-const prependSpace = (date: string) => {
+export const prependSpace = (date: string) => {
     return date.padStart(10 - date.length + date.length, '\u2007');
 };
 
