@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-node@v4
       - name: setup user
         run: |
-          git config user.name "CI GH"
+          git config user.name "ci"
           git config user.email "ci@gh.com"
         
       - name: update version
@@ -44,6 +44,7 @@ jobs:
       - name: create release
         env:
           VERSION: ${{ steps.read-version.outputs.nextVersion }}
+          GH_TOKEN: ${{ github.token }}
         run: gh release create $VERSION --fail-on-no-commits --generate-notes -t 'Release $VERSION'
       - name: publish extension
         env: 
