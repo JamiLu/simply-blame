@@ -220,6 +220,7 @@
     "@typescript-eslint/parser": "^5.45.0",
     "@vscode/test-cli": "^0.0.8",
     "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^3.3.2",
     "eslint": "^8.28.0",
     "glob": "^8.0.3",
     "mocha": "^10.1.0",
