@@ -39,20 +39,16 @@ class BlameManager {
         this.isOpen = !this.isOpen;
 
         if (this.isOpen) {
-            console.log('is', this.blamedDocument.length === 0, !editor.document.isDirty);
-            if (this.blamedDocument.length === 0 || !editor.document.isDirty) {
-                this.blamedDocument = await blame(editor.document);
-                this.defaultWidth = this.blamedDocument
-                    .filter(line => line.hash !== '0')
-                    .map(line => line.author.displayName.length)
-                    .reduce((prev, curr) => prev > curr ? prev : curr, 0);
-            }
+            this.blamedDocument = await blame(editor.document);
+            this.defaultWidth = this.blamedDocument
+                .filter(line => line.hash !== '0')
+                .map(line => line.author.displayName.length)
+                .reduce((prev, curr) => prev > curr ? prev : curr, 0);
+        
             if (this.blamedDocument.length > 0) {
-                if (!editor.document.isDirty) {
-                    this.heatMapManager.indexHeatMap(this.blamedDocument);
-                }
+                this.heatMapManager.indexHeatMap(this.blamedDocument.filter(l => l.hash !== '0'));
 
-                const [name, date] = this.getBlamedDecorations(editor.document.lineCount);
+                const [name, date] = this.getBlamedDecorations(editor.document, true);
                 editor.setDecorations(this.nameRoot, name);
                 editor.setDecorations(this.dateRoot, date);
             } else {
@@ -70,13 +66,13 @@ class BlameManager {
             if (editor) {
                 if (event) {
                     this.editBlamedDocument(event);
-                    const [name, date] = this.getBlamedDecorations(event.document.lineCount);
+                    const [name, date] = this.getBlamedDecorations(event.document);
                     editor.setDecorations(this.nameRoot, name);
                     editor.setDecorations(this.dateRoot, date);
                 } else {
                     this.heatMapManager.refreshColors();
                     this.heatMapManager.indexHeatMap(this.blamedDocument);
-                    const [name, date] = this.getBlamedDecorations(editor.document.lineCount);
+                    const [name, date] = this.getBlamedDecorations(editor.document);
                     editor.setDecorations(this.nameRoot, name);
                     editor.setDecorations(this.dateRoot, date);
                 }
@@ -113,7 +109,6 @@ ${content}
     }
 
     private editBlamedDocument(event: vscode.TextDocumentChangeEvent) {
-        // const change = event.contentChanges.at(0);
         const add = event.contentChanges.find(change => change?.text.match(/\n/) && change?.range.start.line === change.range.end.line);
         const remove = event.contentChanges.find(change => change?.text === '' && change.range.start.line < change.range.end.line);
         if (add) {
@@ -139,7 +134,7 @@ ${content}
                 },
                 this.decorationManager.createHoverMessage(blamedDocument)
             ];
-        } else if (blamedDocument && blamedDocument.hash === '0') {
+        } else if (blamedDocument?.hash === '0') {
             return [
                 {
                     contentText: '\u2003',
@@ -153,15 +148,18 @@ ${content}
         return [];
     }
 
-    private getBlamedDecorations(linecount: number) {
+    private getBlamedDecorations(document: vscode.TextDocument, fresh?: boolean) {
         const nameDecorations: vscode.DecorationOptions[] = [];
         const dateDecorations: vscode.DecorationOptions[] = [];
 
         if (this.blamedDocument.length > 0) {
-            for (let i = 0; i < linecount; i++) {
-                const startPos = new vscode.Position(i, 0);
-                const endPos = new vscode.Position(i, 0);
-                let range = new vscode.Range(startPos, endPos);
+            for (let i = 0; i < document.lineCount; i++) {
+                const line = document.lineAt(i);
+                const range = line.range;
+
+                if (fresh && line.text.trim() !== this.blamedDocument[i]?.codeline.trim()) {
+                    this.blamedDocument.splice(i, 0, { hash: '0' } as BlamedDocument);
+                }
 
                 const [name, date, hoverMessage] = this.createDecorations(i, this.defaultWidth);
 					
