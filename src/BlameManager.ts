@@ -121,7 +121,7 @@ ${content}
     private createDecorations(lineIdx: number, contentLineDefaultLength: number): BlameDecoration {
         const blamedDocument = this.blamedDocument[lineIdx];
 
-        if (blamedDocument && blamedDocument.hash !== '0') {
+        if (blamedDocument?.hash !== '0') {
             return [
                 {
                     contentText: `\u2003${blamedDocument.author.displayName}`,
