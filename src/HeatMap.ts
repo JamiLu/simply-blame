@@ -26,7 +26,7 @@ const toDistinctDates = (prev: BlamedDate[], curr: BlamedDate) => {
 
 export const indexHeatColors = (blamedDocument: BlamedDocument[], heatColors: string[]): IndexedHeatMap => {
     const distinctDates = blamedDocument
-        .filter(Boolean)
+        .filter(doc => doc.hash !== '0')
         .map((doc) => doc.date)
         .reduce(toDistinctDates, [] as BlamedDate[]);
 		

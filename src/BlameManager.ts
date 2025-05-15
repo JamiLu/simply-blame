@@ -46,7 +46,7 @@ class BlameManager {
                 .reduce((prev, curr) => prev > curr ? prev : curr, 0);
         
             if (this.blamedDocument.length > 0) {
-                this.heatMapManager.indexHeatMap(this.blamedDocument.filter(l => l.hash !== '0'));
+                this.heatMapManager.indexHeatMap(this.blamedDocument);
 
                 const [name, date] = this.getBlamedDecorations(editor.document, true);
                 editor.setDecorations(this.nameRoot, name);
