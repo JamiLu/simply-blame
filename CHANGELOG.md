@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.4.4]
+### Update
+ - Add empty annotation on edited lines in the text editor
+
 ## [1.4.3]
 ### Update
  - Update README
