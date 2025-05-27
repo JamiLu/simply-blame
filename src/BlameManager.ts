@@ -16,7 +16,7 @@ class BlameManager {
     private blamedDocument: BlamedDocument[] = [];
     private defaultWidth: number = 10;
     private heatMapManager = new HeatMapManager();
-    private decorationManager = new DecorationManager();
+    private decorationManager = new DecorationManager(this.heatMapManager);
     private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
         before: {
             color: new vscode.ThemeColor('editor.foreground'),
@@ -44,19 +44,22 @@ class BlameManager {
                 .filter(line => line.hash !== '0')
                 .map(line => line.author.displayName.length)
                 .reduce((prev, curr) => prev > curr ? prev : curr, 0);
+            this.decorationManager.setDefaultWith(this.defaultWidth);
         
             if (this.blamedDocument.length > 0) {
                 this.heatMapManager.indexHeatMap(this.blamedDocument);
 
-                const [name, date] = this.getBlamedDecorations(editor.document, true);
-                editor.setDecorations(this.nameRoot, name);
-                editor.setDecorations(this.dateRoot, date);
+                this.decorationManager.create(editor.document, this.blamedDocument, true);
+                // const [name, date] = this.getBlamedDecorations(editor.document, true);
+                // editor.setDecorations(this.nameRoot, name);
+                // editor.setDecorations(this.dateRoot, date);
             } else {
                 this.isOpen = false;
             }
         } else {
-            editor.setDecorations(this.nameRoot, []);
-            editor.setDecorations(this.dateRoot, []);
+            this.decorationManager.clear();
+            // editor.setDecorations(this.nameRoot, []);
+            // editor.setDecorations(this.dateRoot, []);
         }
     }
 
@@ -66,15 +69,17 @@ class BlameManager {
             if (editor) {
                 if (event) {
                     this.editBlamedDocument(event);
-                    const [name, date] = this.getBlamedDecorations(event.document);
-                    editor.setDecorations(this.nameRoot, name);
-                    editor.setDecorations(this.dateRoot, date);
+                    this.decorationManager.create(event.document, this.blamedDocument);
+                    // const [name, date] = this.getBlamedDecorations(event.document);
+                    // editor.setDecorations(this.nameRoot, name);
+                    // editor.setDecorations(this.dateRoot, date);
                 } else {
                     this.heatMapManager.refreshColors();
                     this.heatMapManager.indexHeatMap(this.blamedDocument);
-                    const [name, date] = this.getBlamedDecorations(editor.document);
-                    editor.setDecorations(this.nameRoot, name);
-                    editor.setDecorations(this.dateRoot, date);
+                    
+                    // const [name, date] = this.getBlamedDecorations(editor.document);
+                    // editor.setDecorations(this.nameRoot, name);
+                    // editor.setDecorations(this.dateRoot, date);
                 }
             }
         } else {
@@ -84,9 +89,7 @@ class BlameManager {
 
     closeBlame() {
         this.isOpen = false;
-        const editor = vscode.window.activeTextEditor;
-        editor?.setDecorations(this.nameRoot, []);
-        editor?.setDecorations(this.dateRoot, []);
+        this.decorationManager.clear();
     }
 
     async openBlameEditor(editor: vscode.TextEditor) {
