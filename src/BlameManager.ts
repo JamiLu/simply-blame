@@ -6,7 +6,6 @@ import DecorationManager from './DecorationManager';
 import HeatMapManager from './HeatMapManager';
 import { BlamedDocument, blame, blameFile } from './Blame';
 import { getFilename } from './Utils';
-import { prependSpace } from './Date';
 
 type BlameDecoration = [vscode.ThemableDecorationAttachmentRenderOptions?, vscode.ThemableDecorationAttachmentRenderOptions?, vscode.MarkdownString?];
 
@@ -14,7 +13,6 @@ class BlameManager {
 
     private isOpen: boolean = false;
     private blamedDocument: BlamedDocument[] = [];
-    private defaultWidth: number = 10;
     private heatMapManager = new HeatMapManager();
     private decorationManager = new DecorationManager(this.heatMapManager);
     private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
@@ -40,26 +38,20 @@ class BlameManager {
 
         if (this.isOpen) {
             this.blamedDocument = await blame(editor.document);
-            this.defaultWidth = this.blamedDocument
-                .filter(line => line.hash !== '0')
-                .map(line => line.author.displayName.length)
-                .reduce((prev, curr) => prev > curr ? prev : curr, 0);
-            this.decorationManager.setDefaultWith(this.defaultWidth);
+            this.decorationManager.calculateDefaultWidth(this.blamedDocument);
         
             if (this.blamedDocument.length > 0) {
                 this.heatMapManager.indexHeatMap(this.blamedDocument);
 
-                this.decorationManager.create(editor.document, this.blamedDocument, true);
-                // const [name, date] = this.getBlamedDecorations(editor.document, true);
-                // editor.setDecorations(this.nameRoot, name);
-                // editor.setDecorations(this.dateRoot, date);
+                const [name, date] = this.applyDecorations(editor.document, true);
+                editor.setDecorations(this.nameRoot, name);
+                editor.setDecorations(this.dateRoot, date);
             } else {
                 this.isOpen = false;
             }
         } else {
-            this.decorationManager.clear();
-            // editor.setDecorations(this.nameRoot, []);
-            // editor.setDecorations(this.dateRoot, []);
+            editor.setDecorations(this.nameRoot, []);
+            editor.setDecorations(this.dateRoot, []);
         }
     }
 
@@ -69,27 +61,29 @@ class BlameManager {
             if (editor) {
                 if (event) {
                     this.editBlamedDocument(event);
-                    this.decorationManager.create(event.document, this.blamedDocument);
-                    // const [name, date] = this.getBlamedDecorations(event.document);
-                    // editor.setDecorations(this.nameRoot, name);
-                    // editor.setDecorations(this.dateRoot, date);
+                    const [name, date] = this.applyDecorations(event.document);
+                    editor.setDecorations(this.nameRoot, name);
+                    editor.setDecorations(this.dateRoot, date);
                 } else {
                     this.heatMapManager.refreshColors();
                     this.heatMapManager.indexHeatMap(this.blamedDocument);
                     
-                    // const [name, date] = this.getBlamedDecorations(editor.document);
-                    // editor.setDecorations(this.nameRoot, name);
-                    // editor.setDecorations(this.dateRoot, date);
+                    const [name, date] = this.applyDecorations(editor.document);
+                    editor.setDecorations(this.nameRoot, name);
+                    editor.setDecorations(this.dateRoot, date);
                 }
             }
         } else {
             this.heatMapManager.initHeatColors();
+            this.decorationManager.refresh();
         }
     }
 
     closeBlame() {
         this.isOpen = false;
-        this.decorationManager.clear();
+        const editor = vscode.window.activeTextEditor;
+        editor?.setDecorations(this.nameRoot, []);
+        editor?.setDecorations(this.dateRoot, []);
     }
 
     async openBlameEditor(editor: vscode.TextEditor) {
@@ -121,39 +115,39 @@ ${content}
         }
     }
 
-    private createDecorations(lineIdx: number, contentLineDefaultLength: number): BlameDecoration {
-        const blamedDocument = this.blamedDocument[lineIdx];
+    // private createDecorations(lineIdx: number, contentLineDefaultLength: number): BlameDecoration {
+    //     const blamedDocument = this.blamedDocument[lineIdx];
 
-        if (blamedDocument?.hash !== '0') {
-            return [
-                {
-                    contentText: `\u2003${blamedDocument.author.displayName}`,
-                    backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                    width: `${contentLineDefaultLength * 9 + 25}px`
-                },
-                {
-                    contentText: `${blamedDocument.date.localDate}\u2003`,
-                    backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                },
-                this.decorationManager.createHoverMessage(blamedDocument)
-            ];
-        } else if (blamedDocument?.hash === '0') {
-            return [
-                {
-                    contentText: '\u2003',
-                    width: `${contentLineDefaultLength * 9 + 25}px`
-                }, 
-                {
-                    contentText: `${prependSpace('')}\u2003`
-                }
-            ];
-        }
-        return [];
-    }
+    //     if (blamedDocument?.hash !== '0') {
+    //         return [
+    //             {
+    //                 contentText: `\u2003${blamedDocument.author.displayName}`,
+    //                 backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
+    //                 width: `${contentLineDefaultLength * 9 + 25}px`
+    //             },
+    //             {
+    //                 contentText: `${blamedDocument.date.localDate}\u2003`,
+    //                 backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
+    //             },
+    //             this.decorationManager.createHoverMessage(blamedDocument)
+    //         ];
+    //     } else if (blamedDocument?.hash === '0') {
+    //         return [
+    //             {
+    //                 contentText: '\u2003',
+    //                 width: `${contentLineDefaultLength * 9 + 25}px`
+    //             }, 
+    //             {
+    //                 contentText: `${prependSpace('')}\u2003`
+    //             }
+    //         ];
+    //     }
+    //     return [];
+    // }
 
-    private getBlamedDecorations(document: vscode.TextDocument, fresh?: boolean) {
-        const nameDecorations: vscode.DecorationOptions[] = [];
-        const dateDecorations: vscode.DecorationOptions[] = [];
+    private applyDecorations(editor: vscode.TextEditor, document: vscode.TextDocument, fresh?: boolean) {
+        const nameOptions: vscode.DecorationOptions[] = [];
+        const dateOptions: vscode.DecorationOptions[] = [];
 
         if (this.blamedDocument.length > 0) {
             for (let i = 0; i < document.lineCount; i++) {
@@ -164,26 +158,30 @@ ${content}
                     this.blamedDocument.splice(i, 0, { hash: '0' } as BlamedDocument);
                 }
 
-                const [name, date, hoverMessage] = this.createDecorations(i, this.defaultWidth);
-					
-                nameDecorations.push({
-                    range,
-                    renderOptions: {
-                        before: name
-                    },
-                    hoverMessage: hoverMessage
-                });
+                this.decorationManager.getDecorationOptions(range, nameOptions, dateOptions, this.blamedDocument[i]);
 
-                dateDecorations.push({
-                    range,
-                    renderOptions: {
-                        before: date
-                    },
-                });
+                // nameOptions.push(name!);
+                // dateOptions.push(date!);
+					
+                // nameOptions.push({
+                //     range,
+                //     renderOptions: {
+                //         before: name
+                //     },
+                //     hoverMessage: hoverMessage
+                // });
+
+                // dateOptions.push({
+                //     range,
+                //     renderOptions: {
+                //         before: date
+                //     },
+                // });
             }
         }
 
-        return [nameDecorations, dateDecorations];
+        editor.setDecorations(this.nameRoot, nameOptions);
+        editor.setDecorations(this.dateRoot, dateOptions);
     };
 }
 

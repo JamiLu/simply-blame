@@ -7,7 +7,7 @@ import Settings from './Settings';
 import { prependSpace } from './Date';
 import HeatMapManager from './HeatMapManager';
 
-type BlameDecoration = [vscode.ThemableDecorationAttachmentRenderOptions?, vscode.ThemableDecorationAttachmentRenderOptions?, vscode.MarkdownString?];
+type BlameDecoration = [vscode.DecorationOptions, vscode.DecorationOptions];
 
 class DecorationManager {
 
@@ -34,8 +34,10 @@ class DecorationManager {
         this.heatMapManager = heatmapManager;
     }
 
-    setDefaultWith(width: number) {
-        this.defaultWidth = width;
+    calculateDefaultWidth(blamed: BlamedDocument[]) {
+        this.defaultWidth = blamed.filter(line => line.hash !== '0')
+        .map(line => line.author.displayName.length)
+        .reduce((prev, curr) => prev > curr ? prev : curr, 0);
     }
 
     public refresh() {
@@ -47,73 +49,54 @@ class DecorationManager {
         }
     }
 
-    public create(document: vscode.TextDocument, blamedDocument: BlamedDocument[], fresh?: boolean) {
-        const nameDecorations: vscode.DecorationOptions[] = [];
-        const dateDecorations: vscode.DecorationOptions[] = [];
-
-        if (blamedDocument.length > 0) {
-            for (let i = 0; i < document.lineCount; i++) {
-                const line = document.lineAt(i);
-                const range = line.range;
-
-                if (fresh && line.text.trim() !== blamedDocument[i]?.codeline.trim()) {
-                    blamedDocument.splice(i, 0, { hash: '0' } as BlamedDocument);
-                }
-
-                const [name, date, hoverMessage] = this.createDecorations(blamedDocument[i], this.defaultWidth);
-					
-                nameDecorations.push({
-                    range,
-                    renderOptions: {
-                        before: name
-                    },
-                    hoverMessage: hoverMessage
-                });
-
-                dateDecorations.push({
-                    range,
-                    renderOptions: {
-                        before: date
-                    },
-                });
-            }
-        }
-
-        
-
-        // return [nameDecorations, dateDecorations];
-    }
-
-    private createDecorations(blamedDocument: BlamedDocument, contentLineDefaultLength: number): BlameDecoration {
+    public getDecorationOptions(range: vscode.Range, blamedDocument: BlamedDocument) {
         if (blamedDocument?.hash !== '0') {
             return [
                 {
-                    contentText: `\u2003${blamedDocument.author.displayName}`,
-                    backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                    width: `${contentLineDefaultLength * 9 + 25}px`
+                    range,
+                    renderOptions: {
+                        before: {
+                            contentText: `\u2003${blamedDocument.author.displayName}`,
+                            backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
+                            width: `${this.defaultWidth * 9 + 25}px`
+                        }
+                    },
+                    hoverMessage: this.createHoverMessage(blamedDocument)
                 },
                 {
-                    contentText: `${blamedDocument.date.localDate}\u2003`,
-                    backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                },
-                this.createHoverMessage(blamedDocument)
+                    range,
+                    renderOptions: {
+                        before: {
+                            contentText: `${blamedDocument.date.localDate}\u2003`,
+                            backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
+                        }
+                    }
+                }
             ];
         } else if (blamedDocument?.hash === '0') {
             return [
                 {
-                    contentText: '\u2003',
-                    width: `${contentLineDefaultLength * 9 + 25}px`
-                }, 
+                    range,
+                    renderOptions: {
+                        before: {
+                                    contentText: '\u2003',
+                                    width: `${this.defaultWidth * 9 + 25}px`
+                                },
+                    }
+                },
                 {
-                    contentText: `${prependSpace('')}\u2003`
+                    range,
+                    renderOptions:{ 
+                        before: {
+                            contentText: `${prependSpace('')}\u2003`                    
+                        }
+                    }
                 }
             ];
         }
-        return [];
     }
 
-    public clear() {
-        const editor = vscode.window.activeTextEditor;
+    public clear(editor = vscode.window.activeTextEditor) {
         editor?.setDecorations(this.nameRoot, []);
         editor?.setDecorations(this.dateRoot, []);
     }
