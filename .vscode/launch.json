@@ -29,6 +29,52 @@
 				"${workspaceFolder}/out/test/**/*.js"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
-		}
+		},
+		{
+            "name": "Launch App",
+            "type": "extensionHost",
+            "request": "launch",
+            "outFiles": [
+                "${workspaceFolder}/simply-blame/out/*.(m|c|)js",
+                "!**/node_modules/**"
+            ]
+        },
+        {
+            "name": "Pretest",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/simply-blame",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "pretest-copy-fixtures"]
+        },
+        {
+            "name": "Test",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "preLaunchTask": "npm: run pretest-copy-fixtures",
+            "args": [
+              "--extensionDevelopmentPath=${workspaceFolder}/simply-blame",
+              "--extensionTestsPath=${workspaceFolder}/simply-blame/out/test/suite/index",
+              "${workspaceFolder}/simply-blame/src/test/fixtures",
+            ],
+            "outFiles": ["${workspaceFolder}/simply-blame/out/test/**/*.js"]
+        },
+        {
+            "name": "Test Single",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "preLaunchTask": "npm: run pretest-copy-fixtures",
+            "env": {
+                "G": "${selectedText}"
+            },
+            "args": [
+              "--extensionDevelopmentPath=${workspaceFolder}/simply-blame",
+              "--extensionTestsPath=${workspaceFolder}/simply-blame/out/test/suite/index",
+              "${workspaceFolder}/simply-blame/src/test/fixtures",
+            ],
+            "outFiles": ["${workspaceFolder}/simply-blame/out/test/**/*.js"]
+        },
 	]
 }
