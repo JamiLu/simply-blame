@@ -17,18 +17,42 @@
 			],
 			"preLaunchTask": "${defaultBuildTask}"
 		},
-		{
-			"name": "Extension Tests",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
-			],
-			"outFiles": [
-				"${workspaceFolder}/out/test/**/*.js"
-			],
-			"preLaunchTask": "${defaultBuildTask}"
-		}
+        {
+            "name": "Pretest",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "pretest-copy-fixtures"]
+        },
+        {
+            "name": "Test",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "preLaunchTask": "npm: pretest-copy-fixtures",
+            "args": [
+              "--extensionDevelopmentPath=${workspaceFolder}",
+              "--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
+              "${workspaceFolder}/src/test/fixtures",
+            ],
+            "outFiles": ["${workspaceFolder}/out/test/**/*.js"]
+        },
+        {
+            "name": "Test Single",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "preLaunchTask": "npm: pretest-copy-fixtures",
+            "env": {
+                "G": "${selectedText}"
+            },
+            "args": [
+              "--extensionDevelopmentPath=${workspaceFolder}",
+              "--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
+              "${workspaceFolder}/src/test/fixtures",
+            ],
+            "outFiles": ["${workspaceFolder}/out/test/**/*.js"]
+        },
 	]
 }
