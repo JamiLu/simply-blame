@@ -11,45 +11,32 @@ type BlameDecoration = [vscode.DecorationOptions, vscode.DecorationOptions];
 
 class DecorationManager {
 
-    private defaultStyle: vscode.ThemableDecorationAttachmentRenderOptions = {
-        color: new vscode.ThemeColor('editor.foreground'),
-        height: 'editor.lineHeight',
-        fontStyle: 'normal',
-        fontWeight: 'normal'
-    };
-    private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
-        before: this.defaultStyle
-    });
-    private dateRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
-        before: {
-            ...this.defaultStyle,
-            margin: '0 10px 0 0',
-        }
-    });
     private createHoverMessage = this.createNormalMessage;
     private heatMapManager: HeatMapManager;
-    private defaultWidth = 10;
+    private defaultWidth = '70px';
 
     constructor(heatmapManager: HeatMapManager) {
         this.heatMapManager = heatmapManager;
     }
 
-    calculateDefaultWidth(blamed: BlamedDocument[]) {
-        this.defaultWidth = blamed.filter(line => line.hash !== '0')
-        .map(line => line.author.displayName.length)
-        .reduce((prev, curr) => prev > curr ? prev : curr, 0);
+    public calculateDefaultWidth(blamed: BlamedDocument[]) {
+        this.defaultWidth = `${blamed.filter(line => line.hash !== '0')
+            .map(line => line.author.displayName.length)
+            .reduce((prev, curr) => prev > curr ? prev : curr, 0) * 9 + 25}px`;
     }
 
     public refresh() {
         switch (Settings.getHoverStyle()) {
             case 'normal':
                 this.createHoverMessage = this.createNormalMessage;
+                break;
             case 'minimal':
                 this.createHoverMessage = this.createMinimalMessage;
+                break;
         }
     }
 
-    public getDecorationOptions(range: vscode.Range, blamedDocument: BlamedDocument) {
+    public getDecorationOptions(range: vscode.Range, blamedDocument: BlamedDocument): BlameDecoration {
         if (blamedDocument?.hash !== '0') {
             return [
                 {
@@ -58,7 +45,7 @@ class DecorationManager {
                         before: {
                             contentText: `\u2003${blamedDocument.author.displayName}`,
                             backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                            width: `${this.defaultWidth * 9 + 25}px`
+                            width: this.defaultWidth
                         }
                     },
                     hoverMessage: this.createHoverMessage(blamedDocument)
@@ -73,15 +60,15 @@ class DecorationManager {
                     }
                 }
             ];
-        } else if (blamedDocument?.hash === '0') {
+        } else {
             return [
                 {
                     range,
                     renderOptions: {
                         before: {
-                                    contentText: '\u2003',
-                                    width: `${this.defaultWidth * 9 + 25}px`
-                                },
+                            contentText: '\u2003',
+                            width: this.defaultWidth
+                        },
                     }
                 },
                 {
@@ -94,11 +81,6 @@ class DecorationManager {
                 }
             ];
         }
-    }
-
-    public clear(editor = vscode.window.activeTextEditor) {
-        editor?.setDecorations(this.nameRoot, []);
-        editor?.setDecorations(this.dateRoot, []);
     }
 
     private createNormalMessage(blame: BlamedDocument): vscode.MarkdownString {

@@ -7,8 +7,6 @@ import HeatMapManager from './HeatMapManager';
 import { BlamedDocument, blame, blameFile } from './Blame';
 import { getFilename } from './Utils';
 
-type BlameDecoration = [vscode.ThemableDecorationAttachmentRenderOptions?, vscode.ThemableDecorationAttachmentRenderOptions?, vscode.MarkdownString?];
-
 class BlameManager {
 
     private isOpen: boolean = false;
@@ -42,10 +40,7 @@ class BlameManager {
         
             if (this.blamedDocument.length > 0) {
                 this.heatMapManager.indexHeatMap(this.blamedDocument);
-
-                const [name, date] = this.applyDecorations(editor.document, true);
-                editor.setDecorations(this.nameRoot, name);
-                editor.setDecorations(this.dateRoot, date);
+                this.applyDecorations(editor, editor.document, true);
             } else {
                 this.isOpen = false;
             }
@@ -61,16 +56,11 @@ class BlameManager {
             if (editor) {
                 if (event) {
                     this.editBlamedDocument(event);
-                    const [name, date] = this.applyDecorations(event.document);
-                    editor.setDecorations(this.nameRoot, name);
-                    editor.setDecorations(this.dateRoot, date);
+                    this.applyDecorations(editor, event.document);
                 } else {
                     this.heatMapManager.refreshColors();
                     this.heatMapManager.indexHeatMap(this.blamedDocument);
-                    
-                    const [name, date] = this.applyDecorations(editor.document);
-                    editor.setDecorations(this.nameRoot, name);
-                    editor.setDecorations(this.dateRoot, date);
+                    this.applyDecorations(editor, editor.document);
                 }
             }
         } else {
@@ -115,36 +105,6 @@ ${content}
         }
     }
 
-    // private createDecorations(lineIdx: number, contentLineDefaultLength: number): BlameDecoration {
-    //     const blamedDocument = this.blamedDocument[lineIdx];
-
-    //     if (blamedDocument?.hash !== '0') {
-    //         return [
-    //             {
-    //                 contentText: `\u2003${blamedDocument.author.displayName}`,
-    //                 backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-    //                 width: `${contentLineDefaultLength * 9 + 25}px`
-    //             },
-    //             {
-    //                 contentText: `${blamedDocument.date.localDate}\u2003`,
-    //                 backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-    //             },
-    //             this.decorationManager.createHoverMessage(blamedDocument)
-    //         ];
-    //     } else if (blamedDocument?.hash === '0') {
-    //         return [
-    //             {
-    //                 contentText: '\u2003',
-    //                 width: `${contentLineDefaultLength * 9 + 25}px`
-    //             }, 
-    //             {
-    //                 contentText: `${prependSpace('')}\u2003`
-    //             }
-    //         ];
-    //     }
-    //     return [];
-    // }
-
     private applyDecorations(editor: vscode.TextEditor, document: vscode.TextDocument, fresh?: boolean) {
         const nameOptions: vscode.DecorationOptions[] = [];
         const dateOptions: vscode.DecorationOptions[] = [];
@@ -158,25 +118,10 @@ ${content}
                     this.blamedDocument.splice(i, 0, { hash: '0' } as BlamedDocument);
                 }
 
-                this.decorationManager.getDecorationOptions(range, nameOptions, dateOptions, this.blamedDocument[i]);
+                const [name, date] = this.decorationManager.getDecorationOptions(range, this.blamedDocument[i]);
 
-                // nameOptions.push(name!);
-                // dateOptions.push(date!);
-					
-                // nameOptions.push({
-                //     range,
-                //     renderOptions: {
-                //         before: name
-                //     },
-                //     hoverMessage: hoverMessage
-                // });
-
-                // dateOptions.push({
-                //     range,
-                //     renderOptions: {
-                //         before: date
-                //     },
-                // });
+                nameOptions.push(name);
+                dateOptions.push(date);
             }
         }
 
