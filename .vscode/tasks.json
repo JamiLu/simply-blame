@@ -3,22 +3,6 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-		// {
-        //     "type": "npm",
-        //     "script": "pretest-copy-fixtures",
-        //     "path": "simply-blame",
-        //     "problemMatcher": [],
-        //     "label": "npm: pretest-copy-fixtures - simply-blame",
-        //     "detail": "npm run pretest && npm run copy-fixtures"
-        // },
-		// {
-        //     "type": "shell",
-        //     "label": "npm: run pretest-copy-fixtures",
-        //     "command": "npm run pretest-copy-fixtures",
-        //     "options": {
-        //         "cwd": "${workspaceFolder}/simply-blame"
-        //     }
-        // },
 		{
 			"type": "npm",
 			"script": "watch",
@@ -31,6 +15,21 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"type": "npm",
+			"script": "pretest-copy-fixtures",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"label": "npm: pretest-copy-fixtures",
+			"detail": "npm run pretest && npm run copy-fixtures",
 		}
 	]
 }
