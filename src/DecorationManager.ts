@@ -16,6 +16,7 @@ class DecorationManager {
     private defaultWidth = '70px';
 
     constructor(heatmapManager: HeatMapManager) {
+        this.refresh();
         this.heatMapManager = heatmapManager;
     }
 
