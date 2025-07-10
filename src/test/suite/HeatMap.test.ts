@@ -9,7 +9,7 @@ import * as blameMock from '../../Blame';
 import * as heatMapMock from '../../HeatMap';
 import * as utils from '../../Utils';
 import Settings from '../../Settings';
-import { activateExtension, document } from './helpers';
+import { activateExtension, createMockBlamedDocument, document } from './helpers';
 import { getBlame } from './Blame.test';
 
 suite('Test HeatMap', () => {
@@ -56,35 +56,6 @@ suite('Test HeatMap', () => {
 
         blameFileStub.restore();
     });
-
-    const createMockBlame = (i: number, d: Date): blameMock.BlamedDocument => {
-        return {
-            author: { name: 'test', displayName: 'test' },
-            codeline: '1',
-            date: {
-                date: d,
-                dateMillis: d.getTime(),
-                dateString: `${d.getTime() / 1000}`,
-                localDate: `${d.getFullYear()} ${d.getMonth()} ${d.getDate()}`,
-                timeString: `${d.getHours()}:${d.getMinutes()}`,
-            },
-            email: 'test@test',
-            filename: 'test.ts',
-            hash: '',
-            linenumber: 'f',
-            summary: 'generated'
-        };
-    };
-
-    const createMockBlamedDocument = () => {
-        const date = new Date(2024, 0, 30); // Jan 30 2024
-        const blamed: blameMock.BlamedDocument[] = [];
-        for (let i = 25; i > 10; i--) {
-            date.setDate(i);
-            blamed.push(createMockBlame(i, date));
-        }
-        return blamed;
-    };
 
     test('test heatmap max color generation highlight strategy', () => {
         strategyStub.returns('highlight');
