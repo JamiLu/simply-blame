@@ -14,12 +14,18 @@ Idea like git blame annotations for VS Code!
 
 **If you click the commit hash on the hover info box the commit hash will be copied to clipboard**
 
+![Minimal hover annotation](minimal-hover.png)
+
+**A minimal details box is an alternative to the normal which displays full details.**
+
 ## Settings
  * **Date Format**
    * System will use the locale used by the VS Code.
    * Or you can choose any other pre existing date format to use.
 * **Author Style**
    * Select an author style for the blame annotations. Supported styles are full name, first name, last name.
+* **Hover Style**
+   * Select a blame annotation hover detail box style. Options are normal and minimal.
 * **Heat Color Index Strategy**
    * Choose how the heat colors are shown. Scale through the commits, this is the default or highlight the latest commits.
 * **Use RGBColor**
@@ -32,7 +38,7 @@ Idea like git blame annotations for VS Code!
 * **Heat Map Colors Dark** & **Heat Map Colors Light**
    * Configure and change colors of the heat map hex color list.
    * The top is hot and the bottom is cool.
-* **Enable Open Blame Editor** *This settings is likely to be removed in future releases*
+* **Enable Open Blame Editor** *This setting is likely to be removed in future releases*
    * Select to enable a command to open a blame file in a new text editor tab, disabled by default.
    * The enabled command will show up on the context menu of the active text editor tab.
 

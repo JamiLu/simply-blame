@@ -6,17 +6,13 @@ import DecorationManager from './DecorationManager';
 import HeatMapManager from './HeatMapManager';
 import { BlamedDocument, blame, blameFile } from './Blame';
 import { getFilename } from './Utils';
-import { prependSpace } from './Date';
-
-type BlameDecoration = [vscode.ThemableDecorationAttachmentRenderOptions?, vscode.ThemableDecorationAttachmentRenderOptions?, vscode.MarkdownString?];
 
 class BlameManager {
 
     private isOpen: boolean = false;
     private blamedDocument: BlamedDocument[] = [];
-    private defaultWidth: number = 10;
     private heatMapManager = new HeatMapManager();
-    private decorationManager = new DecorationManager();
+    private decorationManager = new DecorationManager(this.heatMapManager);
     private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
         before: {
             color: new vscode.ThemeColor('editor.foreground'),
@@ -40,17 +36,11 @@ class BlameManager {
 
         if (this.isOpen) {
             this.blamedDocument = await blame(editor.document);
-            this.defaultWidth = this.blamedDocument
-                .filter(line => line.hash !== '0')
-                .map(line => line.author.displayName.length)
-                .reduce((prev, curr) => prev > curr ? prev : curr, 0);
+            this.decorationManager.calculateDefaultWidth(this.blamedDocument);
         
             if (this.blamedDocument.length > 0) {
                 this.heatMapManager.indexHeatMap(this.blamedDocument);
-
-                const [name, date] = this.getBlamedDecorations(editor.document, true);
-                editor.setDecorations(this.nameRoot, name);
-                editor.setDecorations(this.dateRoot, date);
+                this.applyDecorations(editor, editor.document, true);
             } else {
                 this.isOpen = false;
             }
@@ -66,19 +56,16 @@ class BlameManager {
             if (editor) {
                 if (event) {
                     this.editBlamedDocument(event);
-                    const [name, date] = this.getBlamedDecorations(event.document);
-                    editor.setDecorations(this.nameRoot, name);
-                    editor.setDecorations(this.dateRoot, date);
+                    this.applyDecorations(editor, event.document);
                 } else {
                     this.heatMapManager.refreshColors();
                     this.heatMapManager.indexHeatMap(this.blamedDocument);
-                    const [name, date] = this.getBlamedDecorations(editor.document);
-                    editor.setDecorations(this.nameRoot, name);
-                    editor.setDecorations(this.dateRoot, date);
+                    this.applyDecorations(editor, editor.document);
                 }
             }
         } else {
             this.heatMapManager.initHeatColors();
+            this.decorationManager.refresh();
         }
     }
 
@@ -118,39 +105,9 @@ ${content}
         }
     }
 
-    private createDecorations(lineIdx: number, contentLineDefaultLength: number): BlameDecoration {
-        const blamedDocument = this.blamedDocument[lineIdx];
-
-        if (blamedDocument?.hash !== '0') {
-            return [
-                {
-                    contentText: `\u2003${blamedDocument.author.displayName}`,
-                    backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                    width: `${contentLineDefaultLength * 9 + 25}px`
-                },
-                {
-                    contentText: `${blamedDocument.date.localDate}\u2003`,
-                    backgroundColor: this.heatMapManager.getHeatColor(blamedDocument.date),
-                },
-                this.decorationManager.createHoverMessage(blamedDocument)
-            ];
-        } else if (blamedDocument?.hash === '0') {
-            return [
-                {
-                    contentText: '\u2003',
-                    width: `${contentLineDefaultLength * 9 + 25}px`
-                }, 
-                {
-                    contentText: `${prependSpace('')}\u2003`
-                }
-            ];
-        }
-        return [];
-    }
-
-    private getBlamedDecorations(document: vscode.TextDocument, fresh?: boolean) {
-        const nameDecorations: vscode.DecorationOptions[] = [];
-        const dateDecorations: vscode.DecorationOptions[] = [];
+    private applyDecorations(editor: vscode.TextEditor, document: vscode.TextDocument, fresh?: boolean) {
+        const nameOptions: vscode.DecorationOptions[] = [];
+        const dateOptions: vscode.DecorationOptions[] = [];
 
         if (this.blamedDocument.length > 0) {
             for (let i = 0; i < document.lineCount; i++) {
@@ -161,26 +118,15 @@ ${content}
                     this.blamedDocument.splice(i, 0, { hash: '0' } as BlamedDocument);
                 }
 
-                const [name, date, hoverMessage] = this.createDecorations(i, this.defaultWidth);
-					
-                nameDecorations.push({
-                    range,
-                    renderOptions: {
-                        before: name
-                    },
-                    hoverMessage: hoverMessage
-                });
+                const [name, date] = this.decorationManager.getDecorationOptions(range, this.blamedDocument[i]);
 
-                dateDecorations.push({
-                    range,
-                    renderOptions: {
-                        before: date
-                    },
-                });
+                nameOptions.push(name);
+                dateOptions.push(date);
             }
         }
 
-        return [nameDecorations, dateDecorations];
+        editor.setDecorations(this.nameRoot, nameOptions);
+        editor.setDecorations(this.dateRoot, dateOptions);
     };
 }
 

@@ -63,6 +63,24 @@
           "description": "Select an author style for the blame annotations.",
           "order": 1
         },
+        "simplyblame.hoverStyle": {
+          "type": "string",
+          "enum": [
+            "normal",
+            "minimal"
+          ],
+          "enumItemLabels": [
+            "Normal",
+            "Minimal"
+          ],
+          "enumDescriptions": [
+            "Show full details of the commit",
+            "Show a hash and a summary of the commit"
+          ],
+          "default": "normal",
+          "description": "Select a hover message style for the blame annotations.",
+          "order": 1
+        },
         "simplyblame.heatColorIndexStrategy": {
           "type": "string",
           "default": "scale",

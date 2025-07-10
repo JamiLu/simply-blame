@@ -53,6 +53,10 @@ class Settings {
     static getAuthorStyle(): 'full' | 'first' | 'last' & string {
         return vscode.workspace.getConfiguration(this.config).authorStyle;
     }
+
+    static getHoverStyle(): 'normal' | 'minimal' & string {
+        return vscode.workspace.getConfiguration(this.config).hoverStyle;
+    }
 }
 
 export default Settings;
