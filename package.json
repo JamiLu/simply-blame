@@ -89,6 +89,14 @@
             "scale",
             "highlight"
           ],
+          "enumItemLabels": [
+            "Scale",
+            "Highlight"
+          ],
+          "enumDescriptions": [
+            "Scales through all the commits",
+            "Highlights 10 last commits"
+          ],
           "order": 2
         },
         "simplyblame.useRGBColor": {
