@@ -2,6 +2,11 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.5.0]
+### Add
+ - Support configuring hover details box style.
+ - Update README
+
 ## [1.4.4]
 ### Update
  - Add empty annotation on edited lines in the text editor
