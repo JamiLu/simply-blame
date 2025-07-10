@@ -14,7 +14,7 @@ Idea like git blame annotations for VS Code!
 
 **If you click the commit hash on the hover info box the commit hash will be copied to clipboard**
 
-![Minimal hover annotation](minimal-hover.png)
+![Minimal hover annotation](minimal-details.png)
 
 **A minimal details box is an alternative to the normal which displays full details.**
 
