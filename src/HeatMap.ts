@@ -36,7 +36,7 @@ export const indexHeatColors = (blamedDocument: BlamedDocument[], heatColors: st
 
     const strategy = Settings.getHeatColorIndexStrategy();
 
-    if (strategy === 'scale') {
+    if (strategy === 'scale' || !strategy) {
         const first = distinctDates.shift();
         const last = distinctDates.pop();
 
