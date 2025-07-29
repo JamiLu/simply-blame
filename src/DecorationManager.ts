@@ -28,6 +28,7 @@ class DecorationManager {
 
     public refresh() {
         switch (Settings.getHoverStyle()) {
+            default:
             case 'normal':
                 this.createHoverMessage = this.createNormalMessage;
                 break;
