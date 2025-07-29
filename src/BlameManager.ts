@@ -6,6 +6,7 @@ import DecorationManager from './DecorationManager';
 import HeatMapManager from './HeatMapManager';
 import { BlamedDocument, blame, blameFile } from './Blame';
 import { getFilename } from './Utils';
+import ExtensionManager from './ExtensionManager';
 
 class BlameManager {
 
@@ -35,6 +36,7 @@ class BlameManager {
         this.isOpen = !this.isOpen;
 
         if (this.isOpen) {
+            ExtensionManager.setBusy(true);
             this.blamedDocument = await blame(editor.document);
             this.decorationManager.calculateDefaultWidth(this.blamedDocument);
         
@@ -44,6 +46,7 @@ class BlameManager {
             } else {
                 this.isOpen = false;
             }
+            ExtensionManager.setBusy(false);
         } else {
             editor.setDecorations(this.nameRoot, []);
             editor.setDecorations(this.dateRoot, []);
