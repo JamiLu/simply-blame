@@ -41,6 +41,7 @@ export const promiseExec = promisify(exec);
 const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
     const blamedAuthor = { name: author, displayName: author };
     switch (authorStyle) {
+        default:
         case 'full':
             return blamedAuthor;
         case 'first':

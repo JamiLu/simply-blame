@@ -24,7 +24,7 @@ class Settings {
         return vscode.workspace.getConfiguration(this.config).dateFormat;
     }
 
-    static getHeatColorIndexStrategy(): 'scale' | 'highlight' & string {
+    static getHeatColorIndexStrategy(): ('scale' | 'highlight') & string {
         return vscode.workspace.getConfiguration(this.config).heatColorIndexStrategy;
     }
 
@@ -50,11 +50,11 @@ class Settings {
         return { r: Number(r), g: Number(g), b: Number(b), c: Number(c) };
     }
 
-    static getAuthorStyle(): 'full' | 'first' | 'last' & string {
+    static getAuthorStyle(): ('full' | 'first' | 'last') & string {
         return vscode.workspace.getConfiguration(this.config).authorStyle;
     }
 
-    static getHoverStyle(): 'normal' | 'minimal' & string {
+    static getHoverStyle(): ('normal' | 'minimal') & string {
         return vscode.workspace.getConfiguration(this.config).hoverStyle;
     }
 }
