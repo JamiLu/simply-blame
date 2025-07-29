@@ -42,7 +42,7 @@ class ExtensionManager {
             vscode.env.clipboard.writeText(hash);
             vscode.window.showInformationMessage(`Commit ${hash} copied to clipboard`);
         });
-        
+
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration(Settings.config)) {
                 this.blameManager.refresh();
