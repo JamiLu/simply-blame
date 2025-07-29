@@ -11,10 +11,21 @@ class ExtensionManager {
 
     private context: vscode.ExtensionContext;
     private blameManager: BlameManager;
+    private sbStatus: vscode.StatusBarItem;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
         this.blameManager = new BlameManager();
+        this.sbStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+        this.sbStatus.show();
+    }
+
+    static setBusy(busy: boolean) {
+        if (busy) {
+            this.instance.sbStatus.text = 'Simply Blame $(loading~spin)';
+        } else {
+            this.instance.sbStatus.text = 'Simply Blame';
+        }
     }
 
     registerCommands() {
@@ -52,7 +63,7 @@ class ExtensionManager {
             }
         });
 
-        this.context.subscriptions.push(debugCommand, blameCommand, copyHashCommand);
+        this.context.subscriptions.push(debugCommand, blameCommand, copyHashCommand, this.sbStatus);
     }
 
     static getInstance(context: vscode.ExtensionContext) {
