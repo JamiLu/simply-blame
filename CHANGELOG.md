@@ -2,7 +2,7 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
-## [1.5.0]
+## [1.6.0]
 ### Add
  - Support configuring hover details box style.
  - Update README
