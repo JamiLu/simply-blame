@@ -118,7 +118,7 @@ ${content}
                 const range = line.range;
 
                 if (fresh && line.text.trim() !== this.blamedDocument[i]?.codeline.trim()) {
-                    this.blamedDocument.splice(i, 0, { hash: '0' } as BlamedDocument);
+                    this.blamedDocument.splice(i, 1, { hash: '0' } as BlamedDocument);
                 }
 
                 const [name, date] = this.decorationManager.getDecorationOptions(range, this.blamedDocument[i]);
