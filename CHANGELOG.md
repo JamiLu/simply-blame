@@ -2,6 +2,13 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.7.0]
+### Add
+ - Support configuring a click action for the commit hash in the hover box
+ - Add Simply Blame status bar item to show
+### Update
+ - Finetune default settings related code
+
 ## [1.6.0]
 ### Add
  - Support configuring hover details box style.

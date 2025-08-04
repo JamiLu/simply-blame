@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as blameMock from '../../Blame';
+import { TextEncoder } from 'util';
 
 export let document: vscode.TextDocument;
 
@@ -49,4 +50,13 @@ export const createMockBlamedDocument = () => {
         blamed.push(createMockBlame(i, date));
     }
     return blamed;
+};
+
+export const createMockGitConfig = (): { create: () => Promise<void>, purge: () => Promise<void> }  => {
+    const wsRoot = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath;
+    const config = vscode.Uri.file(`${wsRoot}/.git/config`);
+    return {
+        create: async () => await vscode.workspace.fs.writeFile(config, new TextEncoder().encode(`url = git@github.com:test/test-repo.git\n`)),
+        purge: async () => await vscode.workspace.fs.delete(config)
+    };
 };

@@ -95,7 +95,7 @@ class DecorationManager {
             .appendText('\n')
             .appendMarkdown('***')
             .appendText('\n')
-            .appendMarkdown(`[$(copy) &nbsp; ${blame.hash}](${vscode.Uri.parse(`command:simply-blame.copyCommit?${JSON.stringify([{ hash: blame.hash }])}`)})`)
+            .appendMarkdown(`[$(copy) &nbsp; ${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash }])}`)})`)
             .appendText('\n')
             .appendMarkdown(`****\n`)
             .appendMarkdown(`${blame.summary}`);
@@ -103,7 +103,7 @@ class DecorationManager {
 
     private createMinimalMessage(blame: BlamedDocument): vscode.MarkdownString {
         return this.trustedMdString()
-            .appendMarkdown(`[${blame.hash}](${vscode.Uri.parse(`command:simply-blame.copyCommit?${JSON.stringify([{ hash: blame.hash }])}`)})`)
+            .appendMarkdown(`[${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash }])}`)})`)
             .appendText('\n')
             .appendMarkdown(`****\n`)
             .appendMarkdown(`${blame.summary}`);
@@ -112,7 +112,7 @@ class DecorationManager {
     private trustedMdString() {
         const str = new vscode.MarkdownString();
         str.supportThemeIcons = true;
-        str.isTrusted = { enabledCommands: ['simply-blame.copyCommit'] };
+        str.isTrusted = { enabledCommands: ['simply-blame.hashAction'] };
         return str;
     }
 

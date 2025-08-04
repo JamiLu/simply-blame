@@ -26,6 +26,8 @@ Idea like git blame annotations for VS Code!
    * Select an author style for the blame annotations. Supported styles are full name, first name, last name.
 * **Hover Style**
    * Select a blame annotation hover detail box style. Options are normal and minimal.
+* **Hash Action**
+   * Select an action to be invoked when the commit hash is clicked on the hover box. Supported actions are copy to clipboard and open in browser.
 * **Heat Color Index Strategy**
    * Choose how the heat colors are shown. Scale through the commits, this is the default or highlight the latest commits.
 * **Use RGBColor**
