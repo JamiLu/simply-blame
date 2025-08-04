@@ -54,7 +54,8 @@ export const createMockBlamedDocument = () => {
 
 export const createMockGitConfig = (): { create: () => Promise<void>, purge: () => Promise<void> }  => {
     const wsRoot = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath;
-    const config = vscode.Uri.file(`${wsRoot}/.git/config`);
+    const root = path.resolve(__dirname, '../fixtures');
+    const config = vscode.Uri.file(`${wsRoot ?? root}/.git/config`);
     return {
         create: async () => await vscode.workspace.fs.writeFile(config, new TextEncoder().encode(`url = git@github.com:test/test-repo.git\n`)),
         purge: async () => await vscode.workspace.fs.delete(config)
