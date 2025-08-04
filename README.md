@@ -7,6 +7,11 @@ Idea like git blame annotations for VS Code!
 2. Press **Alt + B** on the text editor
 3. You will see who to blame
 
+### Key features
+ * Fully customizable heat colors use rgb or hex, choose coloring strategy
+ * Flexible output options: multiple date formats, author styles
+ * Configurable hover box: appearance and action for the commit hash
+
 ### Screenshots
 ![Dark RGB Colors](dark-rgb-colors.png)
 ![Light RGB Colors](light-rgb-colors.png)
