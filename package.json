@@ -81,6 +81,24 @@
           "description": "Select a hover message style for the blame annotations.",
           "order": 1
         },
+        "simplyblame.hashAction": {
+          "type": "string",
+          "enum": [
+            "copy",
+            "remote"
+          ],
+          "enumItemLabels": [
+            "Copy",
+            "Open in remote"
+          ],
+          "enumDescriptions": [
+            "Copy a hash into the clipboard",
+            "Open a commit in the browser"
+          ],
+          "default": "copy",
+          "description": "Select a click hash action",
+          "order": 2
+        },
         "simplyblame.heatColorIndexStrategy": {
           "type": "string",
           "default": "scale",

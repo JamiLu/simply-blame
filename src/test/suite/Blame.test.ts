@@ -62,9 +62,18 @@ filename src/test.ts
 suite('Test Blame', () => {
 
     let mock: sinon.SinonMock;
+    let gitNotFoundSpy: sinon.SinonSpy;
+    let commonErrorSpy: sinon.SinonSpy;
 
     mocha.before(async () => {
         await activateExtension();
+        gitNotFoundSpy = sinon.spy(Notifications, 'gitNotFoundNotification');
+        commonErrorSpy = sinon.spy(Notifications, 'commonErrorNotification');
+    });
+
+    mocha.after(() => {
+        gitNotFoundSpy.restore();
+        commonErrorSpy.restore();
     });
 
     mocha.beforeEach(() => {
@@ -76,25 +85,21 @@ suite('Test Blame', () => {
     });
 
     test('test blameFile throws git not found git not found notification shown', async () => {
-        const gitNotFoundNotificationSpy = sinon.spy(Notifications, 'gitNotFoundNotification');
         const stub = sinon.stub(blameMock, 'promiseExec').throwsException(new Error('git: not found'));
 
         await blameMock.blameFile('test.txt');        
         
-        assert.ok(gitNotFoundNotificationSpy.calledOnce);
+        assert.ok(gitNotFoundSpy.calledOnce);
         stub.restore();
-        gitNotFoundNotificationSpy.restore();
     });
 
     test('test blameFile throws error common notification is shown', async () => {
-        const commonNotificationSpy = sinon.spy(Notifications, 'commonErrorNotification');
         const stub = sinon.stub(blameMock, 'promiseExec').throwsException(new Error('something happened'));
 
         await blameMock.blameFile('test.txt');
 
-        assert.ok(commonNotificationSpy.calledOnce);
+        assert.ok(commonErrorSpy.calledOnce);
         stub.restore();
-        commonNotificationSpy.restore();
     });
 
     test('test blameFile slash succeeds', async () => {

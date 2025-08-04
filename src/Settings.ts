@@ -57,6 +57,11 @@ class Settings {
     static getHoverStyle(): ('normal' | 'minimal') & string {
         return vscode.workspace.getConfiguration(this.config).hoverStyle;
     }
+
+    static getHashAction(): ('copy' | 'remote') & string {
+        return vscode.workspace.getConfiguration(this.config).hashAction;
+    }
+    
 }
 
 export default Settings;

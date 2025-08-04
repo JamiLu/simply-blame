@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import BlameManager from './BlameManager';
 import Settings from './Settings';
+import { hashAction } from './HashAction';
 
 class ExtensionManager {
 
@@ -37,10 +38,8 @@ class ExtensionManager {
             await this.blameManager.toggleBlame(textEditor);
         });
 
-        const copyHashCommand = vscode.commands.registerCommand('simply-blame.copyCommit', (args: any) => {
-            const { hash } = args;
-            vscode.env.clipboard.writeText(hash);
-            vscode.window.showInformationMessage(`Commit ${hash} copied to clipboard`);
+        const copyHashCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash }: any) => {
+            await hashAction(hash);
         });
 
         vscode.workspace.onDidChangeConfiguration((event) => {

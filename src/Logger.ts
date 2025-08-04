@@ -12,8 +12,8 @@ class Logger {
         this.channel = vscode.window.createOutputChannel('simply-blame', { log: true});
     }
 
-    log(msg: string) {
-        this.channel.appendLine(msg);
+    get log() {
+        return this.channel;
     }
 
     dispose() {
