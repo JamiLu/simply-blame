@@ -47,6 +47,5 @@ export const hashAction = async (hash: string) => {
         case 'copy':
             vscode.env.clipboard.writeText(hash);
             vscode.window.showInformationMessage(`Commit ${hash} copied to clipboard`);
-
     }
 };
