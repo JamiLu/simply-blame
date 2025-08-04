@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as blameMock from '../../Blame';
+import * as sinon from 'sinon';
 import { TextEncoder } from 'util';
 
 export let document: vscode.TextDocument;
@@ -55,12 +56,20 @@ export const createMockBlamedDocument = () => {
 export const createMockGitConfig = (): { create: () => Promise<void>, purge: () => Promise<void> }  => {
     const wsRoot = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath;
     console.log('WS', wsRoot);
-    const root = path.resolve(__dirname, '../fixtures');
-    console.log('roo', root);
-    const config = vscode.Uri.file(`${wsRoot ?? root}/.git/config`);
+    const fixtures = path.resolve(__dirname, '../fixtures');
+    console.log('roo', fixtures);
+    let mockRoot: sinon.SinonStub;
+    if (!wsRoot) {
+        mockRoot = sinon.stub(vscode.workspace, 'workspaceFolders');
+        mockRoot.returns([fixtures]);
+    }
+    const config = vscode.Uri.file(`${wsRoot ?? fixtures}/.git/config`);
     console.log('config', config);
     return {
         create: async () => await vscode.workspace.fs.writeFile(config, new TextEncoder().encode(`url = git@github.com:test/test-repo.git\n`)),
-        purge: async () => await vscode.workspace.fs.delete(config)
+        purge: async () => {
+            mockRoot && mockRoot.restore();
+            await vscode.workspace.fs.delete(config);
+        }
     };
 };
