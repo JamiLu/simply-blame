@@ -2,6 +2,14 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.7.2]
+ ### Update
+  - Fix .git/config not found issue
+
+## [1.7.1]
+ ### Update
+  - Fix dirty line blame annotation issue
+
 ## [1.7.0]
 ### Add
  - Support configuring a click action for the commit hash in the hover box
