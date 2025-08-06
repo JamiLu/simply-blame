@@ -9,7 +9,7 @@ class Logger {
     private channel: vscode.LogOutputChannel;
 
     constructor() {
-        this.channel = vscode.window.createOutputChannel('simply-blame', { log: true});
+        this.channel = vscode.window.createOutputChannel('Simply Blame', { log: true });    
     }
 
     get log() {
@@ -29,3 +29,7 @@ class Logger {
 }
 
 export default Logger.instance;
+
+const log = Logger.instance.log;
+
+export { log };
