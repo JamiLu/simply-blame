@@ -16,7 +16,7 @@ suite('Test Hover Provider', () => {
     const hoverProvider = new BlameHoverProvider(blameManager);
 
     let styleStub: sinon.SinonStub;
-    let mockManager = sinon.mock(blameManager);
+    let mockManager: sinon.SinonMock;
 
     mocha.before(async () => {
         await activateExtension();
@@ -24,6 +24,7 @@ suite('Test Hover Provider', () => {
 
     mocha.beforeEach(() => {
         styleStub = sinon.stub(Settings, 'getHoverStyle');
+        mockManager = sinon.mock(blameManager);
     });
 
     mocha.afterEach(() => {
