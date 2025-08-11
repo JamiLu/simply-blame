@@ -5,12 +5,12 @@ import * as vscode from 'vscode';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as assert from 'assert';
-import { activateExtension, createMockGitConfig } from './suite/helpers';
-import Settings from '../Settings';
-import Notifications from '../Notifications';
-import { hashAction } from '../HashAction';
+import { activateExtension, createMockGitConfig } from './helpers';
+import Settings from '../../Settings';
+import Notifications from '../../Notifications';
+import { hashAction } from '../../HashAction';
 
-suite('Test hashAction', () => {
+suite('Test HashAction', () => {
 
     const mockGitConfig = createMockGitConfig();
     let settings: sinon.SinonStub;
