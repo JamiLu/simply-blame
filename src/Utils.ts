@@ -8,6 +8,10 @@ export const getFilename = (path: string) => {
     return path.substring(sepIndex > -1 ? sepIndex + 1 : path.lastIndexOf('\\') + 1);
 };
 
+export const getLocation = (path: string): string => {
+    return path.match(/^(\/|\\).*(\/|\\)/i)![0];
+};
+
 export const isDarkTheme = () => {
     return [vscode.ColorThemeKind.Dark, vscode.ColorThemeKind.HighContrast].includes(vscode.window.activeColorTheme.kind);
 };
