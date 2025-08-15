@@ -2,6 +2,13 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.8.0]
+ ### Add
+  - Support full body commit messages
+ ### Update
+  - Improve blame hover box
+  - Normal hover box will now display full body commit message
+
 ## [1.7.2]
  ### Update
   - Fix .git/config not found issue
