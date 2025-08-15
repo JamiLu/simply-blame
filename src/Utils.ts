@@ -9,7 +9,7 @@ export const getFilename = (path: string) => {
 };
 
 export const getLocation = (path: string): string => {
-    return path.match(/^(\/|\\).*(\/|\\)/i)![0];
+    return path.replace(getFilename(path), '');
 };
 
 export const isDarkTheme = () => {
