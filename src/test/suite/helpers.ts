@@ -6,7 +6,6 @@ import * as path from 'path';
 import * as blameMock from '../../Blame';
 import * as sinon from 'sinon';
 import { TextEncoder } from 'util';
-import { type } from 'os';
 
 export let document: vscode.TextDocument;
 
