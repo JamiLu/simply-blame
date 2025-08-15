@@ -11,9 +11,7 @@ export const getCommitMessage = async (document: vscode.TextDocument, commit: st
     
     try {
         const body = await command(`cd ${location} && git show ${commit}`);
-
         const message = body?.substring(body.indexOf('\n\n'), body.search('diff --git'));
-
         return message?.replace(/^ {2,}/gm, '');
     } catch (e) {
         Notifications.commonErrorNotification(e as Error, true);
