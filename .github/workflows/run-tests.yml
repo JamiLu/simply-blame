@@ -11,7 +11,10 @@ on:
     types: [checks_requested]
 jobs: 
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -24,6 +27,17 @@ jobs:
       - name: copy fixtures
         run: npm run copy-fixtures
       - name: compile, lint and test
+        if: runner.os == 'Linux'
         run: |
           export TZ='Europe/Helsinki'
           xvfb-run -a npm test
+      - name: compile, lint and test
+        if: runner.os == 'macOS'
+        run: |
+          export TZ='Europe/Helsinki'
+          npm test
+      - name: compile, lint, and test
+        if: runner.os == 'Windows'
+        run: |
+          tzutil /s 'FLE Standard Time'
+          npm test
