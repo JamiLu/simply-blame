@@ -68,7 +68,6 @@ class BlameManager {
             }
         } else {
             this.heatMapManager.initHeatColors();
-            this.decorationManager.refresh();
         }
     }
 
@@ -77,6 +76,10 @@ class BlameManager {
         const editor = vscode.window.activeTextEditor;
         editor?.setDecorations(this.nameRoot, []);
         editor?.setDecorations(this.dateRoot, []);
+    }
+
+    getBlameAt(line: number) {
+        return this.blamedDocument[line];
     }
 
     async openBlameEditor(editor: vscode.TextEditor) {

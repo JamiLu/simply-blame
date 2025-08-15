@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import BlameManager from './BlameManager';
 import Settings from './Settings';
 import { hashAction } from './HashAction';
+import BlameHoverProvider from './BlameHoverProvider';
 
 class ExtensionManager {
 
@@ -12,11 +13,13 @@ class ExtensionManager {
 
     private context: vscode.ExtensionContext;
     private blameManager: BlameManager;
+    private blameHoverProvider: BlameHoverProvider;
     private sbStatus: vscode.StatusBarItem;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
         this.blameManager = new BlameManager();
+        this.blameHoverProvider = new BlameHoverProvider(this.blameManager);
         this.sbStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
         this.sbStatus.show();
     }
@@ -38,13 +41,16 @@ class ExtensionManager {
             await this.blameManager.toggleBlame(textEditor);
         });
 
-        const copyHashCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash }: any) => {
+        const hashActionCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash }: any) => {
             await hashAction(hash);
         });
+
+        const hoverProvider = vscode.languages.registerHoverProvider({ scheme: 'file' }, this.blameHoverProvider);
 
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration(Settings.config)) {
                 this.blameManager.refresh();
+                this.blameHoverProvider.refresh();
             }
         });
 
@@ -62,7 +68,7 @@ class ExtensionManager {
             }
         });
 
-        this.context.subscriptions.push(debugCommand, blameCommand, copyHashCommand, this.sbStatus);
+        this.context.subscriptions.push(debugCommand, blameCommand, hashActionCommand, this.sbStatus, hoverProvider);
     }
 
     static getInstance(context: vscode.ExtensionContext) {
