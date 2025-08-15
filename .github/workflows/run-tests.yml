@@ -13,7 +13,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest] #ubuntu-latest, macos-latest, just test windows for now
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: checkout
@@ -26,13 +26,6 @@ jobs:
         run: mkdir -p ./out/test/
       - name: copy fixtures
         run: npm run copy-fixtures
-      - name: check W
-        if: runner.os == 'Windows'
-        run: | 
-          dir out\test\fixtures
-          cd
-          echo "test"
-          pwd
       - name: compile, lint and test
         if: runner.os == 'Linux'
         run: |
