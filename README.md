@@ -17,11 +17,11 @@ Idea like git blame annotations for VS Code!
 ![Light RGB Colors](light-rgb-colors.png)
 ![Blame gif](blame.gif)
 
-**If you click the commit hash on the hover info box the commit hash will be copied to clipboard**
+**You can choose the hash action from the extension settings that will be invoked when the hash is clicked**
 
 ![Minimal hover annotation](minimal-details.png)
 
-**A minimal details box is an alternative to the normal which displays full details.**
+**A minimal details box is an alternative to the normal which displays full details. The minimal details box shows only the commit summary**
 
 ## Settings
  * **Date Format**
