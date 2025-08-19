@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.8.1]
+ ### Update
+  - Fix retrieve empty commit message issue
+
 ## [1.8.0]
  ### Add
   - Support full body commit messages
