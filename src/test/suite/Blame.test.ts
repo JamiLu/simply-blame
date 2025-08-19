@@ -57,7 +57,13 @@ author-mail <test@example.com>
 author-time 1743513058
 summary This is a test commit message
 filename src/test.ts
-        // foobar`;
+        // foobar
+14728a3afb0871ac18e84d4d3e41bd34f0283172 2 8
+        second edit
+14728a3afb0871ac18e84d4d3e41bd34f0283172 2 9
+        third edit
+14728a3afb0871ac18e84d4d3e41bd34f0283172 2 10
+        fourth edit`;
 
 suite('Test Blame', () => {
 
@@ -84,6 +90,15 @@ suite('Test Blame', () => {
         mock.restore();
     });
 
+    const uniqueCommits = (blamed: blameMock.BlamedDocument[]) => {
+        return blamed.reduce((total: blameMock.BlamedDocument[], current: blameMock.BlamedDocument) => {
+            if (!total.find(t => t.hash === current.hash)) {
+                total.push(current);
+            }
+            return total;
+        }, []);
+    };
+
     test('test blameFile throws git not found git not found notification shown', async () => {
         const stub = sinon.stub(blameMock, 'promiseExec').throwsException(new Error('git: not found'));
 
@@ -107,7 +122,7 @@ suite('Test Blame', () => {
 
         await blameMock.blameFile('path/to/file/test.ts');
         
-        assert.ok(spy.calledWith(`cd path/to/file/ && git blame --line-porcelain test.ts`));
+        assert.ok(spy.calledWith(`cd path/to/file/ && git blame --porcelain test.ts`));
         spy.restore();
     });
 
@@ -116,7 +131,7 @@ suite('Test Blame', () => {
 
         await blameMock.blameFile('path\\to\\file\\test.ts');
 
-        assert.ok(spy.calledWith('cd path\\to\\file\\ && git blame --line-porcelain test.ts'));
+        assert.ok(spy.calledWith('cd path\\to\\file\\ && git blame --porcelain test.ts'));
         spy.restore();
     });
 
@@ -125,7 +140,7 @@ suite('Test Blame', () => {
 
         await blameMock.blameFile('path/to/file/test-this.txt');
 
-        assert.ok(spy.calledWith(`cd path/to/file/ && git blame --line-porcelain test-this.txt`));
+        assert.ok(spy.calledWith(`cd path/to/file/ && git blame --porcelain test-this.txt`));
         spy.restore();
     });
 
@@ -152,7 +167,11 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[4].author.displayName, 'r/a\\b test');
         assert.strictEqual(blamed[5].author.displayName, '&%¤#"!?=(){}[]/\\');
         assert.strictEqual(blamed[6].author.displayName, 'Testing Tester TT');
-        assert.strictEqual(blamed.length, 7);
+        assert.strictEqual(blamed[7].author.displayName, '李 连杰');
+        assert.strictEqual(blamed[8].author.displayName, '李 连杰');
+        assert.strictEqual(blamed[9].author.displayName, '李 连杰');
+        assert.strictEqual(blamed.length, 10);
+        assert.strictEqual(uniqueCommits(blamed).length, 7);
 
         settings.restore();
     });
@@ -170,7 +189,11 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[4].author.displayName, 'r/a\\b');
         assert.strictEqual(blamed[5].author.displayName, '&%¤#"!?=(){}[]/\\');
         assert.strictEqual(blamed[6].author.displayName, 'Testing Tester');
-        assert.strictEqual(blamed.length, 7);
+        assert.strictEqual(blamed[7].author.displayName, '李');
+        assert.strictEqual(blamed[8].author.displayName, '李');
+        assert.strictEqual(blamed[9].author.displayName, '李');
+        assert.strictEqual(blamed.length, 10);
+        assert.strictEqual(uniqueCommits(blamed).length, 7);
 
         settings.restore();
     });
@@ -188,7 +211,11 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[4].author.displayName, 'test');
         assert.strictEqual(blamed[5].author.displayName, '&%¤#"!?=(){}[]/\\');
         assert.strictEqual(blamed[6].author.displayName, 'TT');
-        assert.strictEqual(blamed.length, 7);
+        assert.strictEqual(blamed[7].author.displayName, '连杰');
+        assert.strictEqual(blamed[8].author.displayName, '连杰');
+        assert.strictEqual(blamed[9].author.displayName, '连杰');
+        assert.strictEqual(blamed.length, 10);
+        assert.strictEqual(uniqueCommits(blamed).length, 7);
 
         settings.restore();
     });

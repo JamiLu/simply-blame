@@ -76,7 +76,7 @@ export const blameFile = async (file: string) => {
     do {
         try {
             const bufferLength = BUFFER + retryCount * 512;
-            const { stdout } = await promiseExec(`cd ${location} && git blame --line-porcelain ${name}`, { maxBuffer: bufferLength * bufferLength });
+            const { stdout } = await promiseExec(`cd ${location} && git blame --porcelain ${name}`, { maxBuffer: bufferLength * bufferLength });
 	
             return stdout;
         } catch (e) {
@@ -106,6 +106,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
 
     let codelineNext = false;
     const parsed: BlamedDocument[] = [];
+    const authors: Record<string, BlamedDocument> = {};
 	
     blamed.map((line) => {
         const [, hash,, linenumber] = line.match((/([0-9a-f]{40})\s(\d+)\s(\d+)\s?(\d*)/)) ?? [];
@@ -132,18 +133,32 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
 
             if (author && !codelineNext && !email && !time && !summary && !filename) {
                 entry.author = createAuthor(author, authorStyle);
+                authors[entry.hash] = entry;
             } else if (email && !codelineNext && !author && !time && !summary && !filename) {
                 entry.email = email;
+                authors[entry.hash] = entry;
             } else if (time && !codelineNext && !author && !email && !summary && !filename) {
                 entry.date = createDate(Number(time), dateFormat);
+                authors[entry.hash] = entry;
             } else if (summary && !codelineNext && !author && !email && !time && !filename) {
                 entry.summary = summary;
+                authors[entry.hash] = entry;
             } else if (filename && !codelineNext && !author && !email && !time && !summary) {
                 entry.filename = filename;
+                authors[entry.hash] = entry;
                 codelineNext = true;
             } else if (codelineNext) {
                 entry.codeline = line;
+                authors[entry.hash] = entry;
                 codelineNext = false;
+            } else if (line.length > 0) {
+                const info = authors[entry.hash];
+                entry.author = info.author;
+                entry.email = info.email;
+                entry.date = info.date;
+                entry.summary = info.summary;
+                entry.filename = info.filename;
+                entry.codeline = line;
             }
 			
             parsed.splice(-1, 1, entry);
