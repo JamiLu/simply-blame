@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as blameMock from '../../Blame';
-import Notifications from '../../Notifications';
+import * as git from '../../Git';
 import Settings from '../../Settings';
 import { activateExtension, document } from './helpers';
 
@@ -67,27 +67,18 @@ filename src/test.ts
 
 suite('Test Blame', () => {
 
-    let mock: sinon.SinonMock;
-    let gitNotFoundSpy: sinon.SinonSpy;
-    let commonErrorSpy: sinon.SinonSpy;
+    let gitMock: sinon.SinonMock;
 
     mocha.before(async () => {
         await activateExtension();
-        gitNotFoundSpy = sinon.spy(Notifications, 'gitNotFoundNotification');
-        commonErrorSpy = sinon.spy(Notifications, 'commonErrorNotification');
-    });
-
-    mocha.after(() => {
-        gitNotFoundSpy.restore();
-        commonErrorSpy.restore();
     });
 
     mocha.beforeEach(() => {
-        mock = sinon.mock(blameMock);
+        gitMock = sinon.mock(git);
     });
 
     mocha.afterEach(() => {
-        mock.restore();
+        gitMock.restore();
     });
 
     const uniqueCommits = (blamed: blameMock.BlamedDocument[]) => {
@@ -99,54 +90,9 @@ suite('Test Blame', () => {
         }, []);
     };
 
-    test('test blameFile throws git not found git not found notification shown', async () => {
-        const stub = sinon.stub(blameMock, 'promiseExec').throwsException(new Error('git: not found'));
-
-        await blameMock.blameFile('test.txt');        
-        
-        assert.ok(gitNotFoundSpy.calledOnce);
-        stub.restore();
-    });
-
-    test('test blameFile throws error common notification is shown', async () => {
-        const stub = sinon.stub(blameMock, 'promiseExec').throwsException(new Error('something happened'));
-
-        await blameMock.blameFile('test.txt');
-
-        assert.ok(commonErrorSpy.calledOnce);
-        stub.restore();
-    });
-
-    test('test blameFile slash succeeds', async () => {
-        const spy = sinon.spy(blameMock, 'promiseExec');
-
-        await blameMock.blameFile('path/to/file/test.ts');
-        
-        assert.ok(spy.calledWith(`cd path/to/file/ && git blame --porcelain test.ts`));
-        spy.restore();
-    });
-
-    test('test blameFile backslash succeeds', async () => {
-        const spy = sinon.spy(blameMock, 'promiseExec');
-
-        await blameMock.blameFile('path\\to\\file\\test.ts');
-
-        assert.ok(spy.calledWith('cd path\\to\\file\\ && git blame --porcelain test.ts'));
-        spy.restore();
-    });
-
-    test('test blameFile filename with dash succeeds', async () => {
-        const spy = sinon.spy(blameMock, 'promiseExec');
-
-        await blameMock.blameFile('path/to/file/test-this.txt');
-
-        assert.ok(spy.calledWith(`cd path/to/file/ && git blame --porcelain test-this.txt`));
-        spy.restore();
-    });
-
     test('test blame function', async () => {
         const settings = sinon.stub(Settings, 'getAuthorStyle').returns('full');
-        mock.expects('blameFile').returns(getBlame());
+        gitMock.expects('blameFile').returns(getBlame());
 
         const blamed = await blameMock.blame(document);
 
@@ -178,7 +124,7 @@ suite('Test Blame', () => {
 
     test('test blame annotation first name', async () => {
         const settings = sinon.stub(Settings, 'getAuthorStyle').returns('first');
-        mock.expects('blameFile').returns(getBlame());
+        gitMock.expects('blameFile').returns(getBlame());
 
         const blamed = await blameMock.blame(document);
 
@@ -200,7 +146,7 @@ suite('Test Blame', () => {
 
     test('test blame annotation last name', async () => {
         const settings = sinon.stub(Settings, 'getAuthorStyle').returns('last');
-        mock.expects('blameFile').returns(getBlame());
+        gitMock.expects('blameFile').returns(getBlame());
 
         const blamed = await blameMock.blame(document);
 

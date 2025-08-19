@@ -2,12 +2,9 @@
  * License GPL-2.0
  */
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
-import { promisify } from 'util';
 import { parseDate, prependZero } from './Date';
-import { getFilename } from './Utils';
-import Notifications from './Notifications';
 import Settings from './Settings';
+import { blameFile } from './Git';
 
 export interface BlamedAuthor {
     name: string;
@@ -34,11 +31,6 @@ export interface BlamedDocument {
 }
 
 export const ZERO_HASH = '0000000000000000000000000000000000000000';
-
-const MAX_RETRY = 5;
-const BUFFER = 1024;
-
-export const promiseExec = promisify(exec);
 
 const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
     const blamedAuthor = { name: author, displayName: author };
@@ -67,40 +59,8 @@ const createDate = (seconds: number, dateFormat: string): BlamedDate => {
     };
 };
 
-export const blameFile = async (file: string) => {
-    const name = getFilename(file);
-    const location = file.replace(name || '', '');
-
-    let retryCount = 0;
-    let shouldRetry = false;
-    do {
-        try {
-            const bufferLength = BUFFER + retryCount * 512;
-            const { stdout } = await promiseExec(`cd ${location} && git blame --porcelain ${name}`, { maxBuffer: bufferLength * bufferLength });
-	
-            return stdout;
-        } catch (e) {
-            if ((e as Error).message.match(/git\:?\s*(not found)?/)) {
-                Notifications.gitNotFoundNotification();
-            } else if (e instanceof RangeError) {
-                if (retryCount < MAX_RETRY) {
-                    retryCount++;
-                    shouldRetry = true;
-                } else {
-                    Notifications.commonErrorNotification(e as Error, true);
-                }
-            } else {
-                Notifications.commonErrorNotification(e as Error, true);
-            }
-		  }
-    } while (shouldRetry);
-	
-
-    return '';
-};
-
 export const blame = async (document: vscode.TextDocument): Promise<BlamedDocument[]> => {
-  	const blamed = (await blameFile(document.fileName)).split("\n");
+  	const blamed = (await blameFile(document.fileName)).split('\n');
     const authorStyle = Settings.getAuthorStyle();
     const dateFormat = Settings.getDateFormat();
 

@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 import { command } from './Command';
 import Notifications from './Notifications';
-import { getLocation } from './Utils';
+import { getFilename, getLocation } from './Utils';
 
 export const getCommitMessage = async (document: vscode.TextDocument, commit: string) => {
     const location = getLocation(document.fileName);
@@ -16,4 +16,20 @@ export const getCommitMessage = async (document: vscode.TextDocument, commit: st
     } catch (e) {
         Notifications.commonErrorNotification(e as Error, true);
     }
+};
+
+export const blameFile = async (fileName: string): Promise<string> => {
+    const name = getFilename(fileName);
+    const location = fileName.replace(name, '');
+
+    try {
+        return await command(`cd ${location} && git blame --porcelain ${name}`) ?? '';
+    } catch (e) {
+        if ((e as Error).message.match(/git\:?\s*(not found)?/)) {
+            Notifications.gitNotFoundNotification();
+        } else {
+            Notifications.commonErrorNotification(e as Error, true);
+        }
+    }
+    return '';
 };

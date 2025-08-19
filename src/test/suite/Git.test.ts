@@ -4,24 +4,31 @@
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as assert from 'assert';
-import { getCommitMessage } from '../../Git';
+import { getCommitMessage, blameFile } from '../../Git';
 import { activateExtension, createMockBlame, document } from './helpers';
 import * as cmdMock from '../../Command';
 import { getLocation } from '../../Utils';
+import Notifications from '../../Notifications';
 
 suite('Test Git commands', () => {
 
     const blame = createMockBlame(10, new Date(2025, 2, 10)); // 10th March 2025
 
     let commandStub: sinon.SinonStub;
+    let gitNotFoundSpy: sinon.SinonSpy;
+    let commonErrorSpy: sinon.SinonSpy;
 
     mocha.before(async () => {
         await activateExtension();
         commandStub = sinon.stub(cmdMock, 'command');
+        gitNotFoundSpy = sinon.spy(Notifications, 'gitNotFoundNotification');
+        commonErrorSpy = sinon.spy(Notifications, 'commonErrorNotification');
     });
 
     mocha.after(() => {
         commandStub.restore();
+        gitNotFoundSpy.restore();
+        commonErrorSpy.restore();
     });
 
     test('test getCommitMessage', async () => {
@@ -60,5 +67,39 @@ Few points about this commit:
 Maybe this commit message is long and descriptive enough to prove a point.
 
 `);
+    });
+
+    test('test blameFile throws git not found git not found notification shown', async () => {
+        commandStub.throwsException(new Error('git: not found'));
+
+        await blameFile('test.txt');        
+        
+        assert.ok(gitNotFoundSpy.calledOnce);
+    });
+
+    test('test blameFile throws error common notification is shown', async () => {
+        commandStub.throwsException(new Error('something happened'));
+
+        await blameFile('test.txt');
+
+        assert.ok(commonErrorSpy.calledOnce);
+    });
+
+    test('test blameFile slash succeeds', async () => {      
+        await blameFile('path/to/file/test.ts');
+        
+        sinon.assert.calledWithExactly(commandStub, `cd path/to/file/ && git blame --porcelain test.ts`);
+    });
+
+    test('test blameFile backslash succeeds', async () => {
+        await blameFile('path\\to\\file\\test.ts');
+
+        sinon.assert.calledWithExactly(commandStub, 'cd path\\to\\file\\ && git blame --porcelain test.ts');
+    });
+
+    test('test blameFile filename with dash succeeds', async () => {
+        await blameFile('path/to/file/test-this.txt');
+
+        sinon.assert.calledWithExactly(commandStub, `cd path/to/file/ && git blame --porcelain test-this.txt`);
     });
 });
