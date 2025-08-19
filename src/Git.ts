@@ -25,7 +25,9 @@ export const blameFile = async (fileName: string): Promise<string> => {
     try {
         return await command(`cd ${location} && git blame --porcelain ${name}`) ?? '';
     } catch (e) {
-        if ((e as Error).message.match(/git\:?\s*(not found)?/)) {
+        if ((e as Error).message.match(/no such path .* in HEAD/)) {
+            vscode.window.showWarningMessage(`File: ${name} is not in HEAD`);
+        } else if ((e as Error).message.match(/git\:?\s*(not found)?/)) {
             Notifications.gitNotFoundNotification();
         } else {
             Notifications.commonErrorNotification(e as Error, true);
