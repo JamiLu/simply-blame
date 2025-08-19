@@ -33,6 +33,8 @@ export interface BlamedDocument {
 	filename: string;
 }
 
+export const ZERO_HASH = '0000000000000000000000000000000000000000';
+
 const MAX_RETRY = 5;
 const BUFFER = 1024;
 
