@@ -6,6 +6,7 @@ import BlameManager from './BlameManager';
 import { getCommitMessage } from './Git';
 import { createMinimalMessage, createNormalMessage } from './DecorationManager';
 import Settings from './Settings';
+import { ZERO_HASH } from './Blame';
 
 interface HoverCreator {
     createHover(document: vscode.TextDocument, position: vscode.Position, blameManager: BlameManager): Promise<vscode.Hover>
@@ -68,10 +69,10 @@ class NormalHoverCreator implements HoverCreator {
         return this.wrapPromise(async () => {
             let message;
 
-            if (this.lastCommit !== blame.hash && blame.hash !== '0') {
+            if (this.lastCommit !== blame.hash && blame.hash !== '0' && blame.hash !== ZERO_HASH) {
                 message = await getCommitMessage(document, blame.hash);
                 this.lastMsg = message;
-            } else if (this.lastCommit === blame.hash) {
+            } else if (this.lastCommit === blame.hash && blame.hash !== ZERO_HASH) {
                 message = this.lastMsg;
             }
 
