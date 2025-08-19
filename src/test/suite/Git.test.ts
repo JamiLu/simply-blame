@@ -1,6 +1,7 @@
 /**
  * License GPL-2.0
  */
+import * as vscode from 'vscode';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as assert from 'assert';
@@ -83,6 +84,17 @@ Maybe this commit message is long and descriptive enough to prove a point.
         await blameFile('test.txt');
 
         assert.ok(commonErrorSpy.calledOnce);
+    });
+
+    test('test blameFile shows a warning message when path is not in HEAD', async () => {
+        const showWarningMessage = sinon.stub(vscode.window, 'showWarningMessage');
+
+        commandStub.throwsException(new Error('fatal: no such path dev/index.ts in HEAD'));
+
+        await blameFile('index.ts');
+
+        assert.ok(showWarningMessage.calledOnce);
+        showWarningMessage.restore();
     });
 
     test('test blameFile slash succeeds', async () => {      
