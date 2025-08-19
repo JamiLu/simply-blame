@@ -5,12 +5,13 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
-import * as blameMock from '../../Blame';
+import * as gitMock from '../../Git';
 import * as heatMapMock from '../../HeatMap';
 import * as utils from '../../Utils';
 import Settings from '../../Settings';
 import { activateExtension, createMockBlamedDocument, document } from './helpers';
 import { getBlame } from './Blame.test';
+import { blame } from '../../Blame';
 
 suite('Test HeatMap', () => {
 
@@ -44,9 +45,9 @@ suite('Test HeatMap', () => {
 
     test('test heatmap generation highlight strategy', async () => {
         strategyStub.returns('highlight');
-        const blameFileStub = sinon.stub(blameMock, 'blameFile').returns(Promise.resolve(getBlame()));
+        const blameFileStub = sinon.stub(gitMock, 'blameFile').returns(Promise.resolve(getBlame()));
 
-        const blamed = await blameMock.blame(document);
+        const blamed = await blame(document);
 
         const heatMap = heatMapMock.indexHeatColors(blamed, heatColors);
 

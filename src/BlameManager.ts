@@ -4,9 +4,10 @@
 import * as vscode from 'vscode';
 import DecorationManager from './DecorationManager';
 import HeatMapManager from './HeatMapManager';
-import { BlamedDocument, blame, blameFile } from './Blame';
+import { BlamedDocument, blame } from './Blame';
 import { getFilename } from './Utils';
 import ExtensionManager from './ExtensionManager';
+import { blameFile } from './Git';
 
 class BlameManager {
 
