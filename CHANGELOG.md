@@ -2,6 +2,12 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.9.0]
+ ### Add
+  - Show a warning message for files not found from git HEAD
+ ### Update
+  - Improve blame speed
+
 ## [1.8.1]
  ### Update
   - Fix retrieve empty commit message issue
