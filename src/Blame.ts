@@ -83,8 +83,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
                 summary: '',
                 filename: '',
             });
-        } 
-        else if (parsed.length > 0) {
+        } else if (parsed.length > 0) {
             const entry = parsed.at(-1)!;
 
             const [,, author] = line.match(/(author\s)(.*)/) ?? [];
