@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.9.1]
+ ### Update
+  - Fix parse git blame
+
 ## [1.9.0]
  ### Add
   - Show a warning message for files not found from git HEAD
