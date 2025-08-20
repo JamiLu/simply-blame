@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { BlamedDocument } from './Blame';
 import { prependSpace } from './Date';
 import HeatMapManager from './HeatMapManager';
+import { log } from './Logger';
 
 type BlameDecoration = [vscode.DecorationOptions, vscode.DecorationOptions];
 
@@ -18,9 +19,11 @@ class DecorationManager {
     }
 
     public calculateDefaultWidth(blamed: BlamedDocument[]) {
+        log.trace('Calculate width started');
         this.defaultWidth = `${blamed.filter(line => line.hash !== '0')
             .map(line => line.author.displayName.length)
             .reduce((prev, curr) => prev > curr ? prev : curr, 0) * 9 + 25}px`;
+        log.trace('Calculated width', this.defaultWidth);
     }
 
     public getDecorationOptions(range: vscode.Range, blamedDocument: BlamedDocument): BlameDecoration {

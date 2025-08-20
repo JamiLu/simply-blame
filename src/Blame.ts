@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { parseDate, prependZero } from './Date';
 import Settings from './Settings';
 import { blameFile } from './Git';
+import { log } from './Logger';
 
 export interface BlamedAuthor {
     name: string;
@@ -60,18 +61,18 @@ const createDate = (seconds: number, dateFormat: string): BlamedDate => {
 };
 
 export const blame = async (document: vscode.TextDocument): Promise<BlamedDocument[]> => {
-  	const blamed = (await blameFile(document.fileName)).split('\n');
+  	const blamed = (await blameFile(document.fileName)).split("\n");
+    log.trace('Got blamed file');
     const authorStyle = Settings.getAuthorStyle();
     const dateFormat = Settings.getDateFormat();
 
-    let codelineNext = false;
+    let lastLine = 'codeline';
     const parsed: BlamedDocument[] = [];
     const authors: Record<string, BlamedDocument> = {};
 	
-    blamed.map((line) => {
-        const [, hash,, linenumber] = line.match((/([0-9a-f]{40})\s(\d+)\s(\d+)\s?(\d*)/)) ?? [];
-
-        if (hash && linenumber && !codelineNext) {
+    blamed.forEach((line) => {
+        const [, hash,, linenumber] = line.match((/^([0-9a-f]{40})\s(\d+)\s(\d+)\s?(\d*)$/)) ?? [];
+        if (hash && linenumber && lastLine === 'codeline') {
             parsed.push({
                 hash,
                 linenumber,
@@ -91,27 +92,27 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
             const [,, summary] = line.match(/(summary\s)(.*)/) ?? [];
             const [,, filename] = line.match(/(filename\s)(.*)/) ?? [];
 
-            if (author && !codelineNext && !email && !time && !summary && !filename) {
+            if (author && !email && !time && !summary && !filename && !authors[entry.hash]) {
                 entry.author = createAuthor(author, authorStyle);
                 authors[entry.hash] = entry;
-            } else if (email && !codelineNext && !author && !time && !summary && !filename) {
+                lastLine = 'author';
+            } else if (email && !author && !time && !summary && !filename && lastLine === 'author') {
                 entry.email = email;
                 authors[entry.hash] = entry;
-            } else if (time && !codelineNext && !author && !email && !summary && !filename) {
+                lastLine = 'email';
+            } else if (time && !author && !email && !summary && !filename && lastLine === 'email') {
                 entry.date = createDate(Number(time), dateFormat);
                 authors[entry.hash] = entry;
-            } else if (summary && !codelineNext && !author && !email && !time && !filename) {
+                lastLine = 'date';
+            } else if (summary && !author && !email && !time && !filename && lastLine === 'date') {
                 entry.summary = summary;
                 authors[entry.hash] = entry;
-            } else if (filename && !codelineNext && !author && !email && !time && !summary) {
+                lastLine = 'summary';
+            } else if (filename && !author && !email && !time && !summary && lastLine === 'summary') {
                 entry.filename = filename;
                 authors[entry.hash] = entry;
-                codelineNext = true;
-            } else if (codelineNext) {
-                entry.codeline = line;
-                authors[entry.hash] = entry;
-                codelineNext = false;
-            } else if (line.length > 0) {
+                lastLine = 'filename';
+            } else if (line.length > 0 && authors[entry.hash]) {
                 const info = authors[entry.hash];
                 entry.author = info.author;
                 entry.email = info.email;
@@ -119,11 +120,14 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
                 entry.summary = info.summary;
                 entry.filename = info.filename;
                 entry.codeline = line;
+                lastLine = 'codeline';
             }
-			
+
             parsed.splice(-1, 1, entry);
         }
     });
+
+    log.trace('Parsed lines', parsed.length);
 
     return parsed;
 };

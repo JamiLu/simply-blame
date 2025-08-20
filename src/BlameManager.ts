@@ -8,6 +8,7 @@ import { BlamedDocument, blame } from './Blame';
 import { getFilename } from './Utils';
 import ExtensionManager from './ExtensionManager';
 import { blameFile } from './Git';
+import { log } from './Logger';
 
 class BlameManager {
 
@@ -37,6 +38,7 @@ class BlameManager {
         this.isOpen = !this.isOpen;
 
         if (this.isOpen) {
+            log.trace('Open blame start');
             ExtensionManager.setBusy(true);
             this.blamedDocument = await blame(editor.document);
             this.decorationManager.calculateDefaultWidth(this.blamedDocument);
@@ -47,6 +49,7 @@ class BlameManager {
             } else {
                 this.isOpen = false;
             }
+            log.trace('Open blame end');
             ExtensionManager.setBusy(false);
         } else {
             editor.setDecorations(this.nameRoot, []);
@@ -117,6 +120,7 @@ ${content}
         const dateOptions: vscode.DecorationOptions[] = [];
 
         if (this.blamedDocument.length > 0) {
+            log.trace('Apply decorations');
             for (let i = 0; i < document.lineCount; i++) {
                 const line = document.lineAt(i);
                 const range = line.range;
