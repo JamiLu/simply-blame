@@ -122,7 +122,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
                 entry.codeline = line;
                 lastLine = 'codeline';
             }
-            
+
             parsed.splice(-1, 1, entry);
         }
     });
