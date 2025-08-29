@@ -1,38 +1,35 @@
 /**
  * License GPL-2.0
  */
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { spawn } from 'child_process';
 import { log } from './Logger';
-import Notifications from './Notifications';
 
-const MAX_RETRY = 5;
-const BUFFER = 1024;
+export const command = async (command: string): Promise<string> => {
+    return await new Promise<string>((resolve, reject) => {
+        let res = '';
 
-const promiseExec = promisify(exec);
+        log.trace('Command ', command, 'started');
+        const cmd = spawn(command, { shell: true });
 
-export const command = async (command: string): Promise<string | undefined> => {
-    let retryCount = 0;
-    let shouldRetry = false;
+        cmd.stdout.on('data', (chunk) => {
+            res += String(chunk);
+        });
 
-    do {
-        try {
-            const bufferLength = BUFFER + retryCount * 512;
-            const { stdout } = await promiseExec(`${command}`, { maxBuffer: bufferLength * bufferLength });
-	
-            return stdout;
-        } catch (e) {
-            if (e instanceof RangeError) {
-                if (retryCount < MAX_RETRY) {
-                    retryCount++;
-                    shouldRetry = true;
-                } else {
-                    log.error(`Max retry count reached, retries: ${retryCount}, buffer: ${BUFFER * retryCount * 512}`);
-                    Notifications.commonErrorNotification(e as Error, true);
-                }
+        cmd.stderr.on('data', (chunk) => {
+            res += String(chunk);
+        });
+
+        cmd.on('error', (e: Error) => {
+            reject(e);
+        });
+
+        cmd.on('close', (code) => {
+            log.trace('Command ', command, 'completed with code', code);
+            if (code === 0) {
+                resolve(res);
             } else {
-                throw e;
+                reject(new Error(res));
             }
-		  }
-    } while (shouldRetry);
+        });
+    });
 };
