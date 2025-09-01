@@ -2,7 +2,11 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
-# [1.9.3]
+## [1.9.4]
+ ### Update
+  - Fix and improve blame parsing
+
+## [1.9.3]
  ### Update
   - Fix & improve blame parsing
   - Fix minimal hover box shown on empty commit

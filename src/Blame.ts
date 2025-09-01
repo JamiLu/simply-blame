@@ -93,23 +93,23 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
             const [,, summary] = line.match(/(summary\s)(.*)/) ?? [];
             const [,, filename] = line.match(/(filename\s)(.*)/) ?? [];
 
-            if (author && !email && !time && !summary && !filename && !authors[entry.hash]) {
+            if (author && !authors[entry.hash]) {
                 entry.author = createAuthor(author, authorStyle);
                 authors[entry.hash] = entry;
                 lastLine = 'author';
-            } else if (email && !author && !time && !summary && !filename && lastLine === 'author') {
+            } else if (email && lastLine === 'author') {
                 entry.email = email;
                 authors[entry.hash] = entry;
                 lastLine = 'email';
-            } else if (time && !author && !email && !summary && !filename && lastLine === 'email') {
+            } else if (time && lastLine === 'email') {
                 entry.date = createDate(Number(time), dateFormat);
                 authors[entry.hash] = entry;
                 lastLine = 'date';
-            } else if (summary && !author && !email && !time && !filename && lastLine === 'date') {
+            } else if (summary && lastLine === 'date') {
                 entry.summary = summary;
                 authors[entry.hash] = entry;
                 lastLine = 'summary';
-            } else if (filename && !author && !email && !time && !summary && lastLine === 'summary') {
+            } else if (filename && lastLine === 'summary') {
                 entry.filename = filename;
                 authors[entry.hash] = entry;
                 lastLine = 'filename';
