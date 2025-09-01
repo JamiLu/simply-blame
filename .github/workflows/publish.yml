@@ -52,3 +52,7 @@ jobs:
         env: 
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: npm run deploy
+      - name: publish to open registry
+        env: 
+          OVSX_PAT: ${{ secrets.OR_TOKEN }}
+        run: npm run deploy:ovsx
