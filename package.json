@@ -19,6 +19,10 @@
   ],
   "main": "./out/extension.js",
   "icon": "icon.png",
+  "keywords": [
+    "vscode", "extension", "openvsx","git", "blame", "annotations"
+  ],
+  "homepage": "https://simplyblame.com",
   "contributes": {
     "configuration": {
       "title": "SimplyBlame",
