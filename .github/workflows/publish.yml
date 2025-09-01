@@ -55,6 +55,4 @@ jobs:
       - name: publish to open registry
         env: 
           OVSX_PAT: ${{ secrets.OR_TOKEN }}
-        run: |
-          npm install ovsx
-          npx ovsx publish
+        run: npm run deploy:ovsx
