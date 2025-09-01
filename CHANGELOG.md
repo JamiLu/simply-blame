@@ -2,6 +2,12 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+# [1.9.3]
+ ### Update
+  - Fix & improve blame parsing
+  - Fix minimal hover box shown on empty commit
+  - Fix hash action resolve remote address
+
 ## [1.9.2]
  ### Update
   - Fix max buffer length exceeded issue
