@@ -83,6 +83,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
                 summary: '',
                 filename: '',
             });
+            lastLine = 'init';
         } else if (parsed.length > 0) {
             const entry = parsed.at(-1)!;
 
@@ -112,7 +113,7 @@ export const blame = async (document: vscode.TextDocument): Promise<BlamedDocume
                 entry.filename = filename;
                 authors[entry.hash] = entry;
                 lastLine = 'filename';
-            } else if (line.length > 0 && authors[entry.hash]) {
+            } else if (line.length > 0 && authors[entry.hash] && (lastLine === 'init' || lastLine === 'filename')) {
                 const info = authors[entry.hash];
                 entry.author = info.author;
                 entry.email = info.email;
