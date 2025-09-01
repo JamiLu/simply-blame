@@ -6,7 +6,7 @@ import Settings from './Settings';
 import { log } from './Logger';
 import Notifications from './Notifications';
 
-let remoteAddress: vscode.Uri;
+let remoteAddress: string;
 
 const findGitFolder = async (uri: vscode.Uri | undefined): Promise<vscode.Uri | undefined> => {
     if (uri) {
@@ -44,19 +44,16 @@ const resolveRemote = async (hash: string) => {
 
     if (!uri) {
         throw new Error('Remote url could not be resolved');
-    }
-
-    let remote = undefined;
+    }    
 
     if (uri.startsWith('git@')) {
-        remote = `https://${uri.replace('git@', '').replace(':', '/').replace('.git', '')}`;
+        remoteAddress = `https://${uri.replace('git@', '').replace(':', '/').replace('.git', '')}`;
     } else {
-        remote = uri.replace('.git', '');
+        remoteAddress = uri.replace('.git', '');
     }
     
-    log.debug(`Parsed remote address: ${remote}`);
+    log.debug(`Parsed remote address: ${remoteAddress}`);
 
-    remoteAddress = vscode.Uri.parse(`${remote}/commit/${hash}`);
     return remoteAddress;
 };
 
@@ -65,7 +62,7 @@ export const hashAction = async (hash: string) => {
     switch (action) {
         case 'remote':
             try {
-                await vscode.env.openExternal(remoteAddress ?? await resolveRemote(hash));
+                await vscode.env.openExternal(vscode.Uri.parse(`${remoteAddress ?? await resolveRemote(hash)}/commit/${hash}`));
             } catch (e) {
                 Notifications.commonErrorNotification(e as Error, true);
             }

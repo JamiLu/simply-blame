@@ -9,7 +9,7 @@ import Settings from './Settings';
 import { ZERO_HASH } from './Blame';
 
 interface HoverCreator {
-    createHover(document: vscode.TextDocument, position: vscode.Position, blameManager: BlameManager): Promise<vscode.Hover>
+    createHover(document: vscode.TextDocument, position: vscode.Position, blameManager: BlameManager): Promise<vscode.Hover> | undefined
 }
 
 class BlameHoverProvider implements vscode.HoverProvider {
@@ -22,6 +22,7 @@ class BlameHoverProvider implements vscode.HoverProvider {
         this.blameManager = blameManager;
         this.hoverCreators = [new NormalHoverCreator(), new MinimalHoverCreator()];
         this.hoverCreator = this.hoverCreators[0];
+        this.refresh();
     }
 
     refresh() {
@@ -47,9 +48,12 @@ export default BlameHoverProvider;
 
 class MinimalHoverCreator implements HoverCreator {
 
-    createHover(document: vscode.TextDocument, position: vscode.Position, blameManager: BlameManager): Promise<vscode.Hover> {
+    createHover(document: vscode.TextDocument, position: vscode.Position, blameManager: BlameManager): Promise<vscode.Hover> | undefined  {
         const blame = blameManager.getBlameAt(position.line);
-        return Promise.resolve(new vscode.Hover(createMinimalMessage(blame), document.lineAt(position.line).range));
+
+        if (blame.hash !== '0') {
+            return Promise.resolve(new vscode.Hover(createMinimalMessage(blame), document.lineAt(position.line).range));
+        }
     }
 
 }
