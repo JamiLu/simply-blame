@@ -52,7 +52,7 @@ class MinimalHoverCreator implements HoverCreator {
         const blame = blameManager.getBlameAt(position.line);
 
         if (blame.hash !== '0') {
-            return Promise.resolve(new vscode.Hover(createMinimalMessage(blame), document.lineAt(position.line).range));
+            return Promise.resolve(new vscode.Hover(createMinimalMessage(blame, document.fileName), document.lineAt(position.line).range));
         }
     }
 
@@ -82,7 +82,7 @@ class NormalHoverCreator implements HoverCreator {
 
             this.lastCommit = blame.hash;
 
-            return new vscode.Hover(createNormalMessage(blame, message), document.lineAt(position.line).range);
+            return new vscode.Hover(createNormalMessage(blame, document.fileName, message), document.lineAt(position.line).range);
         });
     }
 }

@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as assert from 'assert';
-import { activateExtension, createMockGitConfig } from './helpers';
+import { activateExtension, createMockGitConfig, document } from './helpers';
 import Settings from '../../Settings';
 import Notifications from '../../Notifications';
 import { hashAction } from '../../HashAction';
@@ -42,7 +42,7 @@ suite('Test HashAction', () => {
         settings.returns('remote');
         openExternal.resolves(true);
 
-        await hashAction('testHash');
+        await hashAction('testHash', document.fileName);
 
         sinon.assert.notCalled(commonErrorSpy);
         sinon.assert.calledOnceWithExactly(openExternal, vscode.Uri.parse('https://github.com/test/test-repo/commit/testHash'));
@@ -52,7 +52,7 @@ suite('Test HashAction', () => {
     test('test hashAction settings return copy', async () => {
         settings.returns('copy');
 
-        hashAction('testHash');
+        hashAction('testHash', document.fileName);
 
         assert.strictEqual(await vscode.env.clipboard.readText(), 'testHash');
     });

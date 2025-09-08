@@ -83,7 +83,7 @@ const trustedMdString = () => {
     return str;
 };
 
-export const createNormalMessage = (blame: BlamedDocument, fullBody?: string): vscode.MarkdownString  => {
+export const createNormalMessage = (blame: BlamedDocument, filename: string, fullBody?: string): vscode.MarkdownString  => {
     return trustedMdString()
         .appendMarkdown(`$(account) &nbsp; ${blame.author.name}`)
         .appendText('\n')
@@ -93,15 +93,15 @@ export const createNormalMessage = (blame: BlamedDocument, fullBody?: string): v
         .appendText('\n')
         .appendMarkdown('***')
         .appendText('\n')
-        .appendMarkdown(`[$(copy) &nbsp; ${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash }])}`)})`)
+        .appendMarkdown(`[$(copy) &nbsp; ${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash, filename }])}`)})`)
         .appendText('\n')
         .appendMarkdown(`****\n`)
         .appendText(`${fullBody ?? blame.summary}`);
 };
 
-export const createMinimalMessage = (blame: BlamedDocument): vscode.MarkdownString => {
+export const createMinimalMessage = (blame: BlamedDocument, filename: string): vscode.MarkdownString => {
     return trustedMdString()
-        .appendMarkdown(`[${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash }])}`)})`)
+        .appendMarkdown(`[${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash, filename }])}`)})`)
         .appendText('\n')
         .appendMarkdown(`****\n`)
         .appendMarkdown(`${blame.summary}`);
