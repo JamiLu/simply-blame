@@ -43,9 +43,9 @@ const trimProjectLocation = (root: vscode.Uri | undefined, filename: string) => 
     return lookFor.split(path.sep);
 };
 
-const resolveRemote = async (filename: string) => {
+const resolveRemote = async () => {
     const root = vscode.workspace.workspaceFolders?.at(0)?.uri;
-    const projectLocation = trimProjectLocation(root, filename);
+    const projectLocation = trimProjectLocation(root, vscode.window.activeTextEditor?.document.fileName!);
 
     if (remotes[projectLocation[0]]) {
         log.debug('Found existing remote address:', remotes[projectLocation[0]]);
@@ -82,12 +82,12 @@ const resolveRemote = async (filename: string) => {
     return remoteAddress;
 };
 
-export const hashAction = async (hash: string, fileName: string) => {
+export const hashAction = async (hash: string) => {
     const action = Settings.getHashAction();
     switch (action) {
         case 'remote':
             try {
-                await vscode.env.openExternal(vscode.Uri.parse(`${await resolveRemote(fileName)}/commit/${hash}`));
+                await vscode.env.openExternal(vscode.Uri.parse(`${await resolveRemote()}/commit/${hash}`));
             } catch (e) {
                 Notifications.commonErrorNotification(e as Error, true);
             }

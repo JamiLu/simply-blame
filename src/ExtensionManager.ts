@@ -41,8 +41,8 @@ class ExtensionManager {
             await this.blameManager.toggleBlame(textEditor);
         });
 
-        const hashActionCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash, filename }: any) => {
-            await hashAction(hash, filename);
+        const hashActionCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash }: any) => {
+            await hashAction(hash);
         });
 
         const hoverProvider = vscode.languages.registerHoverProvider({ scheme: 'file' }, this.blameHoverProvider);

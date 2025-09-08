@@ -24,6 +24,18 @@ export const activateExtension = async () => {
     return ext;
 };
 
+export const mockActiveEditor = () => {
+    let stub: sinon.SinonStub;
+    return {
+        mock: () => {
+            stub = sinon.stub(vscode.window, 'activeTextEditor').value({ document } as vscode.TextEditor);
+        },
+        restore: () => {
+            stub.restore();
+        }
+    };
+};
+
 export const createMockBlame = (i: number, d: Date): blameMock.BlamedDocument => {
     return {
         author: { name: 'test', displayName: 'test' },

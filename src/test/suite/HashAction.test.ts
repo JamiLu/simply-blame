@@ -5,13 +5,14 @@ import * as vscode from 'vscode';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as assert from 'assert';
-import { activateExtension, createMockGitConfig, document } from './helpers';
+import { activateExtension, createMockGitConfig, mockActiveEditor } from './helpers';
 import Settings from '../../Settings';
 import Notifications from '../../Notifications';
 import { hashAction } from '../../HashAction';
 
 suite('Test HashAction', () => {
 
+    const activeEditor = mockActiveEditor();
     const mockGitConfig = createMockGitConfig();
     let settings: sinon.SinonStub;
     let openExternal: sinon.SinonStub;
@@ -32,17 +33,19 @@ suite('Test HashAction', () => {
 
     mocha.beforeEach(() => {
         settings = sinon.stub(Settings, 'getHashAction');
+        activeEditor.mock();
     });
     
     mocha.afterEach(() => {
         settings.restore();
+        activeEditor.restore();
     });
 
     test('test testAction settings return remote', async () => {
         settings.returns('remote');
         openExternal.resolves(true);
 
-        await hashAction('testHash', document.fileName);
+        await hashAction('testHash');
 
         sinon.assert.notCalled(commonErrorSpy);
         sinon.assert.calledOnceWithExactly(openExternal, vscode.Uri.parse('https://github.com/test/test-repo/commit/testHash'));
@@ -52,7 +55,7 @@ suite('Test HashAction', () => {
     test('test hashAction settings return copy', async () => {
         settings.returns('copy');
 
-        hashAction('testHash', document.fileName);
+        hashAction('testHash');
 
         assert.strictEqual(await vscode.env.clipboard.readText(), 'testHash');
     });
