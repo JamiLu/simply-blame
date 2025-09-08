@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.9.5]
+ ### Update
+  - Open a commit to remote support multiple github projects in one workspace
+
 ## [1.9.4]
  ### Update
   - Fix and improve blame parsing

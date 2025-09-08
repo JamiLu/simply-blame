@@ -5,13 +5,14 @@ import * as vscode from 'vscode';
 import * as mocha from 'mocha';
 import * as sinon from 'sinon';
 import * as assert from 'assert';
-import { activateExtension, createMockGitConfig } from './helpers';
+import { activateExtension, createMockGitConfig, mockActiveEditor } from './helpers';
 import Settings from '../../Settings';
 import Notifications from '../../Notifications';
 import { hashAction } from '../../HashAction';
 
 suite('Test HashAction', () => {
 
+    const activeEditor = mockActiveEditor();
     const mockGitConfig = createMockGitConfig();
     let settings: sinon.SinonStub;
     let openExternal: sinon.SinonStub;
@@ -32,10 +33,12 @@ suite('Test HashAction', () => {
 
     mocha.beforeEach(() => {
         settings = sinon.stub(Settings, 'getHashAction');
+        activeEditor.mock();
     });
     
     mocha.afterEach(() => {
         settings.restore();
+        activeEditor.restore();
     });
 
     test('test testAction settings return remote', async () => {
