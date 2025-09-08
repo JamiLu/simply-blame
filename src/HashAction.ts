@@ -31,21 +31,22 @@ const findGitFolder = async (uri: vscode.Uri | undefined, projectLocation: strin
     }
 };
 
-const trimProjectLocation = (root: vscode.Uri | undefined, filename: string) => {
+const trimProjectLocation = (root: vscode.Uri | undefined, filename: string | undefined) => {
+    if (!filename) {
+        log.error('Could not resolve project folder from root', root?.fsPath, ',', 'filename empty');
+        throw new Error(`Could not resolve project folder`);
+    }
+
     const location = getLocation(filename);
     const lookFor = location.substring(root?.fsPath.length! + 1, location.length - 1);
 
-    if (!lookFor) {
-        log.error('Could not resolve project folder from root', root?.fsPath, ',', 'location', location);
-        throw new Error(`Could not resolve project folder`);
-    }
     log.debug('Resolved project location', lookFor);
     return lookFor.split(path.sep);
 };
 
 const resolveRemote = async () => {
     const root = vscode.workspace.workspaceFolders?.at(0)?.uri;
-    const projectLocation = trimProjectLocation(root, vscode.window.activeTextEditor?.document.fileName!);
+    const projectLocation = trimProjectLocation(root, vscode.window.activeTextEditor?.document.fileName);
 
     if (remotes[projectLocation[0]]) {
         log.debug('Found existing remote address:', remotes[projectLocation[0]]);
