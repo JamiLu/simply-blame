@@ -6,9 +6,7 @@ import { BlamedDocument, BlamedDate } from './Blame';
 import Settings from './Settings';
 import { isDarkTheme } from './Utils';
 
-export interface IndexedHeatMap {
-  	[key: string]: string | vscode.ThemeColor;
-}
+export type IndexedHeatMap = Map<number, string | vscode.ThemeColor>;
 
 type RGBC = {
     r: number;
@@ -32,7 +30,7 @@ export const indexHeatColors = (blamedDocument: BlamedDocument[], heatColors: st
 		
     distinctDates.sort((a, b) => b.dateMillis - a.dateMillis);
 
-    const indexedHeatMap = {} as IndexedHeatMap;
+    const indexedHeatMap = new Map<number, string | vscode.ThemeColor>();
 
     const strategy = Settings.getHeatColorIndexStrategy();
 
@@ -41,26 +39,26 @@ export const indexHeatColors = (blamedDocument: BlamedDocument[], heatColors: st
         const last = distinctDates.pop();
 
         if (first) {
-            indexedHeatMap[first.dateString] = heatColors[0];
+            indexedHeatMap.set(first.dateMillis, heatColors[0]);
         }
 
         const commitPerColor = Math.max(1, Math.round(distinctDates.length / (heatColors.length - 2)));
 
         let colorIndex = 1;
         distinctDates.forEach((date, idx) => {
-            indexedHeatMap[date.dateString] = heatColors[colorIndex] || heatColors.at(-1)!;
+            indexedHeatMap.set(date.dateMillis, heatColors[colorIndex] || heatColors.at(-1)!);
             if (idx % commitPerColor === 0) {
                 colorIndex++;
             }
         });
 
         if (last) {
-            indexedHeatMap[last.dateString] = heatColors.at(-1)!;
+            indexedHeatMap.set(last.dateMillis, heatColors.at(-1)!);
         }
     } else {
         distinctDates.forEach((date, idx) => {
             if (idx < heatColors.length) {
-                indexedHeatMap[date.dateString] = heatColors[idx];
+                indexedHeatMap.set(date.dateMillis, heatColors[idx]);
             }
         });
     }

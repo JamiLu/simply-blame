@@ -33,6 +33,11 @@ export interface BlamedDocument {
 
 export const ZERO_HASH = '0000000000000000000000000000000000000000';
 
+const NOT_COMMITTED_AUTHOR = {
+    name: 'Not Committed Yet',
+    email: 'not.committed.yet',
+}
+
 const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
     const blamedAuthor = { name: author, displayName: author };
     switch (authorStyle) {
@@ -52,11 +57,28 @@ const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): B
 const createDate = (seconds: number, dateFormat: string): BlamedDate => {
     const d = new Date(seconds * 1000);
     return {
-        dateString:  `${d.getFullYear()}${d.getMonth()}${d.getDate()}`,
+        dateString: `${d.getFullYear()}${d.getMonth()}${d.getDate()}`,
         date: d,
         localDate: parseDate(d, dateFormat),
         dateMillis: d.getTime(),
         timeString: `${prependZero(d.getHours())}:${prependZero(d.getMinutes())}`
+    };
+};
+
+
+export const createNotCommittedLine = (filename: string, line: string, linenumber: string): BlamedDocument => {
+    const authorStyle = Settings.getAuthorStyle();
+    const dateFormat = Settings.getDateFormat();
+
+    return {
+        hash: ZERO_HASH,
+        author: createAuthor(NOT_COMMITTED_AUTHOR.name, authorStyle),
+        email: NOT_COMMITTED_AUTHOR.email,
+        codeline: line,
+        linenumber: linenumber,
+        date: createDate(Date.now() / 1000, dateFormat),
+        summary: `Version of ${filename} from ${filename}`,
+        filename: filename,
     };
 };
 
