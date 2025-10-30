@@ -109,7 +109,7 @@ ${content}
         const add = event.contentChanges.find(change => change?.text.match(/\n/) && change?.range.start.line === change.range.end.line);
         const remove = event.contentChanges.find(change => change?.text === '' && change.range.start.line < change.range.end.line);
         if (add) {
-            const notCommittedLine = createNotCommittedLine(event.document.fileName, add.text, add.range.start.line.toString());
+            const notCommittedLine = createNotCommittedLine(getFilename(event.document.fileName), add.text, add.range.start.line.toString());
             this.blamedDocument.splice(add.range.start.line + 1, 0, notCommittedLine);
         } else if (remove) {
             this.blamedDocument.splice(remove.range.start.line + 1, 1);
