@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 import DecorationManager from './DecorationManager';
 import HeatMapManager from './HeatMapManager';
-import { BlamedDocument, blame } from './Blame';
+import { BlamedDocument, blame, createNotCommittedLine } from './Blame';
 import { getFilename } from './Utils';
 import ExtensionManager from './ExtensionManager';
 import { blameFile } from './Git';
@@ -109,7 +109,8 @@ ${content}
         const add = event.contentChanges.find(change => change?.text.match(/\n/) && change?.range.start.line === change.range.end.line);
         const remove = event.contentChanges.find(change => change?.text === '' && change.range.start.line < change.range.end.line);
         if (add) {
-            this.blamedDocument.splice(add.range.start.line + 1, 0, { hash: '0' } as BlamedDocument);
+            const notCommittedLine = createNotCommittedLine(event.document.fileName, add.text, add.range.start.line.toString());
+            this.blamedDocument.splice(add.range.start.line + 1, 0, notCommittedLine);
         } else if (remove) {
             this.blamedDocument.splice(remove.range.start.line + 1, 1);
         }
