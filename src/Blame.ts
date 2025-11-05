@@ -33,6 +33,10 @@ export interface BlamedDocument {
 
 export const ZERO_HASH = '0000000000000000000000000000000000000000';
 
+export const emptyBlame = () => {
+    return { hash: '0' } as BlamedDocument;
+};
+
 const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
     const blamedAuthor = { name: author, displayName: author };
     switch (authorStyle) {
