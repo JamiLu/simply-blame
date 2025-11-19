@@ -2,9 +2,9 @@
  * License GPL-2.0
  */
 import * as vscode from 'vscode';
-import DecorationManager from './DecorationManager';
+import { calculateDecorationsWidth, DEFAULT_WIDTH, getDecorations, LEFT_SIDE, RIGHT_SIDE } from './DecorationUtils';
 import HeatMapManager from './HeatMapManager';
-import { BlamedDocument, blame, emptyBlame } from './Blame';
+import { BlamedDate, BlamedDocument, blame, emptyBlame } from './Blame';
 import { getFilename } from './Utils';
 import ExtensionManager from './ExtensionManager';
 import { blameFile } from './Git';
@@ -15,22 +15,7 @@ class BlameManager {
     private isOpen: boolean = false;
     private blamedDocument: BlamedDocument[] = [];
     private heatMapManager = new HeatMapManager();
-    private decorationManager = new DecorationManager(this.heatMapManager);
-    private baseDecorations: vscode.ThemableDecorationRenderOptions = {
-        before: {
-            color: new vscode.ThemeColor('editor.foreground'),
-            height: 'editor.lineHeight',
-            fontStyle: 'normal',
-            fontWeight: 'normal'
-        }
-    };
-    private nameRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType(this.baseDecorations);
-    private dateRoot: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType({
-        before: {
-            ...this.baseDecorations.before,
-            margin: '0 10px 0 0',
-        }
-    });
+    private width: string = DEFAULT_WIDTH;
 
     async toggleBlame(editor: vscode.TextEditor) {
         this.isOpen = !this.isOpen;
@@ -39,7 +24,7 @@ class BlameManager {
             log.trace('Open blame start');
             ExtensionManager.setBusy(true);
             this.blamedDocument = await blame(editor.document);
-            this.decorationManager.calculateDefaultWidth(this.blamedDocument);
+            this.width = calculateDecorationsWidth(this.blamedDocument);
         
             if (this.blamedDocument.length > 0) {
                 this.heatMapManager.indexHeatMap(this.blamedDocument);
@@ -50,8 +35,7 @@ class BlameManager {
             log.trace('Open blame end');
             ExtensionManager.setBusy(false);
         } else {
-            editor.setDecorations(this.nameRoot, []);
-            editor.setDecorations(this.dateRoot, []);
+            this.setDecorations(editor, [], []);
         }
     }
 
@@ -76,12 +60,19 @@ class BlameManager {
     closeBlame() {
         this.isOpen = false;
         const editor = vscode.window.activeTextEditor;
-        editor?.setDecorations(this.nameRoot, []);
-        editor?.setDecorations(this.dateRoot, []);
+        this.setDecorations(editor, [], []);
     }
 
     getBlameAt(line: number) {
         return this.blamedDocument[line];
+    }
+
+    getBlameColor(date: BlamedDate) {
+        return this.heatMapManager.getHeatColor(date);
+    }
+
+    get decorationWidth() {
+        return this.width;
     }
 
     async openBlameEditor(editor: vscode.TextEditor) {
@@ -151,18 +142,14 @@ ${content}
 
             log.trace('Apply decorations');
             for (let i = 0; i < document.lineCount; i++) {
-                const line = document.lineAt(i);
-                const range = line.range;
-
-                const [name, date] = this.decorationManager.getDecorationOptions(range, this.blamedDocument[i]);
+                const [name, date] = getDecorations(document.lineAt(i).range, this.getBlameAt(i), this);
 
                 nameOptions.push(name);
                 dateOptions.push(date);
             }
         }
 
-        editor.setDecorations(this.nameRoot, nameOptions);
-        editor.setDecorations(this.dateRoot, dateOptions);
+        this.setDecorations(editor, nameOptions, dateOptions);
     }
 
     private fixDirtyLines(document: vscode.TextDocument) {
@@ -179,6 +166,11 @@ ${content}
                 dirty--;
             }
         });
+    }
+
+    private setDecorations(editor: vscode.TextEditor | undefined, left: vscode.DecorationOptions[], right: vscode.DecorationOptions[]) {
+        editor?.setDecorations(LEFT_SIDE, left);
+        editor?.setDecorations(RIGHT_SIDE, right);
     }
 }
 
