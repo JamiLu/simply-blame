@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 import BlameManager from './BlameManager';
 import { getCommitMessage } from './Git';
-import { createMinimalMessage, createNormalMessage } from './DecorationManager';
+import { createMinimalMessage, createNormalMessage } from './DecorationUtils';
 import Settings from './Settings';
 import { ZERO_HASH } from './Blame';
 

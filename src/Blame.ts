@@ -56,7 +56,7 @@ const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): B
 const createDate = (seconds: number, dateFormat: string): BlamedDate => {
     const d = new Date(seconds * 1000);
     return {
-        dateString:  `${d.getFullYear()}${d.getMonth()}${d.getDate()}`,
+        dateString: `${d.getFullYear()}${d.getMonth()}${d.getDate()}`,
         date: d,
         localDate: parseDate(d, dateFormat),
         dateMillis: d.getTime(),
