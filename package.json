@@ -90,6 +90,12 @@
           "description": "Select a hover message style for the blame annotations.",
           "order": 1
         },
+        "simplyblame.keepBlamesOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Keep blame annotations open as long as a tab or window is open. If not selected annotations are closed on tab change.",
+          "order": 2
+        },
         "simplyblame.hashAction": {
           "type": "string",
           "enum": [

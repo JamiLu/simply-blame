@@ -5,9 +5,7 @@ import * as vscode from 'vscode';
 import { calculateDecorationsWidth, DEFAULT_WIDTH, getDecorations, LEFT_SIDE, RIGHT_SIDE } from './DecorationUtils';
 import HeatMapManager from './HeatMapManager';
 import { BlamedDate, BlamedDocument, blame, emptyBlame } from './Blame';
-import { getFilename } from './Utils';
 import ExtensionManager from './ExtensionManager';
-import { blameFile } from './Git';
 import { log } from './Logger';
 
 class BlameManager {
@@ -51,16 +49,18 @@ class BlameManager {
                     this.heatMapManager.indexHeatMap(this.blamedDocument);
                     this.applyDecorations(editor, editor.document);
                 }
+            } else {
+                this.heatMapManager.initHeatColors();
             }
-        } else {
-            this.heatMapManager.initHeatColors();
         }
     }
 
     closeBlame() {
         this.isOpen = false;
         const editor = vscode.window.activeTextEditor;
-        this.setDecorations(editor, [], []);
+        if (editor) {
+            this.setDecorations(editor, [], []);
+        }
     }
 
     getBlameAt(line: number) {
@@ -73,25 +73,6 @@ class BlameManager {
 
     get decorationWidth() {
         return this.width;
-    }
-
-    async openBlameEditor(editor: vscode.TextEditor) {
-        const blamedContent = await blameFile(editor.document.fileName);
-
-        const panel = vscode.window.createWebviewPanel('blame', `Blame - ${getFilename(editor.document.uri.path)}`, vscode.ViewColumn.Beside);
-
-        panel.webview.html = this.getHtmlForEditor(blamedContent);
-    }
-
-    private getHtmlForEditor(content: string) {
-        return `<!DOCTYPE html>
-<html>
-	<body>
-		<div style="white-space: pre">
-${content}
-		</div>
-	<body>
-</html>`;
     }
 
     private editBlamedDocument(event: vscode.TextDocumentChangeEvent) {

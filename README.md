@@ -38,6 +38,8 @@ Idea like git blame annotations for VS Code!
    * Select an action to be invoked when the commit hash is clicked on the hover box. Supported actions are copy to clipboard and open in browser.
 * **Heat Color Index Strategy**
    * Choose how the heat colors are shown. Scale through the commits, this is the default or highlight the latest commits.
+* **Keep Blames Open**
+   * Keep blame annotations open as long as a tab or window is open. If not selected annotations are closed on tab change.
 * **Use RGBColor**
    * If selected the RGBColors dark and light lists are used. This is the default.
    * Otherwise the hex color list will be used.

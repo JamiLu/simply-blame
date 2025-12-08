@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.10.0]
+ ### Add
+  - Keep blames open as long as the window or tab is open.
+
 ## [1.9.6]
  ### Update
   - Improve dirty line blame annotation handling

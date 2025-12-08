@@ -2,24 +2,23 @@
  * License GPL-2.0
  */
 import * as vscode from 'vscode';
-import BlameManager from './BlameManager';
 import Settings from './Settings';
 import { hashAction } from './HashAction';
 import BlameHoverProvider from './BlameHoverProvider';
+import EditorManager, { openBlameEditor } from './Editor';
 
 class ExtensionManager {
 
     private static instance: ExtensionManager;
 
     private context: vscode.ExtensionContext;
-    private blameManager: BlameManager;
+    private editorManager = EditorManager.getInstance();
     private blameHoverProvider: BlameHoverProvider;
     private sbStatus: vscode.StatusBarItem;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
-        this.blameManager = new BlameManager();
-        this.blameHoverProvider = new BlameHoverProvider(this.blameManager);
+        this.blameHoverProvider = new BlameHoverProvider();
         this.sbStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
         this.sbStatus.show();
     }
@@ -34,11 +33,11 @@ class ExtensionManager {
 
     registerCommands() {
         const debugCommand = vscode.commands.registerTextEditorCommand('simply-blame.openBlameInEditorDebugCommand', async (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) => {
-            await this.blameManager.openBlameEditor(textEditor);
+            await openBlameEditor(textEditor);
         });
 
         const blameCommand = vscode.commands.registerTextEditorCommand('simply-blame.simplyBlame', async (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) => {
-            await this.blameManager.toggleBlame(textEditor);
+            await this.editorManager.toggleEditor(textEditor);
         });
 
         const hashActionCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash }: any) => {
@@ -49,23 +48,27 @@ class ExtensionManager {
 
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration(Settings.config)) {
-                this.blameManager.refresh();
+                this.editorManager.currentEditor.refresh();
                 this.blameHoverProvider.refresh();
             }
         });
 
-        vscode.window.onDidChangeActiveTextEditor(() => {
-            this.blameManager.closeBlame();
+        vscode.window.onDidChangeActiveTextEditor((editor?: vscode.TextEditor) => {
+            this.editorManager.changeEditor(editor);
         });
 
         vscode.window.onDidChangeActiveColorTheme(() => {
-            this.blameManager.refresh();
+            this.editorManager.currentEditor.refresh();
         });
 
         vscode.workspace.onDidChangeTextDocument((event) => {
             if (event.document.isDirty) {
-                this.blameManager.refresh(event);
+                this.editorManager.currentEditor.refresh(event);
             }
+        });
+
+        vscode.workspace.onDidCloseTextDocument((document: vscode.TextDocument) => {
+            this.editorManager.closeEditor(document);
         });
 
         this.context.subscriptions.push(debugCommand, blameCommand, hashActionCommand, this.sbStatus, hoverProvider);
