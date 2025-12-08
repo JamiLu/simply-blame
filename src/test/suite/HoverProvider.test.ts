@@ -9,11 +9,14 @@ import { activateExtension, createMockBlamedDocument, document } from './helpers
 import Settings from '../../Settings';
 import BlameHoverProvider from '../../BlameHoverProvider';
 import BlameManager from '../../BlameManager';
+import * as EditorManagerModule from '../../Editor';
+
+const blameManager = new BlameManager();
+sinon.stub(EditorManagerModule.default, 'getInstance').returns( ({ currentEditor: blameManager }) as EditorManagerModule.default );
 
 suite('Test Hover Provider', () => {
 
-    const blameManager = new BlameManager();
-    const hoverProvider = new BlameHoverProvider(blameManager);
+    const hoverProvider = new BlameHoverProvider();
 
     let styleStub: sinon.SinonStub;
     let mockManager: sinon.SinonMock;

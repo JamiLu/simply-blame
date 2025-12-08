@@ -61,6 +61,10 @@ class Settings {
     static getHashAction(): ('copy' | 'remote') & string {
         return vscode.workspace.getConfiguration(this.config).hashAction;
     }
+
+    static isKeepBlamesOpen(): boolean {
+        return vscode.workspace.getConfiguration(this.config).keepBlamesOpen;
+    }
     
 }
 
