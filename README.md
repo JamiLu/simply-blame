@@ -2,6 +2,8 @@
 
 Idea like git blame annotations for VS Code!
 
+Git blame annotations on the text editor just like in Jet Brains IntelliJ Idea and other familiar code editors. Simply Blame is comprehensively configurable with various settings from date formats, author formats, heat map colors and other settings. Simply Blame is made for VS Code and other VSIX extension compatible code editors.
+
 ## Steps to use
 1. Install the extension
 2. Press **Alt + B** on the text editor
