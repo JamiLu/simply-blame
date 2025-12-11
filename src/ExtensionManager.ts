@@ -62,7 +62,7 @@ class ExtensionManager {
         });
 
         vscode.workspace.onDidChangeTextDocument((event) => {
-            if (event.document.isDirty) {
+            if (event.document.isDirty && this.editorManager.getEditor(event.document)) {
                 this.editorManager.currentEditor.refresh(event);
             }
         });

@@ -14,6 +14,8 @@ class BlameManager {
     private blamedDocument: BlamedDocument[] = [];
     private heatMapManager = new HeatMapManager();
     private width: string = DEFAULT_WIDTH;
+    private nameOptions: vscode.DecorationOptions[] = [];
+    private dateOptions: vscode.DecorationOptions[] = [];
 
     async toggleBlame(editor: vscode.TextEditor) {
         this.isOpen = !this.isOpen;
@@ -33,7 +35,9 @@ class BlameManager {
             log.trace('Open blame end');
             ExtensionManager.setBusy(false);
         } else {
-            this.setDecorations(editor, [], []);
+            this.nameOptions = [];
+            this.dateOptions = [];
+            this.setDecorations(editor, this.nameOptions, this.dateOptions);
         }
     }
 
@@ -41,6 +45,8 @@ class BlameManager {
         if (this.isOpen) {
             const editor = vscode.window.activeTextEditor;
             if (editor) {
+                this.nameOptions = [];
+                this.dateOptions = [];
                 if (event) {
                     this.editBlamedDocument(event);
                     this.applyDecorations(editor, event.document);
@@ -55,11 +61,20 @@ class BlameManager {
         }
     }
 
+    restore() {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            this.setDecorations(editor, this.nameOptions, this.dateOptions);
+        }
+    }
+
     closeBlame() {
         this.isOpen = false;
         const editor = vscode.window.activeTextEditor;
         if (editor) {
-            this.setDecorations(editor, [], []);
+            this.nameOptions = [];
+            this.dateOptions = [];
+            this.setDecorations(editor, this.nameOptions, this.dateOptions);
         }
     }
 
@@ -109,9 +124,6 @@ class BlameManager {
     }
 
     private applyDecorations(editor: vscode.TextEditor, document: vscode.TextDocument, fresh?: boolean) {
-        const nameOptions: vscode.DecorationOptions[] = [];
-        const dateOptions: vscode.DecorationOptions[] = [];
-
         if (this.blamedDocument.length > 0) {
             if (fresh) {
                 this.blamedDocument.push(emptyBlame());
@@ -125,12 +137,12 @@ class BlameManager {
             for (let i = 0; i < document.lineCount; i++) {
                 const [name, date] = getDecorations(document.lineAt(i).range, this.getBlameAt(i), this);
 
-                nameOptions.push(name);
-                dateOptions.push(date);
+                this.nameOptions.push(name);
+                this.dateOptions.push(date);
             }
         }
 
-        this.setDecorations(editor, nameOptions, dateOptions);
+        this.setDecorations(editor, this.nameOptions, this.dateOptions);
     }
 
     private fixDirtyLines(document: vscode.TextDocument) {
