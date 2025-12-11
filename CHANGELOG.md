@@ -2,6 +2,11 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.10.1]
+ ### Update
+  - Fix editor manager try open unopend editor issue
+  - Improve blame annotation restoring
+
 ## [1.10.0]
  ### Add
   - Keep blames open as long as the window or tab is open.
