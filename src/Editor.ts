@@ -32,13 +32,17 @@ class EditorManager {
     }
     
     changeEditor(editor?: vscode.TextEditor) {
+        if (!editor?.document.fileName) {
+            return;
+        }
+
         if (editor && !Settings.isKeepBlamesOpen()) {
             this.closeEditor(editor.document);
         }
     
         let nextEditor;
         if ((nextEditor = editor && this.getEditor(editor.document)) !== undefined) {
-            nextEditor.refresh();
+            nextEditor.restore();
             this.current = nextEditor;
         }
     }
@@ -55,7 +59,7 @@ class EditorManager {
         }
     }
     
-    private getEditor(document: vscode.TextDocument): BlameManager | undefined {
+    getEditor(document: vscode.TextDocument): BlameManager | undefined {
         return this.openEditors.get(document.fileName);
     }
 
