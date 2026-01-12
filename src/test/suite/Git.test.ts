@@ -100,19 +100,19 @@ Maybe this commit message is long and descriptive enough to prove a point.
     test('test blameFile slash succeeds', async () => {      
         await blameFile('path/to/file/test.ts');
         
-        sinon.assert.calledWithExactly(commandStub, `cd path/to/file/ && git blame --porcelain test.ts`);
+        sinon.assert.calledWithExactly(commandStub, `cd \"path/to/file/\" && git blame --porcelain \"test.ts\"`);
     });
 
     test('test blameFile backslash succeeds', async () => {
         await blameFile('path\\to\\file\\test.ts');
 
-        sinon.assert.calledWithExactly(commandStub, 'cd path\\to\\file\\ && git blame --porcelain test.ts');
+        sinon.assert.calledWithExactly(commandStub, 'cd \"path\\to\\file\\\" && git blame --porcelain \"test.ts\"');
     });
 
     test('test blameFile filename with dash succeeds', async () => {
         await blameFile('path/to/file/test-this.txt');
 
-        sinon.assert.calledWithExactly(commandStub, `cd path/to/file/ && git blame --porcelain test-this.txt`);
+        sinon.assert.calledWithExactly(commandStub, `cd \"path/to/file/\" && git blame --porcelain \"test-this.txt\"`);
     });
 
     test('test blameFile filename with space succeeds', async () => {
