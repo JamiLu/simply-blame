@@ -35,9 +35,7 @@ class BlameManager {
             log.trace('Open blame end');
             ExtensionManager.setBusy(false);
         } else {
-            this.nameOptions = [];
-            this.dateOptions = [];
-            this.setDecorations(editor, this.nameOptions, this.dateOptions);
+            this.setDecorations(editor, [], []);
         }
     }
 
@@ -72,9 +70,7 @@ class BlameManager {
         this.isOpen = false;
         const editor = vscode.window.activeTextEditor;
         if (editor) {
-            this.nameOptions = [];
-            this.dateOptions = [];
-            this.setDecorations(editor, this.nameOptions, this.dateOptions);
+            this.setDecorations(editor, [], []);
         }
     }
 
@@ -162,6 +158,8 @@ class BlameManager {
     }
 
     private setDecorations(editor: vscode.TextEditor | undefined, left: vscode.DecorationOptions[], right: vscode.DecorationOptions[]) {
+        this.nameOptions = left;
+        this.dateOptions = right;
         editor?.setDecorations(LEFT_SIDE, left);
         editor?.setDecorations(RIGHT_SIDE, right);
     }
