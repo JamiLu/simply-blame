@@ -23,7 +23,7 @@ export const blameFile = async (fileName: string): Promise<string> => {
     const location = fileName.replace(name, '');
 
     try {
-        return await command(`cd ${location} && git blame --porcelain ${name}`) ?? '';
+        return await command(`cd "${location}" && git blame --porcelain "${name}"`) ?? '';
     } catch (e) {
         if ((e as Error).message.match(/no such path .* in HEAD/)) {
             vscode.window.showWarningMessage(`File: ${name} is not in HEAD`);
