@@ -114,4 +114,22 @@ Maybe this commit message is long and descriptive enough to prove a point.
 
         sinon.assert.calledWithExactly(commandStub, `cd path/to/file/ && git blame --porcelain test-this.txt`);
     });
+
+    test('test blameFile filename with space succeeds', async () => {
+        await blameFile('path/to/file/test this.txt');
+
+        sinon.assert.calledWithExactly(commandStub, `cd \"path/to/file/\" && git blame --porcelain \"test this.txt\"`);
+    });
+
+    test('test blameFile path with space succeeds', async () => {
+        await blameFile('path/to my files/test.txt');
+
+        sinon.assert.calledWithExactly(commandStub, `cd \"path/to my files/\" && git blame --porcelain \"test.txt\"`);
+    });
+
+    test('test blameFile path and filename with space succeeds', async () => {
+        await blameFile('path/to my files/test this.txt');
+
+        sinon.assert.calledWithExactly(commandStub, `cd \"path/to my files/\" && git blame --porcelain \"test this.txt\"`);
+    });
 });
