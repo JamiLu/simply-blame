@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.10.3]
+ ### Update
+  - Minor annotation improvement
+
 ## [1.10.2]
  ### Update
   - Fix open file and file path with spaces
