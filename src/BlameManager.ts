@@ -104,7 +104,7 @@ class BlameManager {
         } else if (event.contentChanges.length > 0 && changedLines < 0) {
             const change = event.contentChanges.find(change => change?.text === '' && change.range.start.line < change.range.end.line);
             for (let line = change?.range.end.line!; line > change?.range.start.line!; line--) {
-                this.blamedDocument.splice(line + 1, 1);
+                this.blamedDocument.splice(line, 1);
             }
         } else if (event.contentChanges.length > 0 && changedLines === 0) {
             event.contentChanges.forEach(change => {
