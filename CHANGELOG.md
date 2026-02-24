@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.10.4]
+ ### Update
+  - Spawn shell directly in correct folder
+
 ## [1.10.3]
  ### Update
   - Minor annotation improvement
