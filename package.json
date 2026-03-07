@@ -96,6 +96,12 @@
           "description": "Keep blame annotations open as long as a tab or window is open. If not selected annotations are closed on tab change.",
           "order": 2
         },
+        "simplyblame.ignoreWhitespace": {
+          "type": "boolean",
+          "default": false,
+          "description": "If selected blame will ignore whitepace changes. When unselected blame annotations are shown as normal.",
+          "order": 2
+        },
         "simplyblame.hashAction": {
           "type": "string",
           "enum": [
@@ -236,6 +242,10 @@
       {
         "command": "simply-blame.simplyBlame",
         "title": "Simply Blame"
+      },
+      {
+        "command": "simply-blame.toggleIgnoreWhitespace",
+        "title": "Simply Blame: Toggle Ignore Whitespace"
       }
     ],
     "keybindings": [

@@ -13,6 +13,7 @@ class EditorManager {
 
     private openEditors: Map<String, BlameManager> = new Map();
     private current: BlameManager | null = null;
+    private shouldReBlame: boolean = false;
 
     private constructor() {}
 
@@ -30,6 +31,18 @@ class EditorManager {
             this.current = manager;
         }
     }
+
+    async reBlame() {
+        const openEditor = vscode.window.activeTextEditor;
+        this.shouldReBlame = true;
+        if (openEditor) {
+            const editor = this.getEditor(openEditor.document);
+            if (editor) {
+                editor.reBlame(openEditor);
+                this.shouldReBlame = false;
+            }
+        }
+    }
     
     changeEditor(editor?: vscode.TextEditor) {
         if (!editor?.document.fileName) {
@@ -42,7 +55,8 @@ class EditorManager {
     
         let nextEditor;
         if ((nextEditor = editor && this.getEditor(editor.document)) !== undefined) {
-            nextEditor.restore();
+            this.shouldReBlame ? nextEditor.reBlame(editor) : nextEditor.restore();
+            this.shouldReBlame = false;
             this.current = nextEditor;
         }
     }

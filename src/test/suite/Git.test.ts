@@ -10,6 +10,18 @@ import { activateExtension, createMockBlame, document } from './helpers';
 import * as cmdMock from '../../Command';
 import { getLocation } from '../../Utils';
 import Notifications from '../../Notifications';
+import WorkspaceStateHolder from '../../WorkspaceStateHolder';
+import Settings from '../../Settings';
+
+const fakeMemento: vscode.Memento = {
+    get() {},
+    async update(key: string, value: string) {},
+    keys(): readonly string[] {
+        return [];
+    }
+};
+
+const stateInstance = WorkspaceStateHolder.create(fakeMemento);
 
 suite('Test Git commands', () => {
 
@@ -18,18 +30,24 @@ suite('Test Git commands', () => {
     let commandStub: sinon.SinonStub;
     let gitNotFoundSpy: sinon.SinonSpy;
     let commonErrorSpy: sinon.SinonSpy;
+    let stateStub: sinon.SinonStub;
+    let settingsIgnoreWhiteSpaceStub: sinon.SinonStub;
 
     mocha.before(async () => {
         await activateExtension();
         commandStub = sinon.stub(cmdMock, 'command');
         gitNotFoundSpy = sinon.spy(Notifications, 'gitNotFoundNotification');
         commonErrorSpy = sinon.spy(Notifications, 'commonErrorNotification');
+        stateStub = sinon.stub(stateInstance, 'ignoreWhiteSpaceToggle');
+        settingsIgnoreWhiteSpaceStub = sinon.stub(Settings, 'getBlameIgnoreWhitespace');
     });
 
     mocha.after(() => {
         commandStub.restore();
         gitNotFoundSpy.restore();
         commonErrorSpy.restore();
+        stateStub.restore();
+        settingsIgnoreWhiteSpaceStub.restore();
     });
 
     test('test getCommitMessage', async () => {
@@ -131,5 +149,21 @@ Maybe this commit message is long and descriptive enough to prove a point.
         await blameFile('path/to my files/test this.txt');
 
         sinon.assert.calledWithExactly(commandStub, `git blame --porcelain \"test this.txt\"`, `path/to my files/`);
+    });
+
+    test('test blameFile ignore white space from settings succeeds', async () => {
+        settingsIgnoreWhiteSpaceStub.returns(true);
+
+        await blameFile('dev/index.ts');
+
+        sinon.assert.calledWithExactly(commandStub, `git blame -w --porcelain "index.ts"`, "dev/");
+    });
+
+    test('test blameFile ignore white space toggle succeeds', async () => {
+        stateStub.returns(true);
+
+        await blameFile('dev/home.ts');
+
+        sinon.assert.calledWithExactly(commandStub, `git blame -w --porcelain "home.ts"`, "dev/");
     });
 });

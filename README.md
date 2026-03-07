@@ -13,6 +13,7 @@ Git blame annotations on the text editor just like in Jet Brains IntelliJ Idea a
  * Fully customizable heat colors use rgb or hex, choose coloring strategy
  * Flexible output options: multiple date formats, author styles
  * Configurable hover box: appearance and action for the commit hash
+ * Quick toggle ignore white space via a command Ctrl + Shift + P > SB: Toggle Ignore Whitespace
 
 ## Install
  * [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=JamiTech.simply-blame) **or** [Open VSX Registry](https://open-vsx.org/extension/JamiTech/simply-blame)
@@ -38,6 +39,9 @@ Git blame annotations on the text editor just like in Jet Brains IntelliJ Idea a
    * Select a blame annotation hover detail box style. Options are normal and minimal.
 * **Hash Action**
    * Select an action to be invoked when the commit hash is clicked on the hover box. Supported actions are copy to clipboard and open in browser.
+* **Ignore White Space**
+   * Control global ignore white space from the extension settings.
+   * Toggle white ignore white space via quick toggle command (does not affect the global setting).
 * **Heat Color Index Strategy**
    * Choose how the heat colors are shown. Scale through the commits, this is the default or highlight the latest commits.
 * **Keep Blames Open**
