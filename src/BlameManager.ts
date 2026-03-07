@@ -39,6 +39,22 @@ class BlameManager {
         }
     }
 
+    async reBlame(editor: vscode.TextEditor) {
+        console.log('s', this.isOpen);
+        if (this.isOpen) {
+            this.setDecorations(editor, [], []);
+            log.trace('Re blame start');
+            ExtensionManager.setBusy(true);
+            this.blamedDocument = await blame(editor.document);
+            if (this.blamedDocument.length > 0) {
+                this.heatMapManager.indexHeatMap(this.blamedDocument);
+                this.applyDecorations(editor, editor.document, true);
+            }
+            log.trace("Re blame end");
+            ExtensionManager.setBusy(false);
+        }
+    }
+
     refresh(event?: vscode.TextDocumentChangeEvent) {
         if (this.isOpen) {
             const editor = vscode.window.activeTextEditor;
@@ -60,6 +76,7 @@ class BlameManager {
     }
 
     restore() {
+        console.log("restore");
         const editor = vscode.window.activeTextEditor;
         if (editor) {
             this.setDecorations(editor, this.nameOptions, this.dateOptions);

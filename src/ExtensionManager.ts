@@ -6,6 +6,7 @@ import Settings from './Settings';
 import { hashAction } from './HashAction';
 import BlameHoverProvider from './BlameHoverProvider';
 import EditorManager, { openBlameEditor } from './Editor';
+import WorkspaceStateHolder from './WorkspaceStateHolder';
 
 class ExtensionManager {
 
@@ -15,9 +16,11 @@ class ExtensionManager {
     private editorManager = EditorManager.getInstance();
     private blameHoverProvider: BlameHoverProvider;
     private sbStatus: vscode.StatusBarItem;
+    private stateHolder: WorkspaceStateHolder;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
+        this.stateHolder = WorkspaceStateHolder.create(this.context.workspaceState);
         this.blameHoverProvider = new BlameHoverProvider();
         this.sbStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
         this.sbStatus.show();
@@ -42,6 +45,12 @@ class ExtensionManager {
 
         const hashActionCommand = vscode.commands.registerCommand('simply-blame.hashAction', async ({ hash }: any) => {
             await hashAction(hash);
+        });
+
+        const toggleIgnoreWhitespaceCommand = vscode.commands.registerCommand('simply-blame.toggleIgnoreWhitespace', async () => {
+            this.stateHolder.setIgnoreWhiteSpaceToggle();
+            this.editorManager.reBlame();
+            vscode.window.showInformationMessage(this.stateHolder.ignoreWhiteSpaceToggle ? "Ignore whitespace" : "Show whitespace");
         });
 
         const hoverProvider = vscode.languages.registerHoverProvider({ scheme: 'file' }, this.blameHoverProvider);

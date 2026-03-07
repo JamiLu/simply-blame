@@ -5,6 +5,8 @@ import * as vscode from 'vscode';
 import { command } from './Command';
 import Notifications from './Notifications';
 import { getFilename, getLocation } from './Utils';
+import Settings from './Settings';
+import WorkspaceStateHolder from './WorkspaceStateHolder';
 
 export const getCommitMessage = async (document: vscode.TextDocument, commit: string) => {
     const location = getLocation(document.fileName);
@@ -21,9 +23,10 @@ export const getCommitMessage = async (document: vscode.TextDocument, commit: st
 export const blameFile = async (fileName: string): Promise<string> => {
     const name = getFilename(fileName);
     const location = fileName.replace(name, '');
+    const ignoreWhitespace = (WorkspaceStateHolder.state.ignoreWhiteSpaceToggle || Settings.getBlameIgnoreWhitespace()) ? ' -w' : '';
 
     try {
-        return await command(`git blame --porcelain "${name}"`, location) ?? '';
+        return await command(`git blame${ignoreWhitespace} --porcelain "${name}"`, location) ?? '';
     } catch (e) {
         if ((e as Error).message.match(/no such path .* in HEAD/)) {
             vscode.window.showWarningMessage(`File: ${name} is not in HEAD`);

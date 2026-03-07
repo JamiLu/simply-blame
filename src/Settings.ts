@@ -65,7 +65,10 @@ class Settings {
     static isKeepBlamesOpen(): boolean {
         return vscode.workspace.getConfiguration(this.config).keepBlamesOpen;
     }
-    
+
+    static getBlameIgnoreWhitespace(): boolean {
+        return vscode.workspace.getConfiguration(this.config).ignoreWhitespace;
+    }
 }
 
 export default Settings;
