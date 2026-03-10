@@ -40,7 +40,6 @@ class BlameManager {
     }
 
     async reBlame(editor: vscode.TextEditor) {
-        console.log('s', this.isOpen);
         if (this.isOpen) {
             this.setDecorations(editor, [], []);
             log.trace('Re blame start');
@@ -76,7 +75,6 @@ class BlameManager {
     }
 
     restore() {
-        console.log("restore");
         const editor = vscode.window.activeTextEditor;
         if (editor) {
             this.setDecorations(editor, this.nameOptions, this.dateOptions);
@@ -125,7 +123,7 @@ class BlameManager {
             }
         } else if (event.contentChanges.length > 0 && changedLines === 0) {
             event.contentChanges.forEach(change => {
-                if (change.text.length > 0) {
+                if (change.text.length >= 0) {
                     this.blamedDocument.splice(change.range.start.line, 1, emptyBlame());
                 }
             });
@@ -164,14 +162,21 @@ class BlameManager {
         let dirty = 0;
 
         dirtyLines.forEach((line, i) => {
-            if (this.blamedDocument[i]?.codeline?.trim() !== line.trim() && dirty < dirtyMax) {
+            const localLine = this.trimStartUntilLength(this.blamedDocument[i]?.codeline, line.length);
+            if (localLine !== line && dirty < dirtyMax) {
                 this.blamedDocument.splice(i, 0, emptyBlame());
                 dirty++;
-            } else if (this.blamedDocument[i]?.codeline?.trim() !== line.trim() && dirty > dirtyMax) {
+            } else if (localLine !== line && dirty > dirtyMax) {
                 this.blamedDocument.splice(i, 1);
                 dirty--;
+            } else if (localLine !== undefined && localLine !== line && dirty === dirtyMax) {
+                this.blamedDocument.splice(i, 1, emptyBlame());
             }
         });
+    }
+
+    private trimStartUntilLength(string: string, length: number) {
+        return string?.substring(string.length - length);
     }
 
     private setDecorations(editor: vscode.TextEditor | undefined, left: vscode.DecorationOptions[], right: vscode.DecorationOptions[]) {
