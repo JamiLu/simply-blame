@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.11.1]
+ ### Update
+  - Improve blame annotations
+
 ## [1.11.0]
  ### Add
   - Support blame with ignore white space option
