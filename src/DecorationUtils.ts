@@ -90,8 +90,8 @@ const trustedMdString = () => {
     return str;
 };
 
-export const createNormalMessage = (blame: BlamedDocument, fullBody?: string): vscode.MarkdownString  => {
-    return trustedMdString()
+export const createNormalMessage = (blame: BlamedDocument, message?: string): vscode.MarkdownString  => {
+    const str = trustedMdString()
         .appendMarkdown(`$(account) &nbsp; ${blame.author.name}`)
         .appendText('\n')
         .appendMarkdown(`$(mail) &nbsp; ${blame.email}`)
@@ -102,8 +102,31 @@ export const createNormalMessage = (blame: BlamedDocument, fullBody?: string): v
         .appendText('\n')
         .appendMarkdown(`[$(copy) &nbsp; ${blame.hash}](${vscode.Uri.parse(`command:simply-blame.hashAction?${JSON.stringify([{ hash: blame.hash }])}`)})`)
         .appendText('\n')
-        .appendMarkdown(`****\n`)
-        .appendText(`${fullBody ?? blame.summary}`);
+        .appendMarkdown(`****\n`);
+
+    if (!message || message === blame.summary) {
+        str.appendMarkdown(blame.summary);
+        return str;
+    }
+
+    const lines = message.split('\n');
+    const title = lines.shift();
+    const last = lines.pop();
+
+    str.appendMarkdown(`### ${title}\n\n`);
+
+    lines.forEach((l) => {
+        if (l.length === 0) {
+            str.appendText('\n');
+        } else {
+            str.appendMarkdown(l);
+            str.appendText('\n');
+        }
+    });
+
+    str.appendMarkdown(`${last}`);
+
+    return str;
 };
 
 export const createMinimalMessage = (blame: BlamedDocument): vscode.MarkdownString => {
