@@ -2,6 +2,10 @@
 
 All notable changes to the "simply-blame" extension will be documented in this file.
 
+## [1.11.2]
+ ### Update
+  - Improve full blame message presentation by supporting markdown
+
 ## [1.11.1]
  ### Update
   - Improve blame annotations

@@ -57,6 +57,7 @@ Author: Tester Testaaja Test <testing@tester.test>
 Date:   Mon Aug 4 22:30:49 2025 +0300
 
     This is a commit title
+
     This is a commit body message. Which is a long text that describes the commit. I have to think hard to figure out what to write here since this is important for the others to know what has been done in this particular commit.
     
     Few points about this commit:
@@ -73,9 +74,8 @@ diff --git
 
         sinon.assert.calledWithExactly(commandStub, `git show a`, getLocation(document.fileName));
 
-        assert.strictEqual(message, `
+        assert.strictEqual(message, `This is a commit title
 
-This is a commit title
 This is a commit body message. Which is a long text that describes the commit. I have to think hard to figure out what to write here since this is important for the others to know what has been done in this particular commit.
 
 Few points about this commit:
@@ -83,9 +83,7 @@ Few points about this commit:
 * A keyword var was used to declare the variable foobar
 * The const or the let keywords could have been used instead due it is more advanced
 
-Maybe this commit message is long and descriptive enough to prove a point.
-
-`);
+Maybe this commit message is long and descriptive enough to prove a point.`);
     });
 
     test('test blameFile throws git not found git not found notification shown', async () => {
