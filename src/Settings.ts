@@ -58,7 +58,7 @@ class Settings {
         return vscode.workspace.getConfiguration(this.config).hoverStyle;
     }
 
-    static getHashAction(): ('copy' | 'remote') & string {
+    static getHashAction(): ('copy' | 'remote' | 'local') & string {
         return vscode.workspace.getConfiguration(this.config).hashAction;
     }
 

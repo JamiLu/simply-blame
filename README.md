@@ -38,7 +38,7 @@ Git blame annotations on the text editor just like in Jet Brains IntelliJ Idea a
 * **Hover Style**
    * Select a blame annotation hover detail box style. Options are normal and minimal.
 * **Hash Action**
-   * Select an action to be invoked when the commit hash is clicked on the hover box. Supported actions are copy to clipboard and open in browser.
+   * Select an action to be invoked when the commit hash is clicked on the hover box. Supported actions are copy to clipboard, open in browser, and open in VS Code.
 * **Ignore White Space**
    * Control global ignore white space from the extension settings.
    * Toggle white ignore white space via quick toggle command (does not affect the global setting).
