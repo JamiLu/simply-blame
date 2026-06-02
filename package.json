@@ -106,15 +106,18 @@
           "type": "string",
           "enum": [
             "copy",
-            "remote"
+            "remote",
+            "local"
           ],
           "enumItemLabels": [
             "Copy",
-            "Open in remote"
+            "Open in remote",
+            "Open in VS Code"
           ],
           "enumDescriptions": [
             "Copy a hash into the clipboard",
-            "Open a commit in the browser"
+            "Open a commit in the browser",
+            "Open a commit in the VS Code's new tab"
           ],
           "default": "copy",
           "description": "Select a click hash action",

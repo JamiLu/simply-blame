@@ -86,6 +86,21 @@ const resolveRemote = async () => {
 export const hashAction = async (hash: string) => {
     const action = Settings.getHashAction();
     switch (action) {
+        case 'local':
+            try {
+                const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
+                const api = gitExtension?.getAPI(1);
+                if (api && api.repositories.length > 0) {
+                    const repository = api.repositories[0];
+                    const revealUri = vscode.window.activeTextEditor?.document.uri;
+                    await vscode.commands.executeCommand('git.viewCommit', repository, hash, revealUri);
+                } else {
+                    throw new Error('No Git repository found');
+                }
+            } catch (e) {
+                Notifications.commonErrorNotification(e as Error, true);
+            }
+            break;
         case 'remote':
             try {
                 await vscode.env.openExternal(vscode.Uri.parse(`${await resolveRemote()}/commit/${hash}`));
