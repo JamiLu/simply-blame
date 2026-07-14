@@ -61,12 +61,14 @@
           "enum": [
             "full",
             "first",
-            "last"
+            "last",
+            "initials"
           ],
           "enumItemLabels": [
             "Full name",
             "First name",
-            "Last name"
+            "Last name",
+            "Initials"
           ],
           "default": "full",
           "description": "Select an author style for the blame annotations.",

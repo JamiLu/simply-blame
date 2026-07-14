@@ -50,7 +50,7 @@ class Settings {
         return { r: Number(r), g: Number(g), b: Number(b), c: Number(c) };
     }
 
-    static getAuthorStyle(): ('full' | 'first' | 'last') & string {
+    static getAuthorStyle(): ('full' | 'first' | 'last' | 'initials') & string {
         return vscode.workspace.getConfiguration(this.config).authorStyle;
     }
 

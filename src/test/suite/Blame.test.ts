@@ -65,6 +65,14 @@ filename src/test.ts
 14728a3afb0871ac18e84d4d3e41bd34f0283172 2 10
         fourth edit`;
 
+export const getBlameWithEmptyAuthor = () => `14728a3afb0871ac18e84d4d3e41bd34f0283170 1 1 1
+author 
+author-mail <test@example.com>
+author-time 1715896852
+summary This is a test commit message
+filename src/test.ts
+        import * as vscode from "vscode";`;
+
 suite('Test Blame', () => {
 
     let gitMock: sinon.SinonMock;
@@ -162,6 +170,39 @@ suite('Test Blame', () => {
         assert.strictEqual(blamed[9].author.displayName, '连杰');
         assert.strictEqual(blamed.length, 10);
         assert.strictEqual(uniqueCommits(blamed).length, 7);
+
+        settings.restore();
+    });
+
+    test('test blame annotation initials', async () => {
+        const settings = sinon.stub(Settings, 'getAuthorStyle').returns('initials');
+        gitMock.expects('blameFile').returns(getBlame());
+
+        const blamed = await blameMock.blame(document);
+
+        assert.strictEqual(blamed[0].author.displayName, 'JL');
+        assert.strictEqual(blamed[1].author.displayName, 'üD');
+        assert.strictEqual(blamed[2].author.displayName, '李连');
+        assert.strictEqual(blamed[3].author.displayName, 'שש');
+        assert.strictEqual(blamed[4].author.displayName, 'rt');
+        assert.strictEqual(blamed[5].author.displayName, '&');
+        assert.strictEqual(blamed[6].author.displayName, 'TTT');
+        assert.strictEqual(blamed[7].author.displayName, '李连');
+        assert.strictEqual(blamed[8].author.displayName, '李连');
+        assert.strictEqual(blamed[9].author.displayName, '李连');
+        assert.strictEqual(blamed.length, 10);
+        assert.strictEqual(uniqueCommits(blamed).length, 7);
+
+        settings.restore();
+    });
+
+    test('test blame annotation initials falls back to author for empty name', async () => {
+        const settings = sinon.stub(Settings, 'getAuthorStyle').returns('initials');
+        gitMock.expects('blameFile').returns(getBlameWithEmptyAuthor());
+
+        const blamed = await blameMock.blame(document);
+
+        assert.strictEqual(blamed[0].author.displayName, blamed[0].author.name);
 
         settings.restore();
     });

@@ -37,7 +37,7 @@ export const emptyBlame = () => {
     return { hash: '0' } as BlamedDocument;
 };
 
-const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): BlamedAuthor => {
+const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last' | 'initials'): BlamedAuthor => {
     const blamedAuthor = { name: author, displayName: author };
     switch (authorStyle) {
         default:
@@ -49,6 +49,10 @@ const createAuthor = (author: string, authorStyle: 'full' | 'first' | 'last'): B
             return blamedAuthor;
         case 'last':
             blamedAuthor.displayName = author.substring(author.lastIndexOf(' ') + 1);
+            return blamedAuthor;
+        case 'initials':
+            const initials = author.split(' ').map(part => part[0]).join('');
+            blamedAuthor.displayName = initials || author;
             return blamedAuthor;
     }
 };
