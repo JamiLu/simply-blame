@@ -34,7 +34,7 @@ Git blame annotations on the text editor just like in Jet Brains IntelliJ Idea a
    * System will use the locale used by the VS Code.
    * Or you can choose any other pre existing date format to use.
 * **Author Style**
-   * Select an author style for the blame annotations. Supported styles are full name, first name, last name.
+   * Select an author style for the blame annotations. Supported styles are full name, first name, last name, initials.
 * **Hover Style**
    * Select a blame annotation hover detail box style. Options are normal and minimal.
 * **Hash Action**
